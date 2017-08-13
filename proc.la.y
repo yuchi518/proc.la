@@ -1,13 +1,24 @@
+%{
+    void yyerror (char const *s);
+    int yylex();
+%}
+
 %token          IDENTIFIER
-%token          I_CONSTANT F_CONSTANT STRING_LITERAL
+%token          I_CONSTANT F_CONSTANT STRING_LITERAL N_CONSTANT
 
 %token	        INT LONG FLOAT DOUBLE NUMBER STRING RAW VAR PROC LA
+
+%token          APPLY_TO PIPE_1_TO_1 PIPE_REDUCE PIPE_EXPAND PIPE_INJECT
+
+%token          RIGHT_ASSIGN LEFT_ASSIGN ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN AND_ASSIGN XOR_ASSIGN OR_ASSIGN
+%token          RIGHT_OP LEFT_OP INC_OP DEC_OP AND_OP OR_OP LE_OP GE_OP EQ_OP NE_OP
+%token          IS OUT DECLARE DOMAIN_NAME PACKAGE_NAME
 
 %start          a_proc_la
 
 %%
 
-var_type_specifier
+basic_var_type_specifier
 	: INT
 	| LONG
 	| FLOAT
@@ -18,35 +29,64 @@ var_type_specifier
 	| VAR
 	;
 
-la_body_declaration
+combined_var_type_specifier
+    : basic_var_type_specifier "[]"
+    | basic_var_type_specifier "{}"
+    | combined_var_type_specifier "[]"
+    | combined_var_type_specifier "{}"
+    ;
+
+var_type_specifier
+    : basic_var_type_specifier
+    | combined_var_type_specifier
+    ;
+
+var_declaration
+    : IDENTIFIER ':' var_type_specifier
+    ;
+
+var_list_declaration
+    : var_declaration ',' var_list_declaration
+    | var_declaration
+    ;
+
+type_list_declaration
+    : var_type_specifier ',' type_list_declaration
+    | var_type_specifier
+    ;
+
+
+la_input_declaration
+    : '(' var_list_declaration ')'
+    | '(' ')'
+    ;
+
+la_output_declaration
+    : '(' type_list_declaration ')'
+    | '(' ')'
+    ;
+
+la_body_implementation
     : '{' '}'
     ;
 
-la_header_var_declaration
-    : var_type_specifier IDENTIFIER
-    ;
-
-la_header_var_list_declaration
-    : la_header_var_declaration ',' la_header_var_list_declaration
-    | la_header_var_declaration
-    ;
-
-la_header_declaration
-    : '(' la_header_var_list_declaration ')'
-    | '(' la_header_var_list_declaration ')' ':' '(' la_header_var_list_declaration ')'
+la_body_declaration
+    : la_input_declaration APPLY_TO la_body_implementation APPLY_TO la_output_declaration
+    | la_input_declaration APPLY_TO la_body_implementation
+    | la_body_implementation APPLY_TO la_output_declaration
+    | la_body_implementation
     ;
 
 la_declaration
-    : LA IDENTIFIER '=' IDENTIFIER ';'
-    | LA IDENTIFIER la_header_declaration '=' la_body_declaration
+    : DECLARE IDENTIFIER ':' LA la_body_declaration ';'
     ;
 
-proc_alias
-    : PROC IDENTIFIER '=' package_name ';'
+la_alias
+    : DOMAIN_NAME APPLY_TO IDENTIFIER ':' LA ';'
     ;
 
 external_declaration
-    : proc_alias
+    : la_alias
     | la_declaration
     ;
 
@@ -55,13 +95,8 @@ external_declaration_list
     | external_declaration
     ;
 
-package_name
-    : IDENTIFIER
-    | IDENTIFIER '.' package_name
-    ;
-
 package_declare
-    : '@' package_name
+    : PACKAGE_NAME
     ;
 
 a_proc_la
@@ -71,11 +106,10 @@ a_proc_la
 
 %%
 
-
 #include <stdio.h>
 
 void yyerror(const char *s)
 {
 	fflush(stdout);
-	fprintf(stderr, "*** %s\n", s);
+	fprintf(stderr, "LN:%04d %s\n", yylineno, s);
 }

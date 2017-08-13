@@ -1,3 +1,4 @@
+%option yylineno
 
 BIN                     [0-1]
 OCT_1st                 [0-3]
@@ -10,10 +11,12 @@ LETTER                  [a-zA-Z_]
 ASCII                   [a-zA-Z_0-9]
 ESCAPE                  (\\(['"\?\\abfnrtv]))
 WS                      [ \t\v\n\f]
+
 %{
 
 #include <stdio.h>
-#include "y.tab.h"
+//#include "y.tab.h"
+#include "proc.la.y.c"
 
 extern void yyerror(const char *);  /* prints grammar violation message */
 
@@ -24,9 +27,20 @@ extern int sym_type(const char *);  /* returns type from symbol table */
 static void comment(void);
 static int check_type(void);
 
+struct src_stack
+{
+    struct src_stack *prev;
+    YY_BUFFER_STATE bs;
+    //int lineno;
+    //char* src_buffer;
+    //unsigned int src_size;
+};
+
 %}
 
+
 %%
+
 "/*"                                                    { comment(); }
 "//".*                                                  { /* consume //-comment */ }
 
@@ -40,6 +54,12 @@ static int check_type(void);
 "var"                                                   { return(VAR); }
 "proc"                                                  { return(PROC); }
 "la"                                                    { return(LA); }
+"none"                                                  { return N_CONSTANT; }
+"out"                                                   { return OUT; }
+"is"                                                    { return IS; }
+"declare"                                               { return DECLARE; }
+({LETTER}{ASCII}*)("."{LETTER}{ASCII}*)+                { fprintf(stderr, "DMN: %s\n", yytext); return DOMAIN_NAME; }
+(@{LETTER}{ASCII}*)("."{LETTER}{ASCII}*)*               { fprintf(stderr, "PKG: %s\n", yytext); return PACKAGE_NAME; }
 
 {LETTER}{ASCII}*					                    { return check_type(); }
 
@@ -69,7 +89,6 @@ static int check_type(void);
 "<<"					                                { return LEFT_OP; }
 "++"					                                { return INC_OP; }
 "--"					                                { return DEC_OP; }
-"->"					                                { return PTR_OP; }
 "&&"					                                { return AND_OP; }
 "||"					                                { return OR_OP; }
 "<="					                                { return LE_OP; }
@@ -81,6 +100,11 @@ static int check_type(void);
 "}"				                                        { return '}'; }
 ","					                                    { return ','; }
 ":"					                                    { return ':'; }
+"->"					                                { return APPLY_TO; }
+"-->"                                                   { return PIPE_1_TO_1; }
+"=->"                                                   { return PIPE_REDUCE; }
+"-*>"                                                   { return PIPE_EXPAND; }
+"*->"                                                   { return PIPE_INJECT; }
 "="					                                    { return '='; }
 "("					                                    { return '('; }
 ")"					                                    { return ')'; }
@@ -101,8 +125,8 @@ static int check_type(void);
 "|"					                                    { return '|'; }
 "?"					                                    { return '?'; }
 
-{WS}+					                                { /* whitespace separates tokens */ }
-.					                                    { /* discard bad characters */ }
+{WS}+					                                { fprintf(stderr, "SP %c SP\n", *yytext); /* whitespace separates tokens */ }
+.					                                    { fprintf(stderr, "BAD %c BAD\n", *yytext); /* discard bad characters */ }
 
 %%
 
@@ -114,27 +138,32 @@ int yywrap(void)        /* called at end of input */
 static void comment(void)
 {
     int c;
+    fprintf(stderr, "CMT %c\n", *yytext);
 
     while ((c = input()) != 0)
-    if (c == '*')
     {
-         while ((c = input()) == '*')
-             ;
+        putc(c, stdout);
+        if (c == '*')
+        {
+             while ((c = input()) == '*')
+                 ;
 
-         if (c == '/')
-             return;
+             if (c == '/')
+                 return;
 
-         if (c == 0)
-             break;
+             if (c == 0)
+                 break;
+        }
     }
     yyerror("unterminated comment");
 }
 
 static int check_type(void)
 {
-     switch (sym_type(yytext))
-     {
-     default:                          /* includes undefined */
+    fprintf(stderr, "check_type %s\n", yytext);
+     //switch (sym_type(yytext))
+     //{
+     //default:                          /* includes undefined */
          return IDENTIFIER;
-     }
+     //}
 }

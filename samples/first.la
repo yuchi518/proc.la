@@ -1,0 +1,18 @@
+@la.proc
+
+/**
+ *  Samples
+ */
+
+
+declare add:la
+(a:int, b:int) -> {
+} -> (int);
+
+
+declare main:la
+(input:var) -> {
+
+} -> (var);
+
+
