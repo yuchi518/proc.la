@@ -4,12 +4,13 @@
  *  Samples
  */
 
+la.proc.matrix.add -> matrix_add:la;
 
 declare add:la
 (a:int, b:int) -> {
 } -> (int);
 
-
+// main la
 declare main:la
 (input:var) -> {
 

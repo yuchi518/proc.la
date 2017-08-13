@@ -650,6 +650,7 @@ extern int sym_type(const char *);  /* returns type from symbol table */
 
 static void comment(void);
 static int check_type(void);
+static void log_verb(char* title, int is_char);
 
 struct src_stack
 {
@@ -660,8 +661,8 @@ struct src_stack
     //unsigned int src_size;
 };
 
-#line 663 "proc.la.l.c"
 #line 664 "proc.la.l.c"
+#line 665 "proc.la.l.c"
 
 #define INITIAL 0
 
@@ -878,10 +879,10 @@ YY_DECL
 		}
 
 	{
-#line 42 "proc.la.l"
+#line 43 "proc.la.l"
 
 
-#line 884 "proc.la.l.c"
+#line 885 "proc.la.l.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -950,407 +951,407 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 44 "proc.la.l"
+#line 45 "proc.la.l"
 { comment(); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 45 "proc.la.l"
-{ /* consume //-comment */ }
+#line 46 "proc.la.l"
+{ log_verb("CMD", 0); /* consume //-comment */ }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 47 "proc.la.l"
-{ return(INT); }
+#line 48 "proc.la.l"
+{ log_verb("Type", 0); return(INT); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 48 "proc.la.l"
-{ return(LONG); }
+#line 49 "proc.la.l"
+{ log_verb("Type", 0); return(LONG); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 49 "proc.la.l"
-{ return(FLOAT); }
+#line 50 "proc.la.l"
+{ log_verb("Type", 0); return(FLOAT); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 50 "proc.la.l"
-{ return(DOUBLE); }
+#line 51 "proc.la.l"
+{ log_verb("Type", 0); return(DOUBLE); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 51 "proc.la.l"
-{ return(NUMBER); }
+#line 52 "proc.la.l"
+{ log_verb("Type", 0); return(NUMBER); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 52 "proc.la.l"
-{ return(STRING); }
+#line 53 "proc.la.l"
+{ log_verb("Type", 0); return(STRING); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 53 "proc.la.l"
-{ return(RAW); }
+#line 54 "proc.la.l"
+{ log_verb("Type", 0); return(RAW); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 54 "proc.la.l"
-{ return(VAR); }
+#line 55 "proc.la.l"
+{ log_verb("Type", 0); return(VAR); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 55 "proc.la.l"
-{ return(PROC); }
+#line 56 "proc.la.l"
+{ log_verb("Type", 0); return(PROC); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 56 "proc.la.l"
-{ return(LA); }
+#line 57 "proc.la.l"
+{ log_verb("Type", 0); return(LA); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 57 "proc.la.l"
-{ return N_CONSTANT; }
+#line 58 "proc.la.l"
+{ log_verb("Const", 0); return N_CONSTANT; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 58 "proc.la.l"
-{ return OUT; }
+#line 59 "proc.la.l"
+{ log_verb("KeyWord", 0); return OUT; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 59 "proc.la.l"
-{ return IS; }
+#line 60 "proc.la.l"
+{ log_verb("KeyWord", 0); return IS; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 60 "proc.la.l"
-{ return DECLARE; }
+#line 61 "proc.la.l"
+{ log_verb("KeyWord", 0); return DECLARE; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 61 "proc.la.l"
-{ fprintf(stderr, "DMN: %s\n", yytext); return DOMAIN_NAME; }
+#line 62 "proc.la.l"
+{ log_verb("Domain", 0); return DOMAIN_NAME; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 62 "proc.la.l"
-{ fprintf(stderr, "PKG: %s\n", yytext); return PACKAGE_NAME; }
+#line 63 "proc.la.l"
+{ log_verb("PkgName", 0); return PACKAGE_NAME; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 64 "proc.la.l"
+#line 65 "proc.la.l"
 { return check_type(); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 66 "proc.la.l"
-{ return I_CONSTANT; }
+#line 67 "proc.la.l"
+{ log_verb("Const", 0); return I_CONSTANT; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 67 "proc.la.l"
-{ return I_CONSTANT; }
+#line 68 "proc.la.l"
+{ log_verb("Const", 0); return I_CONSTANT; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 68 "proc.la.l"
-{ return I_CONSTANT; }
+#line 69 "proc.la.l"
+{ log_verb("Const", 0); return I_CONSTANT; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 69 "proc.la.l"
-{ return I_CONSTANT; }
+#line 70 "proc.la.l"
+{ log_verb("Const", 0); return I_CONSTANT; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 70 "proc.la.l"
-{ return I_CONSTANT; }
+#line 71 "proc.la.l"
+{ log_verb("Const", 0); return I_CONSTANT; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 72 "proc.la.l"
-{ return F_CONSTANT; }
+#line 73 "proc.la.l"
+{ log_verb("Const", 0); return F_CONSTANT; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 73 "proc.la.l"
-{ return F_CONSTANT; }
+#line 74 "proc.la.l"
+{ log_verb("Const", 0); return F_CONSTANT; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 74 "proc.la.l"
-{ return F_CONSTANT; }
+#line 75 "proc.la.l"
+{ log_verb("Const", 0); return F_CONSTANT; }
 	YY_BREAK
 case 28:
 /* rule 28 can match eol */
 YY_RULE_SETUP
-#line 76 "proc.la.l"
-{ return STRING_LITERAL; }
+#line 77 "proc.la.l"
+{ log_verb("Const", 0); return STRING_LITERAL; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 78 "proc.la.l"
+#line 79 "proc.la.l"
 { return RIGHT_ASSIGN; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 79 "proc.la.l"
+#line 80 "proc.la.l"
 { return LEFT_ASSIGN; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 80 "proc.la.l"
+#line 81 "proc.la.l"
 { return ADD_ASSIGN; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 81 "proc.la.l"
+#line 82 "proc.la.l"
 { return SUB_ASSIGN; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 82 "proc.la.l"
+#line 83 "proc.la.l"
 { return MUL_ASSIGN; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 83 "proc.la.l"
+#line 84 "proc.la.l"
 { return DIV_ASSIGN; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 84 "proc.la.l"
+#line 85 "proc.la.l"
 { return MOD_ASSIGN; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 85 "proc.la.l"
+#line 86 "proc.la.l"
 { return AND_ASSIGN; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 86 "proc.la.l"
+#line 87 "proc.la.l"
 { return XOR_ASSIGN; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 87 "proc.la.l"
+#line 88 "proc.la.l"
 { return OR_ASSIGN; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 88 "proc.la.l"
+#line 89 "proc.la.l"
 { return RIGHT_OP; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 89 "proc.la.l"
+#line 90 "proc.la.l"
 { return LEFT_OP; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 90 "proc.la.l"
+#line 91 "proc.la.l"
 { return INC_OP; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 91 "proc.la.l"
+#line 92 "proc.la.l"
 { return DEC_OP; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 92 "proc.la.l"
+#line 93 "proc.la.l"
 { return AND_OP; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 93 "proc.la.l"
+#line 94 "proc.la.l"
 { return OR_OP; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 94 "proc.la.l"
+#line 95 "proc.la.l"
 { return LE_OP; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 95 "proc.la.l"
+#line 96 "proc.la.l"
 { return GE_OP; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 96 "proc.la.l"
+#line 97 "proc.la.l"
 { return EQ_OP; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 97 "proc.la.l"
+#line 98 "proc.la.l"
 { return NE_OP; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 98 "proc.la.l"
+#line 99 "proc.la.l"
 { return ';'; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 99 "proc.la.l"
+#line 100 "proc.la.l"
 { return '{'; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 100 "proc.la.l"
+#line 101 "proc.la.l"
 { return '}'; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 101 "proc.la.l"
+#line 102 "proc.la.l"
 { return ','; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 102 "proc.la.l"
+#line 103 "proc.la.l"
 { return ':'; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 103 "proc.la.l"
+#line 104 "proc.la.l"
 { return APPLY_TO; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 104 "proc.la.l"
+#line 105 "proc.la.l"
 { return PIPE_1_TO_1; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 105 "proc.la.l"
+#line 106 "proc.la.l"
 { return PIPE_REDUCE; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 106 "proc.la.l"
+#line 107 "proc.la.l"
 { return PIPE_EXPAND; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 107 "proc.la.l"
+#line 108 "proc.la.l"
 { return PIPE_INJECT; }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 108 "proc.la.l"
+#line 109 "proc.la.l"
 { return '='; }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 109 "proc.la.l"
+#line 110 "proc.la.l"
 { return '('; }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 110 "proc.la.l"
+#line 111 "proc.la.l"
 { return ')'; }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 111 "proc.la.l"
+#line 112 "proc.la.l"
 { return '['; }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 112 "proc.la.l"
+#line 113 "proc.la.l"
 { return ']'; }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 113 "proc.la.l"
+#line 114 "proc.la.l"
 { return '.'; }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 114 "proc.la.l"
+#line 115 "proc.la.l"
 { return '&'; }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 115 "proc.la.l"
+#line 116 "proc.la.l"
 { return '!'; }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 116 "proc.la.l"
+#line 117 "proc.la.l"
 { return '~'; }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 117 "proc.la.l"
+#line 118 "proc.la.l"
 { return '-'; }
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 118 "proc.la.l"
+#line 119 "proc.la.l"
 { return '+'; }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 119 "proc.la.l"
+#line 120 "proc.la.l"
 { return '*'; }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 120 "proc.la.l"
+#line 121 "proc.la.l"
 { return '/'; }
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 121 "proc.la.l"
+#line 122 "proc.la.l"
 { return '%'; }
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 122 "proc.la.l"
+#line 123 "proc.la.l"
 { return '<'; }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 123 "proc.la.l"
+#line 124 "proc.la.l"
 { return '>'; }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 124 "proc.la.l"
+#line 125 "proc.la.l"
 { return '^'; }
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 125 "proc.la.l"
+#line 126 "proc.la.l"
 { return '|'; }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 126 "proc.la.l"
+#line 127 "proc.la.l"
 { return '?'; }
 	YY_BREAK
 case 78:
 /* rule 78 can match eol */
 YY_RULE_SETUP
-#line 128 "proc.la.l"
-{ fprintf(stderr, "SP %c SP\n", *yytext); /* whitespace separates tokens */ }
+#line 129 "proc.la.l"
+{ /* whitespace separates tokens */ }
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 129 "proc.la.l"
-{ fprintf(stderr, "BAD %c BAD\n", *yytext); /* discard bad characters */ }
+#line 130 "proc.la.l"
+{ fprintf(stderr, "Bad character: %c\n", *yytext); /* discard bad characters */ }
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 131 "proc.la.l"
+#line 132 "proc.la.l"
 ECHO;
 	YY_BREAK
-#line 1353 "proc.la.l.c"
+#line 1354 "proc.la.l.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2367,7 +2368,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 131 "proc.la.l"
+#line 132 "proc.la.l"
 
 
 int yywrap(void)        /* called at end of input */
@@ -2378,11 +2379,11 @@ int yywrap(void)        /* called at end of input */
 static void comment(void)
 {
     int c;
-    fprintf(stderr, "CMT %c\n", *yytext);
+    //fprintf(stderr, "CMT %c\n", *yytext);
 
     while ((c = input()) != 0)
     {
-        putc(c, stdout);
+        //putc(c, stdout);
         if (c == '*')
         {
              while ((c = input()) == '*')
@@ -2400,10 +2401,19 @@ static void comment(void)
 
 static int check_type(void)
 {
-    fprintf(stderr, "check_type %s\n", yytext);
+    log_verb("ID", 0);
+    //fprintf(stderr, "check_type %s\n", yytext);
      //switch (sym_type(yytext))
      //{
      //default:                          /* includes undefined */
          return IDENTIFIER;
      //}
+}
+
+static void log_verb(char* title, int is_char)
+{
+    if (is_char)
+        fprintf(stderr, "%s: %c\n", title, *yytext);
+    else
+        fprintf(stderr, "%s: %s\n", title, yytext);
 }

@@ -26,6 +26,7 @@ extern int sym_type(const char *);  /* returns type from symbol table */
 
 static void comment(void);
 static int check_type(void);
+static void log_verb(char* title, int is_char);
 
 struct src_stack
 {
@@ -42,38 +43,38 @@ struct src_stack
 %%
 
 "/*"                                                    { comment(); }
-"//".*                                                  { /* consume //-comment */ }
+"//".*                                                  { log_verb("CMD", 0); /* consume //-comment */ }
 
-"int"					                                { return(INT); }
-"long"					                                { return(LONG); }
-"float"					                                { return(FLOAT); }
-"double"				                                { return(DOUBLE); }
-"num"                                                   { return(NUMBER); }
-"string"                                                { return(STRING); }
-"raw"                                                   { return(RAW); }
-"var"                                                   { return(VAR); }
-"proc"                                                  { return(PROC); }
-"la"                                                    { return(LA); }
-"none"                                                  { return N_CONSTANT; }
-"out"                                                   { return OUT; }
-"is"                                                    { return IS; }
-"declare"                                               { return DECLARE; }
-({LETTER}{ASCII}*)("."{LETTER}{ASCII}*)+                { fprintf(stderr, "DMN: %s\n", yytext); return DOMAIN_NAME; }
-(@{LETTER}{ASCII}*)("."{LETTER}{ASCII}*)*               { fprintf(stderr, "PKG: %s\n", yytext); return PACKAGE_NAME; }
+"int"					                                { log_verb("Type", 0); return(INT); }
+"long"					                                { log_verb("Type", 0); return(LONG); }
+"float"					                                { log_verb("Type", 0); return(FLOAT); }
+"double"				                                { log_verb("Type", 0); return(DOUBLE); }
+"num"                                                   { log_verb("Type", 0); return(NUMBER); }
+"string"                                                { log_verb("Type", 0); return(STRING); }
+"raw"                                                   { log_verb("Type", 0); return(RAW); }
+"var"                                                   { log_verb("Type", 0); return(VAR); }
+"proc"                                                  { log_verb("Type", 0); return(PROC); }
+"la"                                                    { log_verb("Type", 0); return(LA); }
+"none"                                                  { log_verb("Const", 0); return N_CONSTANT; }
+"out"                                                   { log_verb("KeyWord", 0); return OUT; }
+"is"                                                    { log_verb("KeyWord", 0); return IS; }
+"declare"                                               { log_verb("KeyWord", 0); return DECLARE; }
+({LETTER}{ASCII}*)("."{LETTER}{ASCII}*)+                { log_verb("Domain", 0); return DOMAIN_NAME; }
+(@{LETTER}{ASCII}*)("."{LETTER}{ASCII}*)*               { log_verb("PkgName", 0); return PACKAGE_NAME; }
 
 {LETTER}{ASCII}*					                    { return check_type(); }
 
-([bB]\()({BIN}{BIN}{BIN}{BIN}{BIN}{BIN}{BIN}{BIN})+\)   { return I_CONSTANT; }
-([oO]\()({OCT_1st}{OCT}{OCT})+\)                        { return I_CONSTANT; }
-([hH]\()({HEX}{HEX})+\)                                 { return I_CONSTANT; }
-{DIG_NZ}{DIG}*				                            { return I_CONSTANT; }
-"'"([^'\\\n]|{ESCAPE})+"'"		                        { return I_CONSTANT; }
+([bB]\()({BIN}{BIN}{BIN}{BIN}{BIN}{BIN}{BIN}{BIN})+\)   { log_verb("Const", 0); return I_CONSTANT; }
+([oO]\()({OCT_1st}{OCT}{OCT})+\)                        { log_verb("Const", 0); return I_CONSTANT; }
+([hH]\()({HEX}{HEX})+\)                                 { log_verb("Const", 0); return I_CONSTANT; }
+{DIG_NZ}{DIG}*				                            { log_verb("Const", 0); return I_CONSTANT; }
+"'"([^'\\\n]|{ESCAPE})+"'"		                        { log_verb("Const", 0); return I_CONSTANT; }
 
-{DIG}+{EXP_D}				                            { return F_CONSTANT; }
-{DIG}*"."{DIG}+{EXP_D}?			                        { return F_CONSTANT; }
-{DIG}+"."{EXP_D}?			                            { return F_CONSTANT; }
+{DIG}+{EXP_D}				                            { log_verb("Const", 0); return F_CONSTANT; }
+{DIG}*"."{DIG}+{EXP_D}?			                        { log_verb("Const", 0); return F_CONSTANT; }
+{DIG}+"."{EXP_D}?			                            { log_verb("Const", 0); return F_CONSTANT; }
 
-(\"([^"\\\n]|{ESCAPE})*\"{WS}*)+	                    { return STRING_LITERAL; }
+(\"([^"\\\n]|{ESCAPE})*\"{WS}*)+	                    { log_verb("Const", 0); return STRING_LITERAL; }
 
 ">>="					                                { return RIGHT_ASSIGN; }
 "<<="					                                { return LEFT_ASSIGN; }
@@ -125,8 +126,8 @@ struct src_stack
 "|"					                                    { return '|'; }
 "?"					                                    { return '?'; }
 
-{WS}+					                                { fprintf(stderr, "SP %c SP\n", *yytext); /* whitespace separates tokens */ }
-.					                                    { fprintf(stderr, "BAD %c BAD\n", *yytext); /* discard bad characters */ }
+{WS}+					                                { /* whitespace separates tokens */ }
+.					                                    { fprintf(stderr, "Bad character: %c\n", *yytext); /* discard bad characters */ }
 
 %%
 
@@ -138,11 +139,11 @@ int yywrap(void)        /* called at end of input */
 static void comment(void)
 {
     int c;
-    fprintf(stderr, "CMT %c\n", *yytext);
+    //fprintf(stderr, "CMT %c\n", *yytext);
 
     while ((c = input()) != 0)
     {
-        putc(c, stdout);
+        //putc(c, stdout);
         if (c == '*')
         {
              while ((c = input()) == '*')
@@ -160,10 +161,19 @@ static void comment(void)
 
 static int check_type(void)
 {
-    fprintf(stderr, "check_type %s\n", yytext);
+    log_verb("ID", 0);
+    //fprintf(stderr, "check_type %s\n", yytext);
      //switch (sym_type(yytext))
      //{
      //default:                          /* includes undefined */
          return IDENTIFIER;
      //}
+}
+
+static void log_verb(char* title, int is_char)
+{
+    if (is_char)
+        fprintf(stderr, "%s: %c\n", title, *yytext);
+    else
+        fprintf(stderr, "%s: %s\n", title, yytext);
 }
