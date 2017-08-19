@@ -1,4 +1,7 @@
 %{
+    #include "ast.h"
+    typedef struct la_ast* YYSTYPE;
+    #define YYSTYPE_IS_DECLARED     1
     void yyerror (char const *s);
     int yylex();
 %}
@@ -12,7 +15,7 @@
 
 %token          RIGHT_ASSIGN LEFT_ASSIGN ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN AND_ASSIGN XOR_ASSIGN OR_ASSIGN
 %token          RIGHT_OP LEFT_OP INC_OP DEC_OP AND_OP OR_OP LE_OP GE_OP EQ_OP NE_OP
-%token          IS OUT DECLARE DOMAIN_NAME PACKAGE_NAME
+%token          IS OUT DECLARE SYNC DOMAIN_NAME PACKAGE_NAME
 
 %start          a_proc_la
 
@@ -42,16 +45,20 @@ var_type_specifier
     ;
 
 var_declaration
-    : IDENTIFIER ':' var_type_specifier
+    : IDENTIFIER ':' var_type_specifier {
+        $$ = la_ast_create_var_declare($1, $2);
+        release_struct($1);
+        release_struct($2);
+    }
     ;
 
 var_list_declaration
-    : var_declaration ',' var_list_declaration
+    : var_list_declaration ',' var_declaration
     | var_declaration
     ;
 
 type_list_declaration
-    : var_type_specifier ',' type_list_declaration
+    : type_list_declaration ',' var_type_specifier
     | var_type_specifier
     ;
 
@@ -82,7 +89,11 @@ la_declaration
     ;
 
 la_alias
-    : DOMAIN_NAME APPLY_TO IDENTIFIER ':' LA ';'
+    : DOMAIN_NAME APPLY_TO IDENTIFIER ':' LA ';' {
+        $$ = la_ast_create_la_alias($1, $2);
+        release_struct($1);
+        release_struct($2);
+    }
     ;
 
 external_declaration
@@ -91,8 +102,15 @@ external_declaration
     ;
 
 external_declaration_list
-    : external_declaration external_declaration_list
-    | external_declaration
+    : external_declaration_list external_declaration {
+        $$ = la_ast_create_collection(la_ast_external_declarations, $1, $2, null);
+        release_struct($1);
+        release_struct($2);
+    }
+    | external_declaration {
+        $$ = la_ast_create_collection(la_ast_external_declarations, $1, null);
+        release_struct($1);
+    }
     ;
 
 package_declare

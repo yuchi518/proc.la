@@ -45,36 +45,39 @@ struct src_stack
 "/*"                                                    { comment(); }
 "//".*                                                  { log_verb("CMD", 0); /* consume //-comment */ }
 
-"int"					                                { log_verb("Type", 0); return(INT); }
-"long"					                                { log_verb("Type", 0); return(LONG); }
-"float"					                                { log_verb("Type", 0); return(FLOAT); }
-"double"				                                { log_verb("Type", 0); return(DOUBLE); }
-"num"                                                   { log_verb("Type", 0); return(NUMBER); }
-"string"                                                { log_verb("Type", 0); return(STRING); }
-"raw"                                                   { log_verb("Type", 0); return(RAW); }
-"var"                                                   { log_verb("Type", 0); return(VAR); }
-"proc"                                                  { log_verb("Type", 0); return(PROC); }
-"la"                                                    { log_verb("Type", 0); return(LA); }
-"none"                                                  { log_verb("Const", 0); return N_CONSTANT; }
-"out"                                                   { log_verb("KeyWord", 0); return OUT; }
-"is"                                                    { log_verb("KeyWord", 0); return IS; }
-"declare"                                               { log_verb("KeyWord", 0); return DECLARE; }
-({LETTER}{ASCII}*)("."{LETTER}{ASCII}*)+                { log_verb("Domain", 0); return DOMAIN_NAME; }
-(@{LETTER}{ASCII}*)("."{LETTER}{ASCII}*)*               { log_verb("PkgName", 0); return PACKAGE_NAME; }
+"int"					                                { yylval = la_ast_create_unit(la_ast_type_int); return(INT); }
+"long"					                                { yylval = la_ast_create_unit(la_ast_type_long); return(LONG); }
+"float"					                                { yylval = la_ast_create_unit(la_ast_type_float); return(FLOAT); }
+"double"				                                { yylval = la_ast_create_unit(la_ast_type_double); return(DOUBLE); }
+"num"                                                   { yylval = la_ast_create_unit(la_ast_type_number); return(NUMBER); }
+"string"                                                { yylval = la_ast_create_unit(la_ast_type_string); return(STRING); }
+"raw"                                                   { yylval = la_ast_create_unit(la_ast_type_raw); return(RAW); }
+"var"                                                   { yylval = la_ast_create_unit(la_ast_type_var); return(VAR); }
+"proc"                                                  { yylval = la_ast_create_unit(la_ast_type_proc); return(PROC); }
+"la"                                                    { yylval = la_ast_create_unit(la_ast_type_la); return(LA); }
+"none"                                                  { yylval = la_ast_create_unit(la_ast_none); return N_CONSTANT; }
 
-{LETTER}{ASCII}*					                    { return check_type(); }
+"out"                                                   { yylval = la_ast_create_unit(la_ast_ctrl_out); return OUT; }
+"is"                                                    { yylval = la_ast_create_unit(la_ast_ctrl_is); return IS; }
+"declare"                                               { yylval = la_ast_create_unit(la_ast_ctrl_declare); return DECLARE; }
+"sync"                                                  { yylval = la_ast_create_unit(la_ast_ctrl_sync); return SYNC; }
 
-([bB]\()({BIN}{BIN}{BIN}{BIN}{BIN}{BIN}{BIN}{BIN})+\)   { log_verb("Const", 0); return I_CONSTANT; }
-([oO]\()({OCT_1st}{OCT}{OCT})+\)                        { log_verb("Const", 0); return I_CONSTANT; }
-([hH]\()({HEX}{HEX})+\)                                 { log_verb("Const", 0); return I_CONSTANT; }
-{DIG_NZ}{DIG}*				                            { log_verb("Const", 0); return I_CONSTANT; }
-"'"([^'\\\n]|{ESCAPE})+"'"		                        { log_verb("Const", 0); return I_CONSTANT; }
+({LETTER}{ASCII}*)("."{LETTER}{ASCII}*)+                { yylval = la_ast_create_name(la_ast_domain_name, yytext); return DOMAIN_NAME; }
+(@{LETTER}{ASCII}*)("."{LETTER}{ASCII}*)*               { yylval = la_ast_create_name(la_ast_package_name, yytext); return PACKAGE_NAME; }
 
-{DIG}+{EXP_D}				                            { log_verb("Const", 0); return F_CONSTANT; }
-{DIG}*"."{DIG}+{EXP_D}?			                        { log_verb("Const", 0); return F_CONSTANT; }
-{DIG}+"."{EXP_D}?			                            { log_verb("Const", 0); return F_CONSTANT; }
+{LETTER}{ASCII}*					                    { yylval = la_ast_create_name(la_ast_identifier, yytext); return IDENTIFIER/*check_type()*/; }
 
-(\"([^"\\\n]|{ESCAPE})*\"{WS}*)+	                    { log_verb("Const", 0); return STRING_LITERAL; }
+([bB]\()({BIN}{BIN}{BIN}{BIN}{BIN}{BIN}{BIN}{BIN})+\)   { yylval = la_ast_create_const_i(yytext); return I_CONSTANT; }
+([oO]\()({OCT_1st}{OCT}{OCT})+\)                        { yylval = la_ast_create_const_i(yytext); return I_CONSTANT; }
+([hH]\()({HEX}{HEX})+\)                                 { yylval = la_ast_create_const_i(yytext); return I_CONSTANT; }
+{DIG_NZ}{DIG}*				                            { yylval = la_ast_create_const_i(yytext); return I_CONSTANT; }
+"'"([^'\\\n]|{ESCAPE})+"'"		                        { yylval = la_ast_create_const_i(yytext); return I_CONSTANT; }
+
+{DIG}+{EXP_D}				                            { yylval = la_ast_create_const_f(yytext); return F_CONSTANT; }
+{DIG}*"."{DIG}+{EXP_D}?			                        { yylval = la_ast_create_const_f(yytext); return F_CONSTANT; }
+{DIG}+"."{EXP_D}?			                            { yylval = la_ast_create_const_f(yytext); return F_CONSTANT; }
+
+(\"([^"\\\n]|{ESCAPE})*\"{WS}*)+	                    { yylval = la_ast_create_const_s(yytext); return STRING_LITERAL; }
 
 ">>="					                                { return RIGHT_ASSIGN; }
 "<<="					                                { return LEFT_ASSIGN; }

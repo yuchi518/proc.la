@@ -43,7 +43,8 @@ i"key_of_description" -> s:string;
 {"scheme":"file://path/to/filename", "where":"local", "type":"raw"} --> load_res;
 {"scheme":"file://path/to/filename", "where":"local", "content":var_obj} --> save_res;
 
-@(key: math, add)
+%keywords: math, add
+#description:
 declare add:la
 (int a1, int a2) -> {
     (a1 + a2) -> out;
