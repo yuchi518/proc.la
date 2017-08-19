@@ -33,10 +33,18 @@ basic_var_type_specifier
 	;
 
 combined_var_type_specifier
-    : basic_var_type_specifier "[]"
-    | basic_var_type_specifier "{}"
-    | combined_var_type_specifier "[]"
-    | combined_var_type_specifier "{}"
+    : basic_var_type_specifier "[]" {
+        $$ = $1;    /// TODO
+    }
+    | basic_var_type_specifier "{}" {
+        $$ = $1;    /// TODO
+    }
+    | combined_var_type_specifier "[]" {
+        $$ = $1;    /// TODO
+    }
+    | combined_var_type_specifier "{}" {
+        $$ = $1;    /// TODO
+    }
     ;
 
 var_type_specifier
@@ -46,31 +54,53 @@ var_type_specifier
 
 var_declaration
     : IDENTIFIER ':' var_type_specifier {
-        $$ = la_ast_create_var_declare($1, $2);
+        $$ = la_ast_create_var_declare($1, $3);
         release_struct($1);
-        release_struct($2);
+        release_struct($3);
     }
     ;
 
 var_list_declaration
-    : var_list_declaration ',' var_declaration
-    | var_declaration
+    : var_list_declaration ',' var_declaration {
+        $$ = la_ast_create_collection(la_ast_var_list_declaration, $1, $3, null);
+        release_struct($1);
+        release_struct($3);
+    }
+    | var_declaration {
+        $$ = la_ast_create_collection(la_ast_var_list_declaration, $1, null);
+        release_struct($1);
+    }
     ;
 
 type_list_declaration
-    : type_list_declaration ',' var_type_specifier
-    | var_type_specifier
+    : type_list_declaration ',' var_type_specifier {
+        $$ = la_ast_create_collection(la_ast_type_list_declaration, $1, $3, null);
+        release_struct($1);
+        release_struct($3);
+    }
+    | var_type_specifier {
+        $$ = la_ast_create_collection(la_ast_type_list_declaration, $1, null);
+        release_struct($1);
+    }
     ;
 
 
 la_input_declaration
-    : '(' var_list_declaration ')'
-    | '(' ')'
+    : '(' var_list_declaration ')' {
+        // TODO
+    }
+    | '(' ')' {
+        // TODO
+    }
     ;
 
 la_output_declaration
-    : '(' type_list_declaration ')'
-    | '(' ')'
+    : '(' type_list_declaration ')' {
+        // TODO
+    }
+    | '(' ')' {
+        // TODO
+    }
     ;
 
 la_body_implementation
@@ -90,9 +120,10 @@ la_declaration
 
 la_alias
     : DOMAIN_NAME APPLY_TO IDENTIFIER ':' LA ';' {
-        $$ = la_ast_create_la_alias($1, $2);
+        $$ = la_ast_create_la_alias($1, $3);
         release_struct($1);
-        release_struct($2);
+        release_struct($3);
+        release_struct($5);
     }
     ;
 
@@ -118,8 +149,15 @@ package_declare
     ;
 
 a_proc_la
-    : package_declare external_declaration_list
-    | external_declaration_list
+    : package_declare external_declaration_list {
+        $$ = la_ast_create_a_proc_la($1, $2);
+        release_struct($1);
+        release_struct($2);
+    }
+    | external_declaration_list {
+        $$ = la_ast_create_a_proc_la(null, $1);
+        release_struct($1);
+    }
     ;
 
 %%

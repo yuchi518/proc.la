@@ -46,7 +46,12 @@ enum la_ast_typ {
     la_ast_var_declare,
     la_ast_la_alias,
 
+    la_ast_var_list_declaration,
+    la_ast_type_list_declaration,
     la_ast_external_declarations,
+
+    // a proc la
+    la_ast_a_proc_la,
 } ;
 
 static inline const char* la_ast_typ_to_string(enum la_ast_typ typ) {
@@ -82,7 +87,11 @@ static inline const char* la_ast_typ_to_string(enum la_ast_typ typ) {
         return_enum_string(la_ast_var_declare);
         return_enum_string(la_ast_la_alias);
 
+        return_enum_string(la_ast_var_list_declaration);
+        return_enum_string(la_ast_type_list_declaration);
         return_enum_string(la_ast_external_declarations);
+
+        return_enum_string(la_ast_a_proc_la);
         default:
             return "unknown";
     }
@@ -181,6 +190,14 @@ struct la_ast_collection {
 };
 
 struct la_ast* la_ast_create_collection(enum la_ast_typ typ, ...);
+
+struct la_ast_a_proc_la {
+    struct la_ast is_a;
+    struct la_ast* package_name;
+    struct la_ast* external_declarations;
+};
+
+struct la_ast* la_ast_create_a_proc_la(struct la_ast* package, struct la_ast* external_declarations);
 
 int create_ast(mgn_memory_pool* pool, char* source_code, uint source_code_size);
 void release_struct(struct la_ast* obj);

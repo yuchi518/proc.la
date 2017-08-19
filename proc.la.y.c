@@ -470,9 +470,9 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint8 yyrline[] =
 {
        0,    25,    25,    26,    27,    28,    29,    30,    31,    32,
-      36,    37,    38,    39,    43,    44,    48,    56,    57,    61,
-      62,    67,    68,    72,    73,    77,    81,    82,    83,    84,
-      88,    92,   100,   101,   105,   110,   117,   121,   122
+      36,    39,    42,    45,    51,    52,    56,    64,    69,    76,
+      81,    89,    90,    94,    95,    99,   103,   104,   105,   106,
+     110,   114,   123,   124,   128,   133,   140,   144,   149
 };
 #endif
 
@@ -1291,47 +1291,137 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 16:
-#line 48 "proc.la.y" /* yacc.c:1661  */
+        case 10:
+#line 36 "proc.la.y" /* yacc.c:1661  */
     {
-        (yyval) = la_ast_create_var_declare((yyvsp[-2]), (yyvsp[-1]));
-        release_struct((yyvsp[-2]));
-        release_struct((yyvsp[-1]));
+        (yyval) = (yyvsp[-1]);    /// TODO
     }
-#line 1302 "proc.la.y.c" /* yacc.c:1661  */
+#line 1300 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 11:
+#line 39 "proc.la.y" /* yacc.c:1661  */
+    {
+        (yyval) = (yyvsp[-1]);    /// TODO
+    }
+#line 1308 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 12:
+#line 42 "proc.la.y" /* yacc.c:1661  */
+    {
+        (yyval) = (yyvsp[-1]);    /// TODO
+    }
+#line 1316 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 13:
+#line 45 "proc.la.y" /* yacc.c:1661  */
+    {
+        (yyval) = (yyvsp[-1]);    /// TODO
+    }
+#line 1324 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 16:
+#line 56 "proc.la.y" /* yacc.c:1661  */
+    {
+        (yyval) = la_ast_create_var_declare((yyvsp[-2]), (yyvsp[0]));
+        release_struct((yyvsp[-2]));
+        release_struct((yyvsp[0]));
+    }
+#line 1334 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 17:
+#line 64 "proc.la.y" /* yacc.c:1661  */
+    {
+        (yyval) = la_ast_create_collection(la_ast_var_list_declaration, (yyvsp[-2]), (yyvsp[0]), null);
+        release_struct((yyvsp[-2]));
+        release_struct((yyvsp[0]));
+    }
+#line 1344 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 18:
+#line 69 "proc.la.y" /* yacc.c:1661  */
+    {
+        (yyval) = la_ast_create_collection(la_ast_var_list_declaration, (yyvsp[0]), null);
+        release_struct((yyvsp[0]));
+    }
+#line 1353 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 19:
+#line 76 "proc.la.y" /* yacc.c:1661  */
+    {
+        (yyval) = la_ast_create_collection(la_ast_type_list_declaration, (yyvsp[-2]), (yyvsp[0]), null);
+        release_struct((yyvsp[-2]));
+        release_struct((yyvsp[0]));
+    }
+#line 1363 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 20:
+#line 81 "proc.la.y" /* yacc.c:1661  */
+    {
+        (yyval) = la_ast_create_collection(la_ast_type_list_declaration, (yyvsp[0]), null);
+        release_struct((yyvsp[0]));
+    }
+#line 1372 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
   case 31:
-#line 92 "proc.la.y" /* yacc.c:1661  */
+#line 114 "proc.la.y" /* yacc.c:1661  */
     {
-        (yyval) = la_ast_create_la_alias((yyvsp[-5]), (yyvsp[-4]));
+        (yyval) = la_ast_create_la_alias((yyvsp[-5]), (yyvsp[-3]));
         release_struct((yyvsp[-5]));
-        release_struct((yyvsp[-4]));
+        release_struct((yyvsp[-3]));
+        release_struct((yyvsp[-1]));
     }
-#line 1312 "proc.la.y.c" /* yacc.c:1661  */
+#line 1383 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
   case 34:
-#line 105 "proc.la.y" /* yacc.c:1661  */
+#line 128 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = la_ast_create_collection(la_ast_external_declarations, (yyvsp[-1]), (yyvsp[0]), null);
         release_struct((yyvsp[-1]));
         release_struct((yyvsp[0]));
     }
-#line 1322 "proc.la.y.c" /* yacc.c:1661  */
+#line 1393 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
   case 35:
-#line 110 "proc.la.y" /* yacc.c:1661  */
+#line 133 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = la_ast_create_collection(la_ast_external_declarations, (yyvsp[0]), null);
         release_struct((yyvsp[0]));
     }
-#line 1331 "proc.la.y.c" /* yacc.c:1661  */
+#line 1402 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 37:
+#line 144 "proc.la.y" /* yacc.c:1661  */
+    {
+        (yyval) = la_ast_create_a_proc_la((yyvsp[-1]), (yyvsp[0]));
+        release_struct((yyvsp[-1]));
+        release_struct((yyvsp[0]));
+    }
+#line 1412 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 38:
+#line 149 "proc.la.y" /* yacc.c:1661  */
+    {
+        (yyval) = la_ast_create_a_proc_la(null, (yyvsp[0]));
+        release_struct((yyvsp[0]));
+    }
+#line 1421 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
 
-#line 1335 "proc.la.y.c" /* yacc.c:1661  */
+#line 1425 "proc.la.y.c" /* yacc.c:1661  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1559,7 +1649,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 125 "proc.la.y" /* yacc.c:1906  */
+#line 155 "proc.la.y" /* yacc.c:1906  */
 
 
 #include <stdio.h>
