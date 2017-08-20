@@ -43,24 +43,24 @@ struct src_stack
 %%
 
 "/*"                                                    { comment(); }
-"//".*                                                  { log_verb("CMD", 0); /* consume //-comment */ }
+"//".*                                                  { /*log_verb("CMD", 0);*/ /* consume //-comment */ }
 
-"int"					                                { yylval = la_ast_create_unit(la_ast_type_int); return(INT); }
-"long"					                                { yylval = la_ast_create_unit(la_ast_type_long); return(LONG); }
-"float"					                                { yylval = la_ast_create_unit(la_ast_type_float); return(FLOAT); }
-"double"				                                { yylval = la_ast_create_unit(la_ast_type_double); return(DOUBLE); }
-"num"                                                   { yylval = la_ast_create_unit(la_ast_type_number); return(NUMBER); }
-"string"                                                { yylval = la_ast_create_unit(la_ast_type_string); return(STRING); }
-"raw"                                                   { yylval = la_ast_create_unit(la_ast_type_raw); return(RAW); }
-"var"                                                   { yylval = la_ast_create_unit(la_ast_type_var); return(VAR); }
-"proc"                                                  { yylval = la_ast_create_unit(la_ast_type_proc); return(PROC); }
-"la"                                                    { yylval = la_ast_create_unit(la_ast_type_la); return(LA); }
-"none"                                                  { yylval = la_ast_create_unit(la_ast_none); return N_CONSTANT; }
+"int"					                                { yylval = la_ast_create_type(la_ast_type_int); return(INT); }
+"long"					                                { yylval = la_ast_create_type(la_ast_type_long); return(LONG); }
+"float"					                                { yylval = la_ast_create_type(la_ast_type_float); return(FLOAT); }
+"double"				                                { yylval = la_ast_create_type(la_ast_type_double); return(DOUBLE); }
+"num"                                                   { yylval = la_ast_create_type(la_ast_type_number); return(NUMBER); }
+"string"                                                { yylval = la_ast_create_type(la_ast_type_string); return(STRING); }
+"raw"                                                   { yylval = la_ast_create_type(la_ast_type_raw); return(RAW); }
+"var"                                                   { yylval = la_ast_create_type(la_ast_type_var); return(VAR); }
+"proc"                                                  { yylval = la_ast_create_type(la_ast_type_proc); return(PROC); }
+"la"                                                    { yylval = la_ast_create_type(la_ast_type_la); return(LA); }
+"none"                                                  { yylval = la_ast_create_none(); return N_CONSTANT; }
 
-"out"                                                   { yylval = la_ast_create_unit(la_ast_ctrl_out); return OUT; }
-"is"                                                    { yylval = la_ast_create_unit(la_ast_ctrl_is); return IS; }
-"declare"                                               { yylval = la_ast_create_unit(la_ast_ctrl_declare); return DECLARE; }
-"sync"                                                  { yylval = la_ast_create_unit(la_ast_ctrl_sync); return SYNC; }
+"out"                                                   { yylval = la_ast_create_ctrl(la_ast_ctrl_out); return OUT; }
+"is"                                                    { yylval = la_ast_create_ctrl(la_ast_ctrl_is); return IS; }
+"declare"                                               { yylval = la_ast_create_ctrl(la_ast_ctrl_declare); return DECLARE; }
+"sync"                                                  { yylval = la_ast_create_ctrl(la_ast_ctrl_sync); return SYNC; }
 
 ({LETTER}{ASCII}*)("."{LETTER}{ASCII}*)+                { yylval = la_ast_create_name(la_ast_domain_name, yytext); return DOMAIN_NAME; }
 (@{LETTER}{ASCII}*)("."{LETTER}{ASCII}*)*               { yylval = la_ast_create_name(la_ast_package_name, yytext); return PACKAGE_NAME; }

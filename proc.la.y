@@ -34,16 +34,20 @@ basic_var_type_specifier
 
 combined_var_type_specifier
     : basic_var_type_specifier "[]" {
-        $$ = $1;    /// TODO
+        $$ = la_ast_create_combined_type($1, la_ast_container_typ_array);
+        release_struct($1);
     }
     | basic_var_type_specifier "{}" {
-        $$ = $1;    /// TODO
+        $$ = la_ast_create_combined_type($1, la_ast_container_typ_map);
+                release_struct($1);
     }
     | combined_var_type_specifier "[]" {
-        $$ = $1;    /// TODO
+        $$ = la_ast_create_combined_type($1, la_ast_container_typ_array);
+                release_struct($1);
     }
     | combined_var_type_specifier "{}" {
-        $$ = $1;    /// TODO
+        $$ = la_ast_create_combined_type($1, la_ast_container_typ_map);
+                        release_struct($1);
     }
     ;
 
@@ -87,35 +91,61 @@ type_list_declaration
 
 la_input_declaration
     : '(' var_list_declaration ')' {
-        // TODO
+        $$ = $2;
     }
     | '(' ')' {
-        // TODO
+        // create an empty list
+        $$ = la_ast_create_collection(la_ast_var_list_declaration, null);
     }
     ;
 
 la_output_declaration
     : '(' type_list_declaration ')' {
-        // TODO
+        $$ = $2;
     }
     | '(' ')' {
-        // TODO
+        // create an empty list
+        $$ = la_ast_create_collection(la_ast_type_list_declaration, null);
     }
     ;
 
 la_body_implementation
-    : '{' '}'
+    : '{' '}' {
+        $$ = la_ast_create_collection(la_ast_la_body_declaration, null);
+    }
     ;
 
 la_body_declaration
-    : la_input_declaration APPLY_TO la_body_implementation APPLY_TO la_output_declaration
-    | la_input_declaration APPLY_TO la_body_implementation
-    | la_body_implementation APPLY_TO la_output_declaration
-    | la_body_implementation
+    : la_input_declaration APPLY_TO la_body_implementation APPLY_TO la_output_declaration {
+        $$ = la_ast_create_la_declaration($1, $3, $5);
+        release_struct($1);
+        release_struct($3);
+        release_struct($5);
+    }
+    | la_input_declaration APPLY_TO la_body_implementation {
+        $$ = la_ast_create_la_declaration($1, $3, null);
+        release_struct($1);
+        release_struct($3);
+    }
+    | la_body_implementation APPLY_TO la_output_declaration {
+        $$ = la_ast_create_la_declaration(null, $1, $3);
+        release_struct($1);
+        release_struct($3);
+    }
+    | la_body_implementation {
+        $$ = la_ast_create_la_declaration(null, $1, null);
+        release_struct($1);
+    }
     ;
 
 la_declaration
-    : DECLARE IDENTIFIER ':' LA la_body_declaration ';'
+    : DECLARE IDENTIFIER ':' LA la_body_declaration ';' {
+        $$ = la_ast_create_var_instance_ex($2, $4, $5);
+        release_struct($1);
+        release_struct($2);
+        release_struct($4);
+        release_struct($5);
+    }
     ;
 
 la_alias

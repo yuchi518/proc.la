@@ -963,82 +963,82 @@ YY_RULE_SETUP
 case 2:
 YY_RULE_SETUP
 #line 46 "proc.la.l"
-{ log_verb("CMD", 0); /* consume //-comment */ }
+{ /*log_verb("CMD", 0);*/ /* consume //-comment */ }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 48 "proc.la.l"
-{ yylval = la_ast_create_unit(la_ast_type_int); return(INT); }
+{ yylval = la_ast_create_type(la_ast_type_int); return(INT); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 49 "proc.la.l"
-{ yylval = la_ast_create_unit(la_ast_type_long); return(LONG); }
+{ yylval = la_ast_create_type(la_ast_type_long); return(LONG); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 50 "proc.la.l"
-{ yylval = la_ast_create_unit(la_ast_type_float); return(FLOAT); }
+{ yylval = la_ast_create_type(la_ast_type_float); return(FLOAT); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 51 "proc.la.l"
-{ yylval = la_ast_create_unit(la_ast_type_double); return(DOUBLE); }
+{ yylval = la_ast_create_type(la_ast_type_double); return(DOUBLE); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 52 "proc.la.l"
-{ yylval = la_ast_create_unit(la_ast_type_number); return(NUMBER); }
+{ yylval = la_ast_create_type(la_ast_type_number); return(NUMBER); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 53 "proc.la.l"
-{ yylval = la_ast_create_unit(la_ast_type_string); return(STRING); }
+{ yylval = la_ast_create_type(la_ast_type_string); return(STRING); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 54 "proc.la.l"
-{ yylval = la_ast_create_unit(la_ast_type_raw); return(RAW); }
+{ yylval = la_ast_create_type(la_ast_type_raw); return(RAW); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 55 "proc.la.l"
-{ yylval = la_ast_create_unit(la_ast_type_var); return(VAR); }
+{ yylval = la_ast_create_type(la_ast_type_var); return(VAR); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 56 "proc.la.l"
-{ yylval = la_ast_create_unit(la_ast_type_proc); return(PROC); }
+{ yylval = la_ast_create_type(la_ast_type_proc); return(PROC); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 57 "proc.la.l"
-{ yylval = la_ast_create_unit(la_ast_type_la); return(LA); }
+{ yylval = la_ast_create_type(la_ast_type_la); return(LA); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 58 "proc.la.l"
-{ yylval = la_ast_create_unit(la_ast_none); return N_CONSTANT; }
+{ yylval = la_ast_create_none(); return N_CONSTANT; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 60 "proc.la.l"
-{ yylval = la_ast_create_unit(la_ast_ctrl_out); return OUT; }
+{ yylval = la_ast_create_ctrl(la_ast_ctrl_out); return OUT; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 61 "proc.la.l"
-{ yylval = la_ast_create_unit(la_ast_ctrl_is); return IS; }
+{ yylval = la_ast_create_ctrl(la_ast_ctrl_is); return IS; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 62 "proc.la.l"
-{ yylval = la_ast_create_unit(la_ast_ctrl_declare); return DECLARE; }
+{ yylval = la_ast_create_ctrl(la_ast_ctrl_declare); return DECLARE; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 63 "proc.la.l"
-{ yylval = la_ast_create_unit(la_ast_ctrl_sync); return SYNC; }
+{ yylval = la_ast_create_ctrl(la_ast_ctrl_sync); return SYNC; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
