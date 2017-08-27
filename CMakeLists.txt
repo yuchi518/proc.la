@@ -22,7 +22,7 @@ add_custom_command(OUTPUT proc.la.l.c
 add_custom_target(RunGenerator DEPENDS proc.la.l.c proc.la.y.c
         COMMENT "flex & bison")
 
-set(SOURCE_FILES main.c platform ast.c ast.h)
+set(SOURCE_FILES main.c platform ast.c ast.h ast_obj.c ast_obj.h)
 
 add_executable(proc_la ${SOURCE_FILES})
 add_dependencies(proc_la RunGenerator)

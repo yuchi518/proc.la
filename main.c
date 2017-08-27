@@ -1,4 +1,5 @@
 #include "ast.h"
+#include "ast_obj.h"
 
 bool print_ast(struct la_ast* obj, uint level)
 {
