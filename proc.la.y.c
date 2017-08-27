@@ -1295,7 +1295,7 @@ yyreduce:
 #line 36 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = la_ast_create_combined_type((yyvsp[-1]), la_ast_container_typ_array);
-        release_struct((yyvsp[-1]));
+        release_astObj((yyvsp[-1]));
     }
 #line 1301 "proc.la.y.c" /* yacc.c:1661  */
     break;
@@ -1304,7 +1304,7 @@ yyreduce:
 #line 40 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = la_ast_create_combined_type((yyvsp[-1]), la_ast_container_typ_map);
-                release_struct((yyvsp[-1]));
+                release_astObj((yyvsp[-1]));
     }
 #line 1310 "proc.la.y.c" /* yacc.c:1661  */
     break;
@@ -1313,7 +1313,7 @@ yyreduce:
 #line 44 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = la_ast_create_combined_type((yyvsp[-1]), la_ast_container_typ_array);
-                release_struct((yyvsp[-1]));
+                release_astObj((yyvsp[-1]));
     }
 #line 1319 "proc.la.y.c" /* yacc.c:1661  */
     break;
@@ -1322,7 +1322,7 @@ yyreduce:
 #line 48 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = la_ast_create_combined_type((yyvsp[-1]), la_ast_container_typ_map);
-                        release_struct((yyvsp[-1]));
+                        release_astObj((yyvsp[-1]));
     }
 #line 1328 "proc.la.y.c" /* yacc.c:1661  */
     break;
@@ -1331,8 +1331,8 @@ yyreduce:
 #line 60 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = la_ast_create_var_declare((yyvsp[-2]), (yyvsp[0]));
-        release_struct((yyvsp[-2]));
-        release_struct((yyvsp[0]));
+        release_astObj((yyvsp[-2]));
+        release_astObj((yyvsp[0]));
     }
 #line 1338 "proc.la.y.c" /* yacc.c:1661  */
     break;
@@ -1341,8 +1341,8 @@ yyreduce:
 #line 68 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = la_ast_create_collection(la_ast_var_list_declaration, (yyvsp[-2]), (yyvsp[0]), null);
-        release_struct((yyvsp[-2]));
-        release_struct((yyvsp[0]));
+        release_astObj((yyvsp[-2]));
+        release_astObj((yyvsp[0]));
     }
 #line 1348 "proc.la.y.c" /* yacc.c:1661  */
     break;
@@ -1351,7 +1351,7 @@ yyreduce:
 #line 73 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = la_ast_create_collection(la_ast_var_list_declaration, (yyvsp[0]), null);
-        release_struct((yyvsp[0]));
+        release_astObj((yyvsp[0]));
     }
 #line 1357 "proc.la.y.c" /* yacc.c:1661  */
     break;
@@ -1360,8 +1360,8 @@ yyreduce:
 #line 80 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = la_ast_create_collection(la_ast_type_list_declaration, (yyvsp[-2]), (yyvsp[0]), null);
-        release_struct((yyvsp[-2]));
-        release_struct((yyvsp[0]));
+        release_astObj((yyvsp[-2]));
+        release_astObj((yyvsp[0]));
     }
 #line 1367 "proc.la.y.c" /* yacc.c:1661  */
     break;
@@ -1370,7 +1370,7 @@ yyreduce:
 #line 85 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = la_ast_create_collection(la_ast_type_list_declaration, (yyvsp[0]), null);
-        release_struct((yyvsp[0]));
+        release_astObj((yyvsp[0]));
     }
 #line 1376 "proc.la.y.c" /* yacc.c:1661  */
     break;
@@ -1421,9 +1421,9 @@ yyreduce:
 #line 119 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = la_ast_create_la_declaration((yyvsp[-4]), (yyvsp[-2]), (yyvsp[0]));
-        release_struct((yyvsp[-4]));
-        release_struct((yyvsp[-2]));
-        release_struct((yyvsp[0]));
+        release_astObj((yyvsp[-4]));
+        release_astObj((yyvsp[-2]));
+        release_astObj((yyvsp[0]));
     }
 #line 1429 "proc.la.y.c" /* yacc.c:1661  */
     break;
@@ -1432,8 +1432,8 @@ yyreduce:
 #line 125 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = la_ast_create_la_declaration((yyvsp[-2]), (yyvsp[0]), null);
-        release_struct((yyvsp[-2]));
-        release_struct((yyvsp[0]));
+        release_astObj((yyvsp[-2]));
+        release_astObj((yyvsp[0]));
     }
 #line 1439 "proc.la.y.c" /* yacc.c:1661  */
     break;
@@ -1442,8 +1442,8 @@ yyreduce:
 #line 130 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = la_ast_create_la_declaration(null, (yyvsp[-2]), (yyvsp[0]));
-        release_struct((yyvsp[-2]));
-        release_struct((yyvsp[0]));
+        release_astObj((yyvsp[-2]));
+        release_astObj((yyvsp[0]));
     }
 #line 1449 "proc.la.y.c" /* yacc.c:1661  */
     break;
@@ -1452,7 +1452,7 @@ yyreduce:
 #line 135 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = la_ast_create_la_declaration(null, (yyvsp[0]), null);
-        release_struct((yyvsp[0]));
+        release_astObj((yyvsp[0]));
     }
 #line 1458 "proc.la.y.c" /* yacc.c:1661  */
     break;
@@ -1461,10 +1461,10 @@ yyreduce:
 #line 142 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = la_ast_create_var_instance_ex((yyvsp[-4]), (yyvsp[-2]), (yyvsp[-1]));
-        release_struct((yyvsp[-5]));
-        release_struct((yyvsp[-4]));
-        release_struct((yyvsp[-2]));
-        release_struct((yyvsp[-1]));
+        release_astObj((yyvsp[-5]));
+        release_astObj((yyvsp[-4]));
+        release_astObj((yyvsp[-2]));
+        release_astObj((yyvsp[-1]));
     }
 #line 1470 "proc.la.y.c" /* yacc.c:1661  */
     break;
@@ -1473,9 +1473,9 @@ yyreduce:
 #line 152 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = la_ast_create_la_alias((yyvsp[-5]), (yyvsp[-3]));
-        release_struct((yyvsp[-5]));
-        release_struct((yyvsp[-3]));
-        release_struct((yyvsp[-1]));
+        release_astObj((yyvsp[-5]));
+        release_astObj((yyvsp[-3]));
+        release_astObj((yyvsp[-1]));
     }
 #line 1481 "proc.la.y.c" /* yacc.c:1661  */
     break;
@@ -1484,8 +1484,8 @@ yyreduce:
 #line 166 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = la_ast_create_collection(la_ast_external_declarations, (yyvsp[-1]), (yyvsp[0]), null);
-        release_struct((yyvsp[-1]));
-        release_struct((yyvsp[0]));
+        release_astObj((yyvsp[-1]));
+        release_astObj((yyvsp[0]));
     }
 #line 1491 "proc.la.y.c" /* yacc.c:1661  */
     break;
@@ -1494,7 +1494,7 @@ yyreduce:
 #line 171 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = la_ast_create_collection(la_ast_external_declarations, (yyvsp[0]), null);
-        release_struct((yyvsp[0]));
+        release_astObj((yyvsp[0]));
     }
 #line 1500 "proc.la.y.c" /* yacc.c:1661  */
     break;
@@ -1503,8 +1503,8 @@ yyreduce:
 #line 182 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = la_ast_create_a_proc_la((yyvsp[-1]), (yyvsp[0]));
-        release_struct((yyvsp[-1]));
-        release_struct((yyvsp[0]));
+        release_astObj((yyvsp[-1]));
+        release_astObj((yyvsp[0]));
     }
 #line 1510 "proc.la.y.c" /* yacc.c:1661  */
     break;
@@ -1513,7 +1513,7 @@ yyreduce:
 #line 187 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = la_ast_create_a_proc_la(null, (yyvsp[0]));
-        release_struct((yyvsp[0]));
+        release_astObj((yyvsp[0]));
     }
 #line 1519 "proc.la.y.c" /* yacc.c:1661  */
     break;

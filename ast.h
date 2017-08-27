@@ -8,7 +8,7 @@
 #include "plat_mgn_mem.h"
 #include "utarray.h"
 
-enum la_ast_typ {
+typedef enum la_ast_typ {
     la_ast_none                     = 0x00000000,
 
     /// const
@@ -20,6 +20,7 @@ enum la_ast_typ {
     la_ast_inst_number,
     la_ast_inst_string,
     la_ast_inst_raw,
+    la_ast_inst_container,          // array or map
 
     /// type
     __la_ast_type_flag__            = 0x00000200,
@@ -33,7 +34,7 @@ enum la_ast_typ {
     la_ast_type_var,
     la_ast_type_proc,
     la_ast_type_la,
-    la_ast_type_container,
+    la_ast_type_combination,
 
     /// ctrl
     __la_ast_ctrl_flag__            = 0x00000400,
@@ -63,13 +64,19 @@ enum la_ast_typ {
     la_ast_la_body_declaration,     // only body declaration
 
     /// a proc la
-    la_ast_a_proc_la                = 0x01000000,
-};
+    la_ast_a_proc_la                = 0x00100000,
 
-enum la_ast_container_typ {
+
+    /// for ast implementation
+    __la_ast_impl__                 = 0x01000000,
+    la_ast_impl_stack,
+    la_ast_impl_scope,
+} astObj_typ;
+
+typedef enum la_ast_container_typ {
     la_ast_container_typ_array = 1,
     la_ast_container_typ_map   = 2,
-};
+} astObj_container_typ;
 
 static inline const char* la_ast_typ_to_string(enum la_ast_typ typ) {
 #define return_enum_string(enum_name)   case enum_name: { return #enum_name; }
@@ -85,6 +92,7 @@ static inline const char* la_ast_typ_to_string(enum la_ast_typ typ) {
         return_enum_string(la_ast_inst_number);
         return_enum_string(la_ast_inst_string);
         return_enum_string(la_ast_inst_raw);
+        return_enum_string(la_ast_inst_container);
 
         return_enum_string(__la_ast_type_flag__);
         return_enum_string(la_ast_type_int);
@@ -97,7 +105,7 @@ static inline const char* la_ast_typ_to_string(enum la_ast_typ typ) {
         return_enum_string(la_ast_type_var);
         return_enum_string(la_ast_type_proc);
         return_enum_string(la_ast_type_la);
-        return_enum_string(la_ast_type_container);
+        return_enum_string(la_ast_type_combination);
 
         return_enum_string(__la_ast_ctrl_flag__);
         return_enum_string(la_ast_ctrl_out);
@@ -123,6 +131,10 @@ static inline const char* la_ast_typ_to_string(enum la_ast_typ typ) {
         return_enum_string(la_ast_la_body_declaration);
 
         return_enum_string(la_ast_a_proc_la);
+
+        return_enum_string(__la_ast_impl__);
+        return_enum_string(la_ast_impl_stack);
+        return_enum_string(la_ast_impl_scope);
         default:
             return "unknown";
     }
@@ -142,6 +154,8 @@ static inline bool is_collection_type(enum la_ast_typ typ)
 {
     switch(typ)
     {
+        case la_ast_var_list_declaration:
+        case la_ast_type_list_declaration:
         case la_ast_external_declarations:
             return true;
         default:
@@ -163,6 +177,7 @@ static inline bool is_collection_type(enum la_ast_typ typ)
  */
 struct la_ast {
     enum la_ast_typ typ;
+    uint id;
 };
 
 // none, type, ctrl
@@ -175,7 +190,7 @@ struct la_ast* la_ast_create_unit(enum la_ast_typ typ);
 #define la_ast_create_type(typ) la_ast_create_unit(typ)
 #define la_ast_create_ctrl(typ) la_ast_create_unit(typ)
 
-struct la_ast_type_container {
+struct la_ast_type_combination {
     struct la_ast is_a;
     /**
      * combined_type = base_type | ([1 or 2] << (16+0)) | ([1 or 2] << (16+2)) | ... | ([1 or 2] << (16+N))
@@ -218,6 +233,8 @@ struct la_ast_inst_string {
 };
 
 struct la_ast* la_ast_create_const_s(char* value);
+
+// TODO: implement raw, container
 
 struct la_ast_name {
     struct la_ast is_a;
@@ -275,8 +292,22 @@ struct la_ast_a_proc_la {
 
 struct la_ast* la_ast_create_a_proc_la(struct la_ast* package, struct la_ast* external_declarations);
 
-int create_ast(mgn_memory_pool* pool, char* source_code, uint source_code_size);
-void release_struct(struct la_ast* obj);
+struct la_ast_impl_scope {
+    struct la_ast is_a;
+    struct la_ast* last_scope;
+    struct la_ast* trigger;
+};
+
+struct la_ast* la_ast_impl_create_scope(struct la_ast* trigger, struct la_ast* last_scope);
+
+/// =================== ast management =================
+int create_ast(mgn_memory_pool* pool, char* source_code, uint source_code_size, struct la_ast** ast);
+typedef bool (*ast_iterator)(struct la_ast* obj, uint level);
+void iterate_ast(struct la_ast* obj, ast_iterator iterator);
+
+#define alloc_astObj(pool, struct_name, assign_typ) \
+    ({ struct_name* rv = (struct_name*)mgn_mem_alloc(pool, sizeof(struct_name)); if (rv) rv->is_a.typ = assign_typ; rv; })
+void release_astObj(struct la_ast* obj);
 
 #endif //PROC_LA_AST_C_H
 
