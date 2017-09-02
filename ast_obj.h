@@ -5,8 +5,10 @@
 #ifndef PROC_LA_AST_OBJ_H
 #define PROC_LA_AST_OBJ_H
 
-#include "mm_obj.h"
+#include "mmObj.h"
+#include "mmObj_lib.h"
 
+void unit_test_mmobj(void);
 
 
 

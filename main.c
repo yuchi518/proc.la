@@ -15,6 +15,8 @@ int main() {
     struct la_ast* ast;
     mgn_memory_pool pool = null;
 
+    unit_test_mmobj();
+
     res = plat_io_get_resource("first.la", (void**)&content, &content_size);
 
     if (res == 0)
