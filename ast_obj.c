@@ -60,8 +60,18 @@ void unit_test_mmobj(void)
 
     MMString hi7 = autorelease_mmobj(allocMMStringWithCString(&pool, "hi7"));
     MMLong v7 = autorelease_mmobj(allocMMLong(&pool));
+    v7->value = 7;
+
+    MMString hi8 = autorelease_mmobj(allocMMStringWithCString(&pool, "hi8"));
+    MMLong v8 = autorelease_mmobj(allocMMLong(&pool));
+    v8->value = 8;
+
+    void* hash_key = null;
+    uint hash_key_len = 0;
+    hash_of_mmobj(toMMPrimary(v7), &hash_key, &hash_key_len);
 
     addMMMapItem(map, toMMPrimary(v7), toMMObject(hi7));
+    addMMMapItem(map, toMMPrimary(v8), toMMObject(hi8));
 
     obj = getMMMapItemValue(map, toMMPrimary(v7));
     if (oid_of_mmobj(obj) == MMOBJ_STRING) {
@@ -73,6 +83,20 @@ void unit_test_mmobj(void)
     {
         plat_io_printf_err("Memory leak? (%zu)\n", mgn_mem_count_of_mem(&pool));
     }
+
+    MMList list = allocMMList(&pool);
+    MMString hi9 = autorelease_mmobj(allocMMStringWithCString(&pool, "hi9"));
+    MMFloat v9 = autorelease_mmobj(allocMMFloat(&pool));
+    v9->value = 9;
+
+    pushMMListItem(list, toMMObject(hi9));
+    pushMMListItem(list, toMMObject(v9));
+    release_mmobj(list);
+    if (mgn_mem_count_of_mem(&pool) != 0)
+    {
+        plat_io_printf_err("Memory leak? (%zu)\n", mgn_mem_count_of_mem(&pool));
+    }
+
 
     plat_io_printf_std("===== unit_test_mmobj - END =====\n");
 }
