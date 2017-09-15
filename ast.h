@@ -10,6 +10,7 @@
 
 typedef enum la_ast_typ {
     la_ast_none                     = 0x00000000,
+    la_ast_unknown,
 
     /// const
     __la_ast_inst_flag__           = 0x00000100,
@@ -20,7 +21,8 @@ typedef enum la_ast_typ {
     la_ast_inst_number,
     la_ast_inst_string,
     la_ast_inst_raw,
-    la_ast_inst_container,          // array or map
+    la_ast_inst_list,               // list
+    la_ast_inst_map,                // map
 
     /// type
     __la_ast_type_flag__            = 0x00000200,
@@ -92,7 +94,8 @@ static inline const char* la_ast_typ_to_string(enum la_ast_typ typ) {
         return_enum_string(la_ast_inst_number);
         return_enum_string(la_ast_inst_string);
         return_enum_string(la_ast_inst_raw);
-        return_enum_string(la_ast_inst_container);
+        return_enum_string(la_ast_inst_list);
+        return_enum_string(la_ast_inst_map);
 
         return_enum_string(__la_ast_type_flag__);
         return_enum_string(la_ast_type_int);

@@ -98,5 +98,7 @@ void unit_test_mmobj(void)
     }
 
 
+
+
     plat_io_printf_std("===== unit_test_mmobj - END =====\n");
 }
