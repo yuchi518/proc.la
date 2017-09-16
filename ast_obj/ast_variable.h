@@ -7,7 +7,7 @@
 
 #include "ast_node.h"
 
-/// ===== Abstract Variable =====
+/// ===== Variable =====
 /**
  * One of following variables:
  *  la_ast_inst_int
@@ -41,7 +41,7 @@ plat_inline void packAstVariable(AstVariable obj, Packer pkr) {
 MMSubObject(AST_VARIABLE, AstVariable, AstNode , initAstVariable, destroyAstVariable, packAstVariable);
 
 
-/// ===== Abstract Integer Variable =====
+/// ===== Variable - Integer =====
 
 typedef struct AstVariableInt {
     int32 value;
@@ -82,7 +82,7 @@ plat_inline AstVariableInt allocAstVariableIntWithConstValue(mgn_memory_pool* po
 }
 
 
-/// ===== Abstract Long Variable =====
+/// ===== Variable - Long =====
 
 typedef struct AstVariableLong {
     int64 value;
@@ -122,7 +122,7 @@ plat_inline AstVariableLong allocAstVariableLongWithConstValue(mgn_memory_pool* 
     return obj;
 }
 
-/// ===== Abstract Float Variable =====
+/// ===== Variable - Float =====
 
 typedef struct AstVariableFloat {
     float value;
@@ -162,7 +162,7 @@ plat_inline AstVariableFloat allocAstVariableFloatWithConstValue(mgn_memory_pool
     return obj;
 }
 
-/// ===== Abstract Double Variable =====
+/// ===== Variable - Double =====
 
 typedef struct AstVariableDouble {
     double value;
@@ -202,7 +202,7 @@ plat_inline AstVariableDouble allocAstVariableDoubleWithConstValue(mgn_memory_po
     return obj;
 }
 
-/// ===== Abstract Number Variable =====
+/// ===== Variable - Number =====
 
 typedef struct AstVariableNumber {
     /// TODO: implementation
@@ -233,7 +233,7 @@ plat_inline AstVariableNumber allocAstVariableNumberWithDoubleValue(mgn_memory_p
 }
 
 
-/// ===== Abstract Variable String =====
+/// ===== Variable - String =====
 
 typedef struct AstVariableString {
     MMString string;
@@ -275,7 +275,7 @@ plat_inline AstVariableString allocAstVariableStringWithConstCString(mgn_memory_
     return obj;
 }
 
-/// ===== Abstract Raw Variable =====
+/// ===== Variable - Raw =====
 
 typedef struct AstVariableRaw {
     MMData data;
@@ -312,7 +312,7 @@ plat_inline AstVariableRaw allocAstVariableRawWithData(mgn_memory_pool* pool, vo
 }
 
 
-/// ===== Abstract List Variable =====
+/// ===== Variable - List =====
 
 typedef struct AstVariableList {
     MMList list;
@@ -341,7 +341,7 @@ MMSubObject(AST_VARIABLE_LIST, AstVariableList, AstVariable , initAstVariableLis
 AstVariableList allocAstVariableListWithItems(mgn_memory_pool* pool, AstVariable first_item, ...);
 
 
-/// ===== Abstract Map Variable =====
+/// ===== Variable - Map  =====
 
 typedef struct AstVariableMap {
     MMMap map;
@@ -369,6 +369,7 @@ MMSubObject(AST_VARIABLE_MAP, AstVariableMap, AstVariable , initAstVariableMap, 
 
 AstVariableMap allocAstVariableMapWithKeyValue(mgn_memory_pool* pool, MMString first_key, .../* AstVariable first_value, and more keys and values */);
 void addAstVariableKeyValue(AstVariableMap map, MMString first_key, .../* AstVariable first_value, and more keys and values */);
+
 
 
 #endif //PROC_LA_AST_VARIABLE_H

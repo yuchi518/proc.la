@@ -11,7 +11,7 @@ typedef enum la_ast_typ {
     la_ast_unknown,
 
     /// const
-            __la_ast_inst_flag__            = 0x00000100,
+    __la_ast_inst_flag__                    = 0x00000100,
     la_ast_inst_int,
     la_ast_inst_long,
     la_ast_inst_float,
