@@ -3,7 +3,7 @@ project(proc_la)
 
 set(CMAKE_C_STANDARD 99)
 
-include_directories(platform dybuf)
+include_directories(platform dybuf ast_obj)
 
 add_custom_command(OUTPUT proc.la.y.c
         PRE_BUILD
@@ -22,7 +22,7 @@ add_custom_command(OUTPUT proc.la.l.c
 add_custom_target(RunGenerator DEPENDS proc.la.l.c proc.la.y.c
         COMMENT "flex & bison")
 
-set(SOURCE_FILES main.c platform ast.c ast_obj.c)
+set(SOURCE_FILES main.c platform ast.c ast_obj/ast_obj.c ast_obj/ast_variable.c)
 
 add_executable(proc_la ${SOURCE_FILES})
 add_dependencies(proc_la RunGenerator)

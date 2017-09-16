@@ -2,7 +2,6 @@
 // Created by Yuchi Chen on 2017/8/13.
 //
 #include <stdarg.h>
-#include <assert.h>
 
 #include "ast.h"
 #include "plat_string.h"

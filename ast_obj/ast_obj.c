@@ -2,7 +2,12 @@
 // Created by Yuchi Chen on 2017/8/27.
 //
 
-#include "ast_obj.h"
+#include "ast_node.h"
+#include "ast_type.h"
+#include "ast_variable.h"
+#include "ast_ctrl.h"
+
+/// ========== Unit test ==========
 
 void unit_test_mmobj(void)
 {
