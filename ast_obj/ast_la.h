@@ -37,6 +37,13 @@ plat_inline void addExternalDeclarationToExternalDeclarations(AstExternalDeclara
     pushMMListItem(external_declarations->external_declarations, toMMObject(node));
 }
 
+plat_inline void concatExternalDeclarations(AstExternalDeclarations dest_list, AstExternalDeclarations a_list) {
+    concatMMList(dest_list->external_declarations, a_list->external_declarations);
+}
+
+plat_inline void insertExternalDeclarationToExternalDeclarationsAt(AstExternalDeclarations list, AstNode declare, uint idx) {
+    insertMMListItem(list->external_declarations, toMMObject(declare), idx);
+}
 
 /// ===== A Proc La =====
 

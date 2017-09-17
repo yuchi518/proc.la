@@ -23,16 +23,10 @@ enum {
     AST_TYPE_COMBINATION,
 
     AST_VARIABLE,
-    AST_VARIABLE_INT,
-    AST_VARIABLE_LONG,
-    AST_VARIABLE_FLOAT,
-    AST_VARIABLE_DOUBLE,
-    AST_VARIABLE_NUMBER,
-    AST_VARIABLE_STRING,
-    AST_VARIABLE_RAW,
+    AST_VARIABLE_COMBINATION,
     AST_VARIABLE_LIST,
     AST_VARIABLE_MAP,
-    AST_VARIABLE_LA,
+    AST_VARIABLE_LA,                    // input + body + output
     AST_VARIABLE_DOMAIN_NAME,
 
     AST_STATEMENT,
@@ -41,21 +35,38 @@ enum {
     AST_VAR_INSTANCE,
     AST_VAR_LIST_DECLARATION,
     AST_TYPE_LIST_DECLARATION,
-    AST_LA_BODY_DECLARATION,
+    AST_LA_BODY_DECLARATION,            // only body
     AST_EXTERNAL_DECLARATIONS,
 
     AST_A_PROC_LA,
 
 };
 
+typedef enum {
+    ast_type_var             = 0,
+    ast_type_int,
+    ast_type_long,
+    ast_type_float,
+    ast_type_double,
+    ast_type_number,
+    ast_type_string,
+    ast_type_raw,
+    ast_type_proc,
+    ast_type_la,
+} ast_type;
+
+typedef enum {
+    ast_type_list   = 1,
+    ast_type_map    = 2,
+} ast_type_combination;
+
 
 /// ===== Abstract Tree node =====
 typedef struct AstNode {
-    enum la_ast_typ type;
+
 }*AstNode;
 
 plat_inline AstNode initAstNode(AstNode obj, Unpacker unpkr) {
-    obj->type = la_ast_unknown;
     return obj;
 }
 
@@ -90,13 +101,6 @@ plat_inline void packAstNone(AstNone obj, Packer pkr) {
 
 MMSubObject(AST_NONE, AstNone, AstNode , initAstNone, destroyAstNone, packAstNone);
 
-plat_inline AstNone allocAstNoneWith(mgn_memory_pool* pool, ...) {
-    AstNone obj = allocAstNone(pool);
-    if (obj) {
-    }
-    return obj;
-}
-
 
 /// ===== Identifier =====
 
@@ -105,7 +109,6 @@ typedef struct AstIdentifier {
 }*AstIdentifier;
 
 plat_inline AstIdentifier initAstIdentifier(AstIdentifier obj, Unpacker unpkr) {
-    toAstNode(obj)->type = la_ast_identifier;
     return obj;
 }
 
@@ -135,5 +138,13 @@ plat_inline AstIdentifier allocAstIdentifierWithName(mgn_memory_pool* pool, MMSt
     return obj;
 }
 
+plat_inline AstIdentifier allocAstIdentifierWithCStringName(mgn_memory_pool* pool, char* name) {
+    if (name == null) {
+        plat_io_printf_err("Identifier should have a name\n");
+        return null;
+    }
+
+    return allocAstIdentifierWithName(pool, autorelease_mmobj(allocMMStringWithCString(pool, name)));
+}
 
 #endif //PROC_LA_AST_NODE_H

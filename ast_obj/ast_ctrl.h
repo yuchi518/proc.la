@@ -7,6 +7,12 @@
 
 #include "ast_node.h"
 
+typedef enum {
+    ast_ctrl_type_out,
+    ast_ctrl_type_is,
+    ast_ctrl_type_declare,
+    ast_ctrl_type_sync,
+} ast_ctrl_type;
 /// ===== Ctrl =====
 
 typedef struct AstCtrl {
@@ -31,14 +37,11 @@ MMSubObject(AST_CTRL, AstCtrl, AstNode , initAstCtrl, destroyAstCtrl, packAstCtr
 /// ===== Ctrl - Flow =====
 /**
  * One of following controls:
- *   la_ast_ctrl_out
- *   la_ast_ctrl_is
- *   la_ast_ctrl_declare
- *   la_ast_ctrl_sync
+ *   out, is, declare, sync
  */
 
 typedef struct AstCtrlFlow {
-
+    ast_ctrl_type ctrl_type;
 }*AstCtrlFlow;
 
 plat_inline AstCtrlFlow initAstCtrlFlow(AstCtrlFlow obj, Unpacker unpkr) {
@@ -55,23 +58,23 @@ plat_inline void packAstCtrlFlow(AstCtrlFlow obj, Packer pkr) {
 
 MMSubObject(AST_CTRL_FLOW, AstCtrlFlow, AstCtrl , initAstCtrlFlow, destroyAstCtrlFlow, packAstCtrlFlow);
 
-plat_inline AstCtrlFlow allocAstCtrlFlowWithCtrl(mgn_memory_pool* pool, enum la_ast_typ ctrl) {
+plat_inline AstCtrlFlow allocAstCtrlFlowWithCtrl(mgn_memory_pool* pool, ast_ctrl_type ctrl) {
     switch (ctrl)
     {
-        case la_ast_ctrl_out:
-        case la_ast_ctrl_is:
-        case la_ast_ctrl_declare:
-        case la_ast_ctrl_sync:
+        case ast_ctrl_type_out:
+        case ast_ctrl_type_is:
+        case ast_ctrl_type_declare:
+        case ast_ctrl_type_sync:
             break;
         default: {
-            plat_io_printf_err("Is not a ctrl(flow) type: %s\n", la_ast_typ_to_string(ctrl));
+            plat_io_printf_err("Is not a ctrl(flow) type: %d\n", ctrl);
             return null;
         }
     }
 
     AstCtrlFlow obj = allocAstCtrlFlow(pool);
     if (obj) {
-        toAstNode(obj)->type = ctrl;
+        obj->ctrl_type = ctrl;
     }
 
     return obj;

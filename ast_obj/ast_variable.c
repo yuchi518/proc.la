@@ -5,6 +5,7 @@
 #include <stdarg.h>
 #include "ast_variable.h"
 
+#if 0
 AstVariableList allocAstVariableListWithItems(mgn_memory_pool* pool, AstVariable first_item, ...) {
     AstVariableList obj = allocAstVariableList(pool);
     if (obj) {
@@ -97,3 +98,5 @@ void addAstVariableKeyValue(AstVariableMap obj, MMString first_key, .../* AstVar
         va_end(valist);
     }
 }
+
+#endif

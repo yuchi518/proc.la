@@ -10,28 +10,26 @@
 /// ===== Variable =====
 /**
  * One of following variables:
- *  la_ast_inst_int
- *  la_ast_inst_long
- *  la_ast_inst_float
- *  la_ast_inst_double
- *  la_ast_inst_number
- *  la_ast_inst_string
- *  la_ast_inst_raw
- *  la_ast_inst_list
- *  la_ast_inst_map
+ *  int, long, float, double, number, string, raw
+ *  list, map, la
  */
 
 typedef struct AstVariable {
+    ast_type type;
     bool is_const;
+    MMObject value;
 }*AstVariable;
 
 plat_inline AstVariable initAstVariable(AstVariable obj, Unpacker unpkr) {
+    obj->type = ast_type_var;
     obj->is_const = false;
     return obj;
 }
 
 plat_inline void destroyAstVariable(AstVariable obj) {
-
+    if (obj->value) {
+        release_mmobj(obj->value);
+    }
 }
 
 plat_inline void packAstVariable(AstVariable obj, Packer pkr) {
@@ -40,270 +38,147 @@ plat_inline void packAstVariable(AstVariable obj, Packer pkr) {
 
 MMSubObject(AST_VARIABLE, AstVariable, AstNode , initAstVariable, destroyAstVariable, packAstVariable);
 
-
-/// ===== Variable - Integer =====
-
-typedef struct AstVariableInt {
-    int32 value;
-}*AstVariableInt;
-
-plat_inline AstVariableInt initAstVariableInt(AstVariableInt obj, Unpacker unpkr) {
-    toAstNode(obj)->type = la_ast_inst_int;
-    return obj;
-}
-
-plat_inline void destroyAstVariableInt(AstVariableInt obj) {
-
-}
-
-plat_inline void packAstVariableInt(AstVariableInt obj, Packer pkr) {
-
-}
-
-MMSubObject(AST_VARIABLE_INT, AstVariableInt, AstVariable , initAstVariableInt, destroyAstVariableInt, packAstVariableInt);
-
-plat_inline AstVariableInt allocAstVariableIntWithValue(mgn_memory_pool* pool, int32 value)
+plat_inline AstVariable allocVariableWithIntValue(mgn_memory_pool* pool, int32 value)
 {
-    AstVariableInt obj = allocAstVariableInt(pool);
+    AstVariable obj = allocAstVariable(pool);
     if (obj) {
-        obj->value = value;
+        obj->type = ast_type_int;
+        obj->value = toMMObject(allocMMIntWithValue(pool, value));
+        if (obj->value == null) {
+            release_mmobj(obj);
+            obj = null;
+        }
     }
     return obj;
 }
 
-plat_inline AstVariableInt allocAstVariableIntWithConstValue(mgn_memory_pool* pool, int32 value)
+plat_inline AstVariable allocVariableWithConstIntValue(mgn_memory_pool* pool, int32 value)
 {
-    AstVariableInt obj = allocAstVariableInt(pool);
+    AstVariable obj = allocVariableWithIntValue(pool, value);
     if (obj) {
-        obj->value = value;
-        toAstVariable(obj)->is_const = true;
+        obj->is_const = true;
+    }
+    return obj;
+}
+
+plat_inline AstVariable allocVariableWithLongValue(mgn_memory_pool* pool, int64 value)
+{
+    AstVariable obj = allocAstVariable(pool);
+    if (obj) {
+        obj->type = ast_type_long;
+        obj->value = toMMObject(allocMMLongWithValue(pool, value));
+        if (obj->value == null) {
+            release_mmobj(obj);
+            obj = null;
+        }
+    }
+    return obj;
+}
+
+plat_inline AstVariable allocVariableWithConstLongValue(mgn_memory_pool* pool, int64 value)
+{
+    AstVariable obj = allocVariableWithLongValue(pool, value);
+    if (obj) {
+        obj->is_const = true;
+    }
+    return obj;
+}
+
+plat_inline AstVariable allocVariableWithFloatValue(mgn_memory_pool* pool, float value)
+{
+    AstVariable obj = allocAstVariable(pool);
+    if (obj) {
+        obj->type = ast_type_float;
+        obj->value = toMMObject(allocMMFloatWithValue(pool, value));
+        if (obj->value == null) {
+            release_mmobj(obj);
+            obj = null;
+        }
+    }
+    return obj;
+}
+
+plat_inline AstVariable allocVariableWithConstFloatValue(mgn_memory_pool* pool, float value)
+{
+    AstVariable obj = allocVariableWithFloatValue(pool, value);
+    if (obj) {
+        obj->is_const = true;
     }
     return obj;
 }
 
 
-/// ===== Variable - Long =====
-
-typedef struct AstVariableLong {
-    int64 value;
-}*AstVariableLong;
-
-plat_inline AstVariableLong initAstVariableLong(AstVariableLong obj, Unpacker unpkr) {
-    toAstNode(obj)->type = la_ast_inst_long;
-    return obj;
-}
-
-plat_inline void destroyAstVariableLong(AstVariableLong obj) {
-
-}
-
-plat_inline void packAstVariableLong(AstVariableLong obj, Packer pkr) {
-
-}
-
-MMSubObject(AST_VARIABLE_LONG, AstVariableLong, AstVariable , initAstVariableLong, destroyAstVariableLong, packAstVariableLong);
-
-plat_inline AstVariableLong allocAstVariableLongWithValue(mgn_memory_pool* pool, int64 value)
+plat_inline AstVariable allocVariableWithDoubleValue(mgn_memory_pool* pool, double value)
 {
-    AstVariableLong obj = allocAstVariableLong(pool);
+    AstVariable obj = allocAstVariable(pool);
     if (obj) {
-        obj->value = value;
+        obj->type = ast_type_double;
+        obj->value = toMMObject(allocMMDoubleWithValue(pool, value));
+        if (obj->value == null) {
+            release_mmobj(obj);
+            obj = null;
+        }
     }
     return obj;
 }
 
-plat_inline AstVariableLong allocAstVariableLongWithConstValue(mgn_memory_pool* pool, int64 value)
+plat_inline AstVariable allocVariableWithConstDoubleValue(mgn_memory_pool* pool, double value)
 {
-    AstVariableLong obj = allocAstVariableLong(pool);
+    AstVariable obj = allocVariableWithDoubleValue(pool, value);
     if (obj) {
-        obj->value = value;
-        toAstVariable(obj)->is_const = true;
+        obj->is_const = true;
     }
     return obj;
 }
 
-/// ===== Variable - Float =====
-
-typedef struct AstVariableFloat {
-    float value;
-}*AstVariableFloat;
-
-plat_inline AstVariableFloat initAstVariableFloat(AstVariableFloat obj, Unpacker unpkr) {
-    toAstNode(obj)->type = la_ast_inst_float;
-    return obj;
-}
-
-plat_inline void destroyAstVariableFloat(AstVariableFloat obj) {
-
-}
-
-plat_inline void packAstVariableFloat(AstVariableFloat obj, Packer pkr) {
-
-}
-
-MMSubObject(AST_VARIABLE_FLOAT, AstVariableFloat, AstVariable , initAstVariableFloat, destroyAstVariableFloat, packAstVariableFloat);
-
-plat_inline AstVariableFloat allocAstVariableFloatWithValue(mgn_memory_pool* pool, float value)
+plat_inline AstVariable allocVariableWithNumberValue(mgn_memory_pool* pool, double value)
 {
-    AstVariableFloat obj = allocAstVariableFloat(pool);
+    AstVariable obj = allocAstVariable(pool);
     if (obj) {
-        obj->value = value;
-    }
-    return obj;
-}
-
-plat_inline AstVariableFloat allocAstVariableFloatWithConstValue(mgn_memory_pool* pool, float value)
-{
-    AstVariableFloat obj = allocAstVariableFloat(pool);
-    if (obj) {
-        obj->value = value;
-        toAstVariable(obj)->is_const = true;
-    }
-    return obj;
-}
-
-/// ===== Variable - Double =====
-
-typedef struct AstVariableDouble {
-    double value;
-}*AstVariableDouble;
-
-plat_inline AstVariableDouble initAstVariableDouble(AstVariableDouble obj, Unpacker unpkr) {
-    toAstNode(obj)->type = la_ast_inst_double;
-    return obj;
-}
-
-plat_inline void destroyAstVariableDouble(AstVariableDouble obj) {
-
-}
-
-plat_inline void packAstVariableDouble(AstVariableDouble obj, Packer pkr) {
-
-}
-
-MMSubObject(AST_VARIABLE_DOUBLE, AstVariableDouble, AstVariable , initAstVariableDouble, destroyAstVariableDouble, packAstVariableDouble);
-
-plat_inline AstVariableDouble allocAstVariableDoubleWithValue(mgn_memory_pool* pool, double value)
-{
-    AstVariableDouble obj = allocAstVariableDouble(pool);
-    if (obj) {
-        obj->value = value;
-    }
-    return obj;
-}
-
-plat_inline AstVariableDouble allocAstVariableDoubleWithConstValue(mgn_memory_pool* pool, double value)
-{
-    AstVariableDouble obj = allocAstVariableDouble(pool);
-    if (obj) {
-        obj->value = value;
-        toAstVariable(obj)->is_const = true;
-    }
-    return obj;
-}
-
-/// ===== Variable - Number =====
-
-typedef struct AstVariableNumber {
-    /// TODO: implementation
-}*AstVariableNumber;
-
-plat_inline AstVariableNumber initAstVariableNumber(AstVariableNumber obj, Unpacker unpkr) {
-    toAstNode(obj)->type = la_ast_inst_number;
-    return obj;
-}
-
-plat_inline void destroyAstVariableNumber(AstVariableNumber obj) {
-
-}
-
-plat_inline void packAstVariableNumber(AstVariableNumber obj, Packer pkr) {
-
-}
-
-MMSubObject(AST_VARIABLE_NUMBER, AstVariableNumber, AstVariable , initAstVariableNumber, destroyAstVariableNumber, packAstVariableNumber);
-
-plat_inline AstVariableNumber allocAstVariableNumberWithDoubleValue(mgn_memory_pool* pool, double value)
-{
-    AstVariableNumber obj = allocAstVariableNumber(pool);
-    if (obj) {
+        obj->type = ast_type_number;
         /// TODO: implementation
     }
     return obj;
 }
 
-
-/// ===== Variable - String =====
-
-typedef struct AstVariableString {
-    MMString string;
-}*AstVariableString;
-
-plat_inline AstVariableString initAstVariableString(AstVariableString obj, Unpacker unpkr) {
-    toAstNode(obj)->type = la_ast_inst_string;
-    return obj;
-}
-
-plat_inline void destroyAstVariableString(AstVariableString obj) {
-    if (obj->string) {
-        release_mmobj(obj->string);
-    }
-}
-
-plat_inline void packAstVariableString(AstVariableString obj, Packer pkr) {
-
-}
-
-MMSubObject(AST_VARIABLE_STRING, AstVariableString, AstVariable , initAstVariableString, destroyAstVariableString, packAstVariableString);
-
-plat_inline AstVariableString allocAstVariableStringWithCString(mgn_memory_pool* pool, char* cstring)
+plat_inline AstVariable allocVariableWithConstNumberValue(mgn_memory_pool* pool, double value)
 {
-    AstVariableString obj = allocAstVariableString(pool);
+    AstVariable obj = allocVariableWithNumberValue(pool, value);
     if (obj) {
-        obj->string = allocMMStringWithCString(pool, cstring);
+        obj->is_const = true;
     }
     return obj;
 }
 
-plat_inline AstVariableString allocAstVariableStringWithConstCString(mgn_memory_pool* pool, char* cstring)
+plat_inline AstVariable allocVariableWithCString(mgn_memory_pool* pool, char* cstring)
 {
-    AstVariableString obj = allocAstVariableString(pool);
+    AstVariable obj = allocAstVariable(pool);
     if (obj) {
-        obj->string = allocMMStringWithCString(pool, cstring);
-        toAstVariable(obj)->is_const = true;
+        obj->type = ast_type_string;
+        obj->value = toMMObject(allocMMStringWithCString(pool, cstring));
+        if (obj->value == null) {
+            release_mmobj(obj);
+            obj = null;
+        }
     }
     return obj;
 }
 
-/// ===== Variable - Raw =====
-
-typedef struct AstVariableRaw {
-    MMData data;
-}*AstVariableRaw;
-
-plat_inline AstVariableRaw initAstVariableRaw(AstVariableRaw obj, Unpacker unpkr) {
-    toAstNode(obj)->type = la_ast_inst_raw;
+plat_inline AstVariable allocVariableWithConstCString(mgn_memory_pool* pool, char* cstring)
+{
+    AstVariable obj = allocVariableWithCString(pool, cstring);
+    if (obj) {
+        obj->is_const = true;
+    }
     return obj;
 }
 
-plat_inline void destroyAstVariableRaw(AstVariableRaw obj) {
-    if (obj->data) {
-        release_mmobj(obj->data);
-        obj->data = null;
-    }
-}
-
-plat_inline void packAstVariableRaw(AstVariableRaw obj, Packer pkr) {
-
-}
-
-MMSubObject(AST_VARIABLE_RAW, AstVariableRaw, AstVariable , initAstVariableRaw, destroyAstVariableRaw, packAstVariableRaw);
-
-plat_inline AstVariableRaw allocAstVariableRawWithData(mgn_memory_pool* pool, void* data, uint size) {
-    AstVariableRaw obj = allocAstVariableRaw(pool);
+plat_inline AstVariable allocVariableWithRawData(mgn_memory_pool* pool, void* data, uint size) {
+    AstVariable obj = allocAstVariable(pool);
     if (obj) {
-        obj->data = allocMMDataWithData(pool, data, size);
-        if (obj->data == null) {
+        obj->type = ast_type_raw;
+        obj->value = toMMObject(allocMMDataWithData(pool, data, size));
+        if (obj->value == null) {
             release_mmobj(obj);
             return null;
         }
@@ -311,7 +186,33 @@ plat_inline AstVariableRaw allocAstVariableRawWithData(mgn_memory_pool* pool, vo
     return obj;
 }
 
+/// ===== Variable - Combination  =====
 
+typedef struct AstVariableCombination {
+    int32 combined_type;
+}*AstVariableCombination;
+
+plat_inline AstVariableCombination initAstVariableCombination(AstVariableCombination obj, Unpacker unpkr) {
+    toAstVariable(obj)->type = ast_type_var;        // base type
+    return obj;
+}
+
+plat_inline void destroyAstVariableCombination(AstVariableCombination obj) {
+
+}
+
+plat_inline void packAstVariableCombination(AstVariableCombination obj, Packer pkr) {
+
+}
+
+MMSubObject(AST_VARIABLE_COMBINATION, AstVariableCombination, AstVariable, initAstVariableCombination, destroyAstVariableCombination, packAstVariableCombination);
+
+
+/// TODO - implement combination type.
+
+
+
+#if 0
 /// ===== Variable - List =====
 
 typedef struct AstVariableList {
@@ -319,7 +220,7 @@ typedef struct AstVariableList {
 }*AstVariableList;
 
 plat_inline AstVariableList initAstVariableList(AstVariableList obj, Unpacker unpkr) {
-    toAstNode(obj)->type = la_ast_inst_list;
+    toAstVariable(obj)->type = ast_type_list;
     mgn_memory_pool* pool = pool_of_mmobj(obj);
     obj->list = allocMMList(pool);
     return obj;
@@ -348,7 +249,7 @@ typedef struct AstVariableMap {
 }*AstVariableMap;
 
 plat_inline AstVariableMap initAstVariableMap(AstVariableMap obj, Unpacker unpkr) {
-    toAstNode(obj)->type = la_ast_inst_map;
+    toAstVariable(obj)->type = ast_type_map;
     mgn_memory_pool* pool = pool_of_mmobj(obj);
     obj->map = allocMMMap(pool);
     return obj;
@@ -370,6 +271,7 @@ MMSubObject(AST_VARIABLE_MAP, AstVariableMap, AstVariable , initAstVariableMap, 
 AstVariableMap allocAstVariableMapWithKeyValue(mgn_memory_pool* pool, MMString first_key, .../* AstVariable first_value, and more keys and values */);
 void addAstVariableKeyValue(AstVariableMap map, MMString first_key, .../* AstVariable first_value, and more keys and values */);
 
+#endif
 
 /// ===== Domain Name  =====
 
@@ -378,7 +280,7 @@ typedef struct AstDomainName {
 }*AstDomainName;
 
 plat_inline AstDomainName initAstDomainName(AstDomainName obj, Unpacker unpkr) {
-    toAstNode(obj)->type = la_ast_domain_name;
+    toAstVariable(obj)->type = ast_type_la;
     return obj;
 }
 
@@ -408,5 +310,13 @@ plat_inline AstDomainName allocAstDomainNameWithName(mgn_memory_pool* pool, MMSt
     return obj;
 }
 
+plat_inline AstDomainName allocAstDomainNameWithCStringName(mgn_memory_pool* pool, char* name) {
+    if (name == null) {
+        plat_io_printf_err("DomainName should have a name\n");
+        return null;
+    }
+
+    return allocAstDomainNameWithName(pool, autorelease_mmobj(allocMMStringWithCString(pool, name)));
+}
 
 #endif //PROC_LA_AST_VARIABLE_H
