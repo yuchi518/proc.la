@@ -36,15 +36,81 @@ plat_inline AstStatement allocAstStatementWith(mgn_memory_pool* pool, ...) {
     return obj;
 }
 
-/// ===== Statement - Var Declare =====
+
+/// ===== Stmt - Package =====
+
+typedef struct AstPackage {
+    MMString name;
+}*AstPackage;
+
+plat_inline AstPackage initAstPackage(AstPackage obj, Unpacker unpkr) {
+    toAstNode(obj)->type = la_ast_package_name;
+    return obj;
+}
+
+plat_inline void destroyAstPackage(AstPackage obj) {
+    if (obj->name) {
+        release_mmobj(obj->name);
+        obj->name = null;
+    }
+}
+
+plat_inline void packAstPackage(AstPackage obj, Packer pkr) {
+
+}
+
+MMSubObject(AST_PACKAGE, AstPackage, AstStatement , initAstPackage, destroyAstPackage, packAstPackage);
+
+plat_inline AstPackage allocAstPackageWithName(mgn_memory_pool* pool, MMString name) {
+    if (name == null) {
+        plat_io_printf_err("Package should have a name\n");
+        return null;
+    }
+
+    AstPackage obj = allocAstPackage(pool);
+    if (obj) {
+        obj->name = retain_mmobj(name);
+    }
+    return obj;
+}
+
+
+/// ===== Statement - Type Declaration List =====
+
+typedef struct AstTypeList {
+    MMList list;
+}*AstTypeList;
+
+plat_inline AstTypeList initAstTypeList(AstTypeList obj, Unpacker unpkr) {
+    obj->list = allocMMList(pool_of_mmobj(obj));
+    return obj;
+}
+
+plat_inline void destroyAstTypeList(AstTypeList obj) {
+    if (obj->list) {
+        release_mmobj(obj->list);
+    }
+}
+
+plat_inline void packAstTypeList(AstTypeList obj, Packer pkr) {
+
+}
+
+MMSubObject(AST_TYPE_LIST_DECLARATION, AstTypeList, AstStatement, initAstTypeList, destroyAstTypeList, packAstTypeList);
+
+plat_inline void addTypeToTypeList(AstTypeList list, AstType type) {
+    pushMMListItem(list->list, toMMObject(type));
+}
+
+/// ===== Statement - Var Declaration =====
 /**
  * Includes two parts:
  *   variable identifier
  *   variable type
  */
 typedef struct AstVarDeclare {
-    AstCtrlName var_identifier;
-    enum la_ast_typ var_type;
+    AstIdentifier identifier;
+    AstType identifier_type;
 }*AstVarDeclare;
 
 plat_inline AstVarDeclare initAstVarDeclare(AstVarDeclare obj, Unpacker unpkr) {
@@ -53,8 +119,8 @@ plat_inline AstVarDeclare initAstVarDeclare(AstVarDeclare obj, Unpacker unpkr) {
 }
 
 plat_inline void destroyAstVarDeclare(AstVarDeclare obj) {
-    if (obj->var_identifier) {
-        release_mmobj(obj->var_identifier);
+    if (obj->identifier) {
+        release_mmobj(obj->identifier);
     }
 }
 
@@ -65,19 +131,46 @@ plat_inline void packAstVarDeclare(AstVarDeclare obj, Packer pkr) {
 MMSubObject(AST_VAR_DECLARE, AstVarDeclare, AstStatement, initAstVarDeclare, destroyAstVarDeclare, packAstVarDeclare);
 
 
-plat_inline AstVarDeclare allocAstVarDeclareWithIdentifier(mgn_memory_pool* pool, AstCtrlName identifier, enum la_ast_typ type) {
+plat_inline AstVarDeclare allocAstVarDeclareWithIdentifier(mgn_memory_pool* pool, AstIdentifier identifier, AstType type) {
     if (identifier == null) {
         plat_io_printf_err("Identifier can't be null\n");
         return null;
     }
     AstVarDeclare obj = allocAstVarDeclare(pool);
     if (obj) {
-        obj->var_identifier = retain_mmobj(identifier);
-        obj->var_type = type;
+        obj->identifier = retain_mmobj(identifier);
+        obj->identifier_type = type;
     }
     return obj;
 }
 
+
+/// ===== Statement - Var Declaration List =====
+
+typedef struct AstVarDeclareList {
+    MMList list;
+}*AstVarDeclareList;
+
+plat_inline AstVarDeclareList initAstVarDeclareList(AstVarDeclareList obj, Unpacker unpkr) {
+    obj->list = allocMMList(pool_of_mmobj(obj));
+    return obj;
+}
+
+plat_inline void destroyAstVarDeclareList(AstVarDeclareList obj) {
+    if (obj->list) {
+        release_mmobj(obj->list);
+    }
+}
+
+plat_inline void packAstVarDeclareList(AstVarDeclareList obj, Packer pkr) {
+
+}
+
+MMSubObject(AST_VAR_LIST_DECLARATION, AstVarDeclareList, AstStatement, initAstVarDeclareList, destroyAstVarDeclareList, packAstVarDeclareList);
+
+plat_inline void addVarDeclareToVarDeclareList(AstVarDeclareList list, AstVarDeclare declare) {
+    pushMMListItem(list->list, toMMObject(declare));
+}
 
 /// ===== Statement - Var Instance =====
 /**
@@ -129,6 +222,34 @@ plat_inline AstVarInstance allocAstVarInstantWithDeclareAndInstance(mgn_memory_p
     return obj;
 }
 
+
+/// ===== Statement - La body =====
+
+typedef struct AstLaBody {
+    MMList list;
+}*AstLaBody;
+
+plat_inline AstLaBody initAstLaBody(AstLaBody obj, Unpacker unpkr) {
+    obj->list = allocMMList(pool_of_mmobj(obj));
+    return obj;
+}
+
+plat_inline void destroyAstLaBody(AstLaBody obj) {
+    if (obj->list) {
+        release_mmobj(obj->list);
+    }
+}
+
+plat_inline void packAstLaBody(AstLaBody obj, Packer pkr) {
+
+}
+
+MMSubObject(AST_LA_BODY_DECLARATION, AstLaBody, AstStatement, initAstLaBody, destroyAstLaBody, packAstLaBody);
+
+plat_inline void addStmtToLaBody(AstLaBody obj, AstStatement stmt) {
+    pushMMListItem(obj->list, toMMObject(stmt));
+}
+
 /// ===== Variable - La =====
 /**
  * Includes three parts:
@@ -138,7 +259,9 @@ plat_inline AstVarInstance allocAstVarInstantWithDeclareAndInstance(mgn_memory_p
  */
 typedef struct AstVariableLa {
     // input + body + output declarations
-
+    AstVarDeclareList input;
+    AstLaBody body;
+    AstTypeList output;
 }*AstVariableLa;
 
 plat_inline AstVariableLa initAstVariableLa(AstVariableLa obj, Unpacker unpkr) {
@@ -154,15 +277,9 @@ plat_inline void packAstVariableLa(AstVariableLa obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_VARIABLE_LA, AstVariableLa, AstVariable , initAstVariableLa, destroyAstVariableLa, packAstVariableLa);
+MMSubObject(AST_VARIABLE_LA, AstVariableLa, AstVariable, initAstVariableLa, destroyAstVariableLa, packAstVariableLa);
 
-#if 0
-plat_inline AstVariableLa allocAstVariableLaWith(mgn_memory_pool* pool, ...) {
-    AstVariableLa obj = allocAstVariableLa(pool);
-    if (obj) {
-    }
-    return obj;
-}
-#endif
+AstVariableLa allocAstVariableLaWith(mgn_memory_pool* pool, AstVarDeclareList input, AstLaBody body, AstTypeList output);
+
 
 #endif //PROC_LA_AST_STMT_H

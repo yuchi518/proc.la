@@ -15,8 +15,9 @@ enum {
     AST_NONE,
 
     AST_CTRL,
-    AST_CTRL_NAME,
     AST_CTRL_FLOW,
+
+    AST_IDENTIFIER,
 
     AST_TYPE,
     AST_TYPE_COMBINATION,
@@ -32,10 +33,19 @@ enum {
     AST_VARIABLE_LIST,
     AST_VARIABLE_MAP,
     AST_VARIABLE_LA,
+    AST_VARIABLE_DOMAIN_NAME,
 
     AST_STATEMENT,
+    AST_PACKAGE,
     AST_VAR_DECLARE,
     AST_VAR_INSTANCE,
+    AST_VAR_LIST_DECLARATION,
+    AST_TYPE_LIST_DECLARATION,
+    AST_LA_BODY_DECLARATION,
+    AST_EXTERNAL_DECLARATIONS,
+
+    AST_A_PROC_LA,
+
 };
 
 
@@ -83,6 +93,44 @@ MMSubObject(AST_NONE, AstNone, AstNode , initAstNone, destroyAstNone, packAstNon
 plat_inline AstNone allocAstNoneWith(mgn_memory_pool* pool, ...) {
     AstNone obj = allocAstNone(pool);
     if (obj) {
+    }
+    return obj;
+}
+
+
+/// ===== Identifier =====
+
+typedef struct AstIdentifier {
+    MMString name;
+}*AstIdentifier;
+
+plat_inline AstIdentifier initAstIdentifier(AstIdentifier obj, Unpacker unpkr) {
+    toAstNode(obj)->type = la_ast_identifier;
+    return obj;
+}
+
+plat_inline void destroyAstIdentifier(AstIdentifier obj) {
+    if (obj->name) {
+        release_mmobj(obj->name);
+        obj->name = null;
+    }
+}
+
+plat_inline void packAstIdentifier(AstIdentifier obj, Packer pkr) {
+
+}
+
+MMSubObject(AST_IDENTIFIER, AstIdentifier, AstNode, initAstIdentifier, destroyAstIdentifier, packAstIdentifier);
+
+plat_inline AstIdentifier allocAstIdentifierWithName(mgn_memory_pool* pool, MMString name) {
+    if (name == null) {
+        plat_io_printf_err("Identifier should have a name\n");
+        return null;
+    }
+
+    AstIdentifier obj = allocAstIdentifier(pool);
+    if (obj) {
+        obj->name = retain_mmobj(name);
     }
     return obj;
 }

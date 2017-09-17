@@ -371,5 +371,42 @@ AstVariableMap allocAstVariableMapWithKeyValue(mgn_memory_pool* pool, MMString f
 void addAstVariableKeyValue(AstVariableMap map, MMString first_key, .../* AstVariable first_value, and more keys and values */);
 
 
+/// ===== Domain Name  =====
+
+typedef struct AstDomainName {
+    MMString name;
+}*AstDomainName;
+
+plat_inline AstDomainName initAstDomainName(AstDomainName obj, Unpacker unpkr) {
+    toAstNode(obj)->type = la_ast_domain_name;
+    return obj;
+}
+
+plat_inline void destroyAstDomainName(AstDomainName obj) {
+    if (obj->name) {
+        release_mmobj(obj->name);
+        obj->name = null;
+    }
+}
+
+plat_inline void packAstDomainName(AstDomainName obj, Packer pkr) {
+
+}
+
+MMSubObject(AST_VARIABLE_DOMAIN_NAME, AstDomainName, AstVariable, initAstDomainName, destroyAstDomainName, packAstDomainName);
+
+plat_inline AstDomainName allocAstDomainNameWithName(mgn_memory_pool* pool, MMString name) {
+    if (name == null) {
+        plat_io_printf_err("DomainName should have a name\n");
+        return null;
+    }
+
+    AstDomainName obj = allocAstDomainName(pool);
+    if (obj) {
+        obj->name = retain_mmobj(name);
+    }
+    return obj;
+}
+
 
 #endif //PROC_LA_AST_VARIABLE_H
