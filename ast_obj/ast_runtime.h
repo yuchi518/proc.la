@@ -10,15 +10,17 @@
 /// ===== Stack =====
 
 typedef struct AstStack {
-
+    MMList nodes;
 }*AstStack;
 
 plat_inline AstStack initAstStack(AstStack obj, Unpacker unpkr) {
+    obj->nodes = allocMMList(pool_of_mmobj(obj));
+    if (obj->nodes == null) return null;
     return obj;
 }
 
 plat_inline void destroyAstStack(AstStack obj) {
-
+    if (obj->nodes) release_mmobj(obj->nodes);
 }
 
 plat_inline void packAstStack(AstStack obj, Packer pkr) {
@@ -27,9 +29,10 @@ plat_inline void packAstStack(AstStack obj, Packer pkr) {
 
 MMSubObject(AST_STACK, AstStack, AstNode , initAstStack, destroyAstStack, packAstStack);
 
-plat_inline AstStack allocAstStackWith(mgn_memory_pool* pool, ...) {
+plat_inline AstStack allocAstStackWithANode(mgn_memory_pool* pool, AstNode node) {
     AstStack obj = allocAstStack(pool);
     if (obj) {
+        pushMMListItem(obj->nodes, toMMObject(node));
     }
     return obj;
 }
@@ -38,7 +41,8 @@ plat_inline AstStack allocAstStackWith(mgn_memory_pool* pool, ...) {
 /// ===== Scope =====
 
 typedef struct AstScope {
-
+    AstNode trigger;
+    struct AstScope* last_scope;
 }*AstScope;
 
 plat_inline AstScope initAstScope(AstScope obj, Unpacker unpkr) {
@@ -46,7 +50,8 @@ plat_inline AstScope initAstScope(AstScope obj, Unpacker unpkr) {
 }
 
 plat_inline void destroyAstScope(AstScope obj) {
-
+    if (obj->trigger) release_mmobj(obj->trigger);
+    if (obj->last_scope) release_mmobj(obj->last_scope);
 }
 
 plat_inline void packAstScope(AstScope obj, Packer pkr) {
@@ -55,9 +60,11 @@ plat_inline void packAstScope(AstScope obj, Packer pkr) {
 
 MMSubObject(AST_SCOPE, AstScope, AstNode, initAstScope, destroyAstScope, packAstScope);
 
-plat_inline AstScope allocAstScopeWith(mgn_memory_pool* pool, ...) {
+plat_inline AstScope allocAstScopeWithTriggerAndLastScope(mgn_memory_pool* pool, AstNode trigger, AstScope last_scope) {
     AstScope obj = allocAstScope(pool);
     if (obj) {
+        obj->trigger = retain_mmobj(trigger);
+        obj->last_scope = retain_mmobj(last_scope);
     }
     return obj;
 }

@@ -18,6 +18,7 @@ typedef struct AstExternalDeclarations {
 
 plat_inline AstExternalDeclarations initAstExternalDeclarations(AstExternalDeclarations obj, Unpacker unpkr) {
     obj->external_declarations = allocMMList(pool_of_mmobj(obj));
+    if (obj->external_declarations == null) return null;
     return obj;
 }
 

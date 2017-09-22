@@ -221,8 +221,8 @@ typedef struct AstVariableList {
 
 plat_inline AstVariableList initAstVariableList(AstVariableList obj, Unpacker unpkr) {
     toAstVariable(obj)->type = ast_type_list;
-    mgn_memory_pool* pool = pool_of_mmobj(obj);
-    obj->list = allocMMList(pool);
+    obj->list = allocMMList(pool_of_mmobj(obj));
+    if (obj->list == null) return null;
     return obj;
 }
 

@@ -4,6 +4,7 @@
 #include <stdarg.h>
 
 #include "ast.h"
+#include "ast_runtime.h"
 #include "proc.la.l.c"
 
 static struct src_stack *_curbs = null;
@@ -335,15 +336,20 @@ AstNode la_ast_create_a_proc_la(AstNode package, AstNode external_declarations)
     return *_ast;
 }
 
+AstScope la_ast_impl_create_scope(AstNode trigger, AstScope last_scope)
+{
+    if (verbose) plat_io_printf_std("la_ast_impl_create_scope\n");
+
+    AstScope scope = allocAstScopeWithTriggerAndLastScope(_pool, trigger, last_scope);
+
+    return scope;
+}
+
 
 /// ============================= AST implementation =======================================================
 
-#define alloc_string(pool, string_size) \
-    (char*)mgn_mem_alloc(pool, string_size)
-
 #if 0
-
-void iterate_ast(struct la_ast* obj, ast_iterator iterator)
+void iterate_ast(AstNode obj, ast_iterator iterator)
 {
     struct la_ast* scope = null;
     struct la_ast_impl_scope* scopeObj = null;
@@ -461,15 +467,4 @@ void iterate_ast(struct la_ast* obj, ast_iterator iterator)
 
 }
 
-struct la_ast* la_ast_impl_create_scope(struct la_ast* trigger, struct la_ast* last_scope)
-{
-    if (verbose) plat_io_printf_std("la_ast_impl_create_scope\n");
-
-    struct la_ast_impl_scope* obj = alloc_astObj(_pool, struct la_ast_impl_scope, la_ast_impl_scope);
-    obj->trigger = mgn_mem_retain(_pool, trigger);
-    obj->last_scope = (last_scope==null)?null:mgn_mem_retain(_pool, last_scope);
-
-    return &obj->is_a;
-}
 #endif
-

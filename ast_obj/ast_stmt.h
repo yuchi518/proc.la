@@ -91,6 +91,7 @@ typedef struct AstTypeList {
 
 plat_inline AstTypeList initAstTypeList(AstTypeList obj, Unpacker unpkr) {
     obj->list = allocMMList(pool_of_mmobj(obj));
+    if (obj->list == null) return null;
     return obj;
 }
 
@@ -168,6 +169,7 @@ typedef struct AstVarDeclareList {
 
 plat_inline AstVarDeclareList initAstVarDeclareList(AstVarDeclareList obj, Unpacker unpkr) {
     obj->list = allocMMList(pool_of_mmobj(obj));
+    if (obj->list == null) return null;
     return obj;
 }
 
@@ -253,6 +255,7 @@ typedef struct AstLaBody {
 
 plat_inline AstLaBody initAstLaBody(AstLaBody obj, Unpacker unpkr) {
     obj->list = allocMMList(pool_of_mmobj(obj));
+    if (obj->list == null) return null;
     return obj;
 }
 
