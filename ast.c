@@ -342,64 +342,6 @@ AstNode la_ast_create_a_proc_la(AstNode package, AstNode external_declarations)
     (char*)mgn_mem_alloc(pool, string_size)
 
 #if 0
-void release_mmobj(struct la_ast* obj)
-{
-    if (verbose) plat_io_printf_std("- release_mmobj - %s\n", la_ast_typ_to_string(obj->typ));
-    boolean release_member = mgn_mem_retained_count(_pool, obj) == 1?true:false;
-
-    if (release_member)
-    {
-        switch(obj->typ)
-        {
-
-            case la_ast_var_declare:
-            {
-                struct la_ast_var_declare* var_obj = _obj2inst(obj, struct la_ast_var_declare);
-                mgn_mem_release(_pool, var_obj->identifier_name);
-                break;
-            }
-            case la_ast_var_instance:
-            {
-                struct la_ast_var_instance* varInst_obj = _obj2inst(obj, struct la_ast_var_instance);
-                release_mmobj(varInst_obj->inst);
-                release_mmobj(varInst_obj->declare);
-                break;
-            }
-            case la_ast_impl_stack:
-            {
-                struct la_ast_collection* collection_obj = _obj2inst(obj, struct la_ast_collection);
-                utarray_done(&collection_obj->collection);
-                break;
-            }
-            case la_ast_la_declaration:
-            {
-                struct la_ast_la_declaration* la_declaration_obj = _obj2inst(obj, struct la_ast_la_declaration);
-                if (la_declaration_obj->input) release_mmobj(la_declaration_obj->input);
-                if (la_declaration_obj->body) release_mmobj(la_declaration_obj->body);
-                if (la_declaration_obj->output) release_mmobj(la_declaration_obj->output);
-                break;
-            }
-            case la_ast_a_proc_la:
-            {
-                struct la_ast_a_proc_la* a_proc_la_obj = _obj2inst(obj, struct la_ast_a_proc_la);
-                if (a_proc_la_obj->package_name) release_mmobj(a_proc_la_obj->package_name);
-                if (a_proc_la_obj->external_declarations) release_mmobj(a_proc_la_obj->external_declarations);
-                break;
-            }
-            case la_ast_impl_scope:
-            {
-                struct la_ast_impl_scope* scopeObj = _obj2inst(obj, struct la_ast_impl_scope);
-                if (scopeObj->last_scope) release_mmobj(scopeObj->last_scope);
-                if (scopeObj->trigger) release_mmobj(scopeObj->trigger);
-                break;
-            }
-            default:
-                break;
-        }
-    }
-
-    mgn_mem_release(_pool, obj);
-}
 
 void iterate_ast(struct la_ast* obj, ast_iterator iterator)
 {
@@ -420,7 +362,28 @@ void iterate_ast(struct la_ast* obj, ast_iterator iterator)
 
         switch(obj->typ)
         {
+            case la_ast_var_list_declaration:
+            case la_ast_type_list_declaration:
+            case la_ast_external_declarations:
+            case la_ast_la_body_declaration:
+            {
+                level++;
 
+                scope = la_ast_impl_create_scope(obj, scope/*last scope*/);
+                scopeObj = _obj2inst(scope, struct la_ast_impl_scope);
+                utarray_push_back(&stackObj->collection, &scope);
+                // put all items
+                struct la_ast_collection* collObj = _obj2inst(obj, struct la_ast_collection);
+                //utarray_concat(&stackObj->collection, &collObj->collection);
+                struct la_ast** p;
+                for(p=(struct la_ast**)utarray_back(&collObj->collection); p!=NULL; p=(struct la_ast**)utarray_prev(&collObj->collection,p))
+                {
+                    utarray_push_back(&stackObj->collection, p);
+                }
+
+                postpone = true;
+                break;
+            }
             case la_ast_var_instance:
             {
                 level ++;
@@ -498,15 +461,6 @@ void iterate_ast(struct la_ast* obj, ast_iterator iterator)
 
 }
 
-
-UT_icd ut_ast__icd = {sizeof(struct la_ast*), null, ut_ast_copy, ut_ast_del };
-
-/// ========================================================================
-
-
-
-
-
 struct la_ast* la_ast_impl_create_scope(struct la_ast* trigger, struct la_ast* last_scope)
 {
     if (verbose) plat_io_printf_std("la_ast_impl_create_scope\n");
@@ -517,5 +471,5 @@ struct la_ast* la_ast_impl_create_scope(struct la_ast* trigger, struct la_ast* l
 
     return &obj->is_a;
 }
-
 #endif
+

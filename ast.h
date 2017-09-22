@@ -29,8 +29,8 @@ AstNode la_ast_create_a_proc_la(AstNode package, AstNode external_declarations);
 
 /// =================== ast management =================
 int create_ast(mgn_memory_pool* pool, char* source_code, uint source_code_size, AstNode* ast);
-//typedef bool (*ast_iterator)(struct la_ast* obj, uint level);
-//void iterate_ast(struct la_ast* obj, ast_iterator iterator);
+typedef bool (*ast_iterator)(AstNode obj, uint level);
+void iterate_ast(AstNode obj, ast_iterator iterator);
 
 #endif //PROC_LA_AST_C_H
 

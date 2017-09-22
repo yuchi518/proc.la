@@ -8,7 +8,7 @@
 #include "mmObj.h"
 #include "mmObj_lib.h"
 
-#include "ast_obj.h"
+#include "mmObj_unittest.h"
 
 enum {
     AST_NODE     = 0,
@@ -39,6 +39,9 @@ enum {
     AST_EXTERNAL_DECLARATIONS,
 
     AST_A_PROC_LA,
+
+    AST_STACK,
+    AST_SCOPE,
 
 };
 

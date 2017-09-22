@@ -2,10 +2,7 @@
 // Created by Yuchi Chen on 2017/8/27.
 //
 
-#include "ast_node.h"
-#include "ast_type.h"
-#include "ast_variable.h"
-#include "ast_ctrl.h"
+#include "mmObj_unittest.h"
 
 /// ========== Unit test ==========
 
@@ -101,8 +98,6 @@ void unit_test_mmobj(void)
     {
         plat_io_printf_err("Memory leak? (%zu)\n", mgn_mem_count_of_mem(&pool));
     }
-
-
 
 
     plat_io_printf_std("===== unit_test_mmobj - END =====\n");
