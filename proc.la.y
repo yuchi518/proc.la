@@ -34,21 +34,53 @@ basic_var_type_specifier
 
 combined_var_type_specifier
     : basic_var_type_specifier "[]" {
-        $$ = la_ast_create_combined_type($1, ast_type_list);
-        release_mmobj($1);
+        $$ = ast_create_combined_type($1, ast_type_list);
     }
     | basic_var_type_specifier "{}" {
-        $$ = la_ast_create_combined_type($1, ast_type_map);
-                release_mmobj($1);
+        $$ = ast_create_combined_type($1, ast_type_map);
     }
     | combined_var_type_specifier "[]" {
-        $$ = la_ast_create_combined_type($1, ast_type_list);
-                release_mmobj($1);
+        $$ = ast_create_combined_type($1, ast_type_list);
     }
     | combined_var_type_specifier "{}" {
-        $$ = la_ast_create_combined_type($1, ast_type_map);
-                        release_mmobj($1);
+        $$ = ast_create_combined_type($1, ast_type_map);
     }
+    ;
+
+
+la_const
+    : N_CONSTANT
+    | I_CONSTANT
+    | F_CONSTANT
+    | STRING_LITERAL
+    ;
+
+la_math_op_0
+    : la_express '*' la_express
+    | la_express '/' la_express
+    | la_express '%' la_express
+    ;
+
+la_math_op_1
+    : la_express '+' la_express
+    | la_express '-' la_express
+    ;
+
+la_express
+    : la_const
+    | IDENTIFIER
+    | la_math_op_1
+    | '(' la_express ')' {
+        $$ = $2;
+    }
+    | la_express APPLY_TO IDENTIFIER {
+
+    }
+    ;
+
+la_segment
+    : var_declaration ';'
+    | la_express ';'
     ;
 
 var_type_specifier
@@ -58,36 +90,27 @@ var_type_specifier
 
 var_declaration
     : IDENTIFIER ':' var_type_specifier {
-        $$ = la_ast_create_var_declare($3, $1);
-        release_mmobj($1);
-        release_mmobj($3);
+        $$ = ast_create_var_declare($3, $1);
     }
     ;
 
 var_list_declaration
     : var_list_declaration ',' var_declaration {
-        $$ = la_ast_create_var_list($1, $3);
-        release_mmobj($1);
-        release_mmobj($3);
+        $$ = ast_create_var_list($1, $3);
     }
     | var_declaration {
-        $$ = la_ast_create_var_list($1, null);
-        release_mmobj($1);
+        $$ = ast_create_var_list($1, null);
     }
     ;
 
 type_list_declaration
     : type_list_declaration ',' var_type_specifier {
-        $$ = la_ast_create_type_list($1, $3);
-        release_mmobj($1);
-        release_mmobj($3);
+        $$ = ast_create_type_list($1, $3);
     }
     | var_type_specifier {
-        $$ = la_ast_create_type_list($1, null);
-        release_mmobj($1);
+        $$ = ast_create_type_list($1, null);
     }
     ;
-
 
 la_input_declaration
     : '(' var_list_declaration ')' {
@@ -95,7 +118,7 @@ la_input_declaration
     }
     | '(' ')' {
         // create an empty list
-        $$ = la_ast_create_var_list(null, null);
+        $$ = ast_create_var_list(null, null);
     }
     ;
 
@@ -105,23 +128,16 @@ la_output_declaration
     }
     | '(' ')' {
         // create an empty list
-        $$ = la_ast_create_type_list(null, null);
+        $$ = ast_create_type_list(null, null);
     }
-    ;
-
-la_body_segment
-    : var_declaration ';'
     ;
 
 la_body_segments
-    : la_body_segments la_body_segment {
-        $$ = la_ast_create_ast_body($1, $2);
-        release_mmobj($1);
-        release_mmobj($2);
+    : la_body_segments la_segment {
+        $$ = ast_create_ast_body($1, $2);
     }
-    | la_body_segment {
-        $$ = la_ast_create_ast_body($1, null);
-        release_mmobj($1);
+    | la_segment {
+        $$ = ast_create_ast_body($1, null);
     }
     ;
 
@@ -130,49 +146,34 @@ la_body_implementation
         $$ = $2;
     }
     | '{' '}' {
-        $$ = la_ast_create_ast_body(null, null);
+        $$ = ast_create_ast_body(null, null);
     }
     ;
 
 la_body_declaration
     : la_input_declaration APPLY_TO la_body_implementation APPLY_TO la_output_declaration {
-        $$ = la_ast_create_la_declaration($1, $3, $5);
-        release_mmobj($1);
-        release_mmobj($3);
-        release_mmobj($5);
+        $$ = ast_create_la_declaration($1, $3, $5);
     }
     | la_input_declaration APPLY_TO la_body_implementation {
-        $$ = la_ast_create_la_declaration($1, $3, null);
-        release_mmobj($1);
-        release_mmobj($3);
+        $$ = ast_create_la_declaration($1, $3, null);
     }
     | la_body_implementation APPLY_TO la_output_declaration {
-        $$ = la_ast_create_la_declaration(null, $1, $3);
-        release_mmobj($1);
-        release_mmobj($3);
+        $$ = ast_create_la_declaration(null, $1, $3);
     }
     | la_body_implementation {
-        $$ = la_ast_create_la_declaration(null, $1, null);
-        release_mmobj($1);
+        $$ = ast_create_la_declaration(null, $1, null);
     }
     ;
 
 la_declaration
     : DECLARE IDENTIFIER ':' LA la_body_declaration ';' {
-        $$ = la_ast_create_var_instance_ex($4, $2, $5);
-        release_mmobj($1);
-        release_mmobj($2);
-        release_mmobj($4);
-        release_mmobj($5);
+        $$ = ast_create_var_instance_ex($4, $2, $5);
     }
     ;
 
 la_alias
     : DOMAIN_NAME APPLY_TO IDENTIFIER ':' LA ';' {
-        $$ = la_ast_create_var_instance_ex($5, $3, $1);
-        release_mmobj($1);
-        release_mmobj($3);
-        release_mmobj($5);
+        $$ = ast_create_var_instance_ex($5, $3, $1);
     }
     ;
 
@@ -183,13 +184,10 @@ external_declaration
 
 external_declaration_list
     : external_declaration_list external_declaration {
-        $$ = la_ast_create_external_declarations($1, $2);
-        release_mmobj($1);
-        release_mmobj($2);
+        $$ = ast_create_external_declarations($1, $2);
     }
     | external_declaration {
-        $$ = la_ast_create_external_declarations($1, null);
-        release_mmobj($1);
+        $$ = ast_create_external_declarations($1, null);
     }
     ;
 
@@ -199,13 +197,10 @@ package_declare
 
 a_proc_la
     : package_declare external_declaration_list {
-        $$ = la_ast_create_a_proc_la($1, $2);
-        release_mmobj($1);
-        release_mmobj($2);
+        $$ = ast_create_a_proc_la($1, $2);
     }
     | external_declaration_list {
-        $$ = la_ast_create_a_proc_la(null, $1);
-        release_mmobj($1);
+        $$ = ast_create_a_proc_la(null, $1);
     }
     ;
 

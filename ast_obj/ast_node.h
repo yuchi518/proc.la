@@ -28,6 +28,9 @@ enum {
     //AST_VARIABLE_MAP,
     AST_VARIABLE_DOMAIN_NAME,
 
+    AST_EXPRESSION,
+    AST_APPLY_CHAIN,
+
     AST_STATEMENT,
     AST_PACKAGE,
     AST_VAR_DECLARE,                    // variable type & name

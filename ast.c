@@ -49,19 +49,17 @@ int create_ast(mgn_memory_pool* pool, char* content, uint content_size, AstNode*
     return 0;
 }
 
-AstNode la_ast_create_none(void) {
-    return toAstNode(allocAstNone(_pool));
+AstNode ast_create_none(void) {
+    return toAstNode(autorelease_mmobj(allocAstNone(_pool)));
 }
 
-AstNode la_ast_create_type(ast_type type)
+AstNode ast_create_type(ast_type type)
 {
-    return toAstNode(allocAstTypeWithType(_pool, type));
+    return toAstNode(autorelease_mmobj(allocAstTypeWithType(_pool, type)));
 }
 
-AstNode la_ast_create_combined_type(AstNode base_type, ast_type_combination container_typ)
+AstNode ast_create_combined_type(AstNode base_type, ast_type_combination container_typ)
 {
-    //if (verbose) plat_io_printf_dbg("la_ast_create_combined_type - %s - %d\n", name_of_mmobj(base_type), container_typ);
-
     AstTypeCombination combination = toAstTypeCombination(base_type);
 
     if (combination)
@@ -91,10 +89,10 @@ AstNode la_ast_create_combined_type(AstNode base_type, ast_type_combination cont
         plat_io_printf_err("Create combined type - slot is not enough (%08x)\n", combination->combined_type);
     }
 
-    return toAstNode(combination);
+    return toAstNode(autorelease_mmobj(combination));
 }
 
-AstNode la_ast_create_const_i(char* value)
+AstNode ast_create_const_i(char* value)
 {
     if (verbose) plat_io_printf_dbg("Create int - %s\n", value);
 
@@ -105,96 +103,96 @@ AstNode la_ast_create_const_i(char* value)
 
     if ((long_val & 0xffffffff00000000) != 0)
     {
-        return toAstNode(allocVariableWithLongValue(_pool, (int64)long_val));
+        return toAstNode(autorelease_mmobj(allocVariableWithLongValue(_pool, (int64)long_val)));
     }
     else
     {
-        return toAstNode(allocVariableWithIntValue(_pool, (int32)long_val));
+        return toAstNode(autorelease_mmobj(allocVariableWithIntValue(_pool, (int32)long_val)));
     }
 
     return null;
 }
 
-AstNode la_ast_create_const_f(char* value)
+AstNode ast_create_const_f(char* value)
 {
     if (verbose) plat_io_printf_dbg("Create float - %s\n", value);
 
     AstNode obj = toAstNode(allocVariableWithFloatValue(_pool, 0));
     // TODO: implement float, double parser
 
-    return obj;
+    return autorelease_mmobj(obj);
 }
 
-AstNode la_ast_create_const_s(char* value)
+AstNode ast_create_const_s(char* value)
 {
     if (verbose) plat_io_printf_dbg("Create string - %s\n", value);
 
-    return toAstNode(allocVariableWithCString(_pool, value));
+    return toAstNode(autorelease_mmobj(allocVariableWithCString(_pool, value)));
 }
 
-AstNode la_ast_create_ctrl(ast_ctrl_type ctrl)
+AstNode ast_create_ctrl(ast_ctrl_type ctrl)
 {
-    return toAstNode(allocAstCtrlFlowWithCtrl(_pool, ctrl));
+    return toAstNode(autorelease_mmobj(allocAstCtrlFlowWithCtrl(_pool, ctrl)));
 }
 
-AstNode la_ast_create_package(char* value)
+AstNode ast_create_package(char* value)
 {
-    return toAstNode(allocAstPackageWithCStringName(_pool, value));
+    return toAstNode(autorelease_mmobj(allocAstPackageWithCStringName(_pool, value)));
 }
 
-AstNode la_ast_create_domain(char* value)
+AstNode ast_create_domain(char* value)
 {
-    return toAstNode(allocAstDomainNameWithCStringName(_pool, value));
+    return toAstNode(autorelease_mmobj(allocAstDomainNameWithCStringName(_pool, value)));
 }
 
-AstNode la_ast_create_identifier(char* value)
+AstNode ast_create_identifier(char* value)
 {
-    return toAstNode(allocAstIdentifierWithCStringName(_pool, value));
+    return toAstNode(autorelease_mmobj(allocAstIdentifierWithCStringName(_pool, value)));
 }
 
 
-AstNode la_ast_create_var_instance(AstNode declare, AstNode inst)
+AstNode ast_create_var_instance(AstNode declare, AstNode inst)
 {
     AstVarDeclare declare_obj = toAstVarDeclare(declare);
     AstVariable variable = toAstVariable(inst);
-    return toAstNode(allocAstVarInstantWithDeclareAndInstance(_pool, declare_obj, variable));
+    return toAstNode(autorelease_mmobj(allocAstVarInstantWithDeclareAndInstance(_pool, declare_obj, variable)));
 }
 
-AstNode la_ast_create_var_instance_ex(AstNode type, AstNode identifier, AstNode inst)
+AstNode ast_create_var_instance_ex(AstNode type, AstNode identifier, AstNode inst)
 {
     AstType type_obj = toAstType(type);
     AstIdentifier identifier_obj = toAstIdentifier(identifier);
-    AstVarDeclare declare = allocAstVarDeclareWithIdentifier(_pool, identifier_obj, type_obj);
-    return la_ast_create_var_instance(toAstNode(autorelease_mmobj(declare)), inst);
+    AstVarDeclare declare = autorelease_mmobj(allocAstVarDeclareWithIdentifier(_pool, identifier_obj, type_obj));
+    return ast_create_var_instance(toAstNode(declare), inst);
 }
 
-AstNode la_ast_create_var_declare(AstNode type, AstNode identifier)
+AstNode ast_create_var_declare(AstNode type, AstNode identifier)
 {
     AstType type_obj = toAstType(type);
     AstIdentifier identifier_obj = toAstIdentifier(identifier);
-    return toAstNode(allocAstVarDeclareWithIdentifier(_pool, identifier_obj, type_obj));
+    return toAstNode(autorelease_mmobj(allocAstVarDeclareWithIdentifier(_pool, identifier_obj, type_obj)));
 }
 
-AstNode la_ast_create_type_list(AstNode first, AstNode second)
+AstNode ast_create_type_list(AstNode first, AstNode second)
 {
     AstTypeList first_list = toAstTypeList(first);
     AstTypeList second_list = toAstTypeList(second);
 
     if (first_list && second_list) {
         concatTypeList(first_list, second_list);
-        return retain_mmobj(first);
+        return (first);
     }
     else if (first_list) {
         if (second) {
             addTypeToTypeList(first_list, toAstType(second));
         }
-        return retain_mmobj(first);
+        return (first);
     }
     else if (second_list) {
         if (first) {
             insertTypeToTypeListAt(second_list, toAstType(first), 0);
         }
-        return retain_mmobj(second);
+        return (second);
     }
     else {
         first_list = allocAstTypeList(_pool);
@@ -207,30 +205,30 @@ AstNode la_ast_create_type_list(AstNode first, AstNode second)
             addTypeToTypeList(first_list, toAstType(second));
         }
 
-        return toAstNode(first_list);
+        return toAstNode(autorelease_mmobj(first_list));
     }
 }
 
-AstNode la_ast_create_var_list(AstNode first, AstNode second)
+AstNode ast_create_var_list(AstNode first, AstNode second)
 {
     AstVarDeclareList first_list = toAstVarDeclareList(first);
     AstVarDeclareList second_list = toAstVarDeclareList(second);
 
     if (first_list && second_list) {
         concatVarDeclareList(first_list, second_list);
-        return retain_mmobj(first);
+        return (first);
     }
     else if (first_list) {
         if (second) {
             addVarDeclareToVarDeclareList(first_list, toAstVarDeclare(second));
         }
-        return retain_mmobj(first);
+        return (first);
     }
     else if (second_list) {
         if (first) {
             insertVarDeclareToVarDeclareListAt(second_list, toAstVarDeclare(first), 0);
         }
-        return retain_mmobj(second);
+        return (second);
     }
     else {
         first_list = allocAstVarDeclareList(_pool);
@@ -243,11 +241,11 @@ AstNode la_ast_create_var_list(AstNode first, AstNode second)
             addVarDeclareToVarDeclareList(first_list, toAstVarDeclare(second));
         }
 
-        return toAstNode(first_list);
+        return toAstNode(autorelease_mmobj(first_list));
     }
 }
 
-AstNode la_ast_create_external_declarations(AstNode first, AstNode second)
+AstNode ast_create_external_declarations(AstNode first, AstNode second)
 {
     AstExternalDeclarations first_list = toAstExternalDeclarations(first);
     AstExternalDeclarations second_list = toAstExternalDeclarations(second);
@@ -256,19 +254,19 @@ AstNode la_ast_create_external_declarations(AstNode first, AstNode second)
 
     if (first_list && second_list) {
         concatExternalDeclarations(first_list, second_list);
-        return retain_mmobj(first);
+        return (first);
     }
     else if (first_list) {
         if (second) {
             addExternalDeclarationTo(first_list, toAstNode(second));
         }
-        return retain_mmobj(first);
+        return (first);
     }
     else if (second_list) {
         if (first) {
             insertExternalDeclarationAt(second_list, toAstNode(first), 0);
         }
-        return retain_mmobj(second);
+        return (second);
     }
     else {
         first_list = allocAstExternalDeclarations(_pool);
@@ -281,30 +279,30 @@ AstNode la_ast_create_external_declarations(AstNode first, AstNode second)
             addExternalDeclarationTo(first_list, toAstNode(second));
         }
 
-        return toAstNode(first_list);
+        return toAstNode(autorelease_mmobj(first_list));
     }
 }
 
-AstNode la_ast_create_ast_body(AstNode first, AstNode second)
+AstNode ast_create_ast_body(AstNode first, AstNode second)
 {
     AstLaBody first_la_body = toAstLaBody(first);
     AstLaBody second_la_body = toAstLaBody(second);
 
     if (first_la_body && second_la_body) {
         concatLaBody(first_la_body, second_la_body);
-        return retain_mmobj(first);
+        return (first);
     }
     else if (first_la_body) {
         if (second) {
             addStmtToLaBody(first_la_body, toAstNode(second));
         }
-        return retain_mmobj(first);
+        return (first);
     }
     else if (second_la_body) {
         if (first) {
             insertStmtToLaBodyAt(second_la_body, toAstNode(first), 0);
         }
-        return retain_mmobj(second);
+        return (second);
     }
     else {
         first_la_body = allocAstLaBody(_pool);
@@ -317,61 +315,52 @@ AstNode la_ast_create_ast_body(AstNode first, AstNode second)
             addStmtToLaBody(first_la_body, toAstNode(second));
         }
 
-        return toAstNode(first_la_body);
+        return toAstNode(autorelease_mmobj(first_la_body));
     }
 
 }
 
-AstNode la_ast_create_la_declaration(AstNode input, AstNode body, AstNode output)
+AstNode ast_create_la_declaration(AstNode input, AstNode body, AstNode output)
 {
     if (verbose) plat_io_printf_dbg("Declare la\n");
 
     if (input == null)
     {
         // mean in:var input variable
-        AstNode name_obj = la_ast_create_identifier("in");
-        AstNode type_obj = la_ast_create_type(ast_type_var);
-        AstNode var_obj = la_ast_create_var_declare(type_obj, name_obj);
+        AstNode name_obj = ast_create_identifier("in");
+        AstNode type_obj = ast_create_type(ast_type_var);
+        AstNode var_obj = ast_create_var_declare(type_obj, name_obj);
 
-        input = la_ast_create_var_list(var_obj, null);
+        input = ast_create_var_list(var_obj, null);
 
-        release_mmobj(var_obj);
-        release_mmobj(type_obj);
-        release_mmobj(name_obj);
-
-        autorelease_mmobj(input);
     }
 
     if (output == null)
     {
         // mean var-type output variable
-        AstNode type_obj = la_ast_create_type(ast_type_var);
+        AstNode type_obj = ast_create_type(ast_type_var);
 
-        output = la_ast_create_type_list(type_obj, null);
-
-        release_mmobj(type_obj);
-
-        autorelease_mmobj(output);
+        output = ast_create_type_list(type_obj, null);
     }
 
-    return toAstNode(allocAstALaWithImpl(_pool, toAstVarDeclareList(input), toAstLaBody(body), toAstTypeList(output)));
+    return toAstNode(autorelease_mmobj(allocAstALaWithImpl(_pool, toAstVarDeclareList(input), toAstLaBody(body), toAstTypeList(output))));
 }
 
-AstNode la_ast_create_a_proc_la(AstNode package, AstNode external_declarations)
+AstNode ast_create_a_proc_la(AstNode package, AstNode external_declarations)
 {
-    if (verbose) plat_io_printf_dbg("la_ast_create_a_proc_la\n");
+    if (verbose) plat_io_printf_dbg("ast_create_a_proc_la\n");
     AstPackage package_obj = toAstPackage(package);
     AstExternalDeclarations external_declarations_obj = toAstExternalDeclarations(external_declarations);
 
-    *_ast = toAstNode(allocAstAProcLaWithPackageAndExternalDeclarations(_pool, package_obj, external_declarations_obj));
+    *_ast = toAstNode(autorelease_mmobj(allocAstAProcLaWithPackageAndExternalDeclarations(_pool, package_obj, external_declarations_obj)));
     return *_ast;
 }
 
-AstScope la_ast_impl_create_scope(AstNode trigger, AstScope last_scope)
+AstScope ast_impl_create_scope(AstNode trigger, AstScope last_scope)
 {
-    if (verbose) plat_io_printf_dbg("la_ast_impl_create_scope\n");
+    if (verbose) plat_io_printf_dbg("ast_impl_create_scope\n");
 
-    AstScope scope = allocAstScopeWithTriggerAndLastScope(_pool, trigger, last_scope);
+    AstScope scope = autorelease_mmobj(allocAstScopeWithTriggerAndLastScope(_pool, trigger, last_scope));
 
     return scope;
 }
@@ -419,7 +408,7 @@ void iterate_ast(AstNode obj, ast_iterator iterator)
         {
             case AST_A_PROC_LA:
             {
-                scope = autorelease_mmobj(la_ast_impl_create_scope(obj, scope/*last scope*/));
+                scope = ast_impl_create_scope(obj, scope/*last scope*/);
                 pushToAstStack(stack, toAstNode(scope));
                 // put all items
                 AstAProcLa aprocObj = toAstAProcLa(obj);
@@ -431,7 +420,7 @@ void iterate_ast(AstNode obj, ast_iterator iterator)
             }
             case AST_EXTERNAL_DECLARATIONS:
             {
-                scope = autorelease_mmobj(la_ast_impl_create_scope(obj, scope/*last scope*/));
+                scope = ast_impl_create_scope(obj, scope/*last scope*/);
                 pushToAstStack(stack, toAstNode(scope));
                 // put all items
                 AstExternalDeclarations externalDeclarations = toAstExternalDeclarations(obj);
@@ -442,7 +431,7 @@ void iterate_ast(AstNode obj, ast_iterator iterator)
             }
             case AST_A_LA:
             {
-                scope = autorelease_mmobj(la_ast_impl_create_scope(obj, scope/*last scope*/));
+                scope = ast_impl_create_scope(obj, scope/*last scope*/);
                 pushToAstStack(stack, toAstNode(scope));
 
                 AstALa variableLa = toAstALa(obj);
@@ -456,7 +445,7 @@ void iterate_ast(AstNode obj, ast_iterator iterator)
             }
             case AST_TYPE_LIST_DECLARATION:
             {
-                scope = autorelease_mmobj(la_ast_impl_create_scope(obj, scope/*last scope*/));
+                scope = ast_impl_create_scope(obj, scope/*last scope*/);
                 pushToAstStack(stack, toAstNode(scope));
                 // put all items
                 AstTypeList typeList = toAstTypeList(obj);
@@ -467,7 +456,7 @@ void iterate_ast(AstNode obj, ast_iterator iterator)
             }
             case AST_VAR_LIST_DECLARATION:
             {
-                scope = autorelease_mmobj(la_ast_impl_create_scope(obj, scope/*last scope*/));
+                scope = ast_impl_create_scope(obj, scope/*last scope*/);
                 pushToAstStack(stack, toAstNode(scope));
                 // put all items
                 AstVarDeclareList varDeclareList = toAstVarDeclareList(obj);
@@ -478,7 +467,7 @@ void iterate_ast(AstNode obj, ast_iterator iterator)
             }
             case AST_LA_BODY_DECLARATION:
             {
-                scope = autorelease_mmobj(la_ast_impl_create_scope(obj, scope/*last scope*/));
+                scope = ast_impl_create_scope(obj, scope/*last scope*/);
                 pushToAstStack(stack, toAstNode(scope));
                 // put all items
                 AstLaBody laBody = toAstLaBody(obj);
@@ -489,7 +478,7 @@ void iterate_ast(AstNode obj, ast_iterator iterator)
             }
             case AST_VAR_INSTANCE:
             {
-                scope = autorelease_mmobj(la_ast_impl_create_scope(obj, scope/*last scope*/));
+                scope = ast_impl_create_scope(obj, scope/*last scope*/);
                 pushToAstStack(stack, toAstNode(scope));
 
                 AstVarInstance varInstance = toAstVarInstance(obj);

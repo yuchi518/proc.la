@@ -62,6 +62,8 @@ int main() {
 
         if (res == 0 && ast != null)
         {
+            retain_mmobj(ast);
+            mgn_mem_release_unused(&pool);
             plat_io_printf_dbg("=== Tree ===\n");
             iterate_ast(ast, print_ast);
             plat_io_printf_dbg("=== Release ===\n");

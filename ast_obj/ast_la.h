@@ -8,6 +8,7 @@
 #include "ast_node.h"
 #include "ast_type.h"
 #include "ast_variable.h"
+#include "ast_expr.h"
 #include "ast_stmt.h"
 
 /// ===== External Declarations =====
