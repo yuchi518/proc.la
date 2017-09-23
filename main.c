@@ -5,18 +5,18 @@ bool print_ast(AstNode obj, uint level, scope_action action, AstScope scope)
 {
     static char sc[3];
     sc[scope_action_created] = '+';
-    sc[scope_action_using] = ' ';
+    sc[scope_action_using] = '|';
     sc[scope_action_destroyed] = '-';
     switch(oid_of_mmobj(obj))
     {
         case AST_VARIABLE_DOMAIN_NAME:
         {
-            plat_io_printf_std("%*s%c<<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], last_name_of_mmobj(obj), obj, retain_count_of_mmobj(obj), toAstDomainName(obj)->name->value);
+            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], last_name_of_mmobj(obj), obj, retain_count_of_mmobj(obj), toAstDomainName(obj)->name->value);
             break;
         }
         default:
         {
-            plat_io_printf_std("%*s%c<<%s(%p:%d)>>\n", level<<2, "", sc[action], last_name_of_mmobj(obj), obj, retain_count_of_mmobj(obj));
+            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\n", level<<2, "", sc[action], last_name_of_mmobj(obj), obj, retain_count_of_mmobj(obj));
             break;
         }
     }

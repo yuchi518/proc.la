@@ -323,7 +323,7 @@ AstNode la_ast_create_la_declaration(AstNode input, AstNode body, AstNode output
         autorelease_mmobj(output);
     }
 
-    return toAstNode(allocAstVariableLaWithImpl(_pool, toAstVarDeclareList(input), toAstLaBody(body), toAstTypeList(output)));
+    return toAstNode(allocAstALaWithImpl(_pool, toAstVarDeclareList(input), toAstLaBody(body), toAstTypeList(output)));
 }
 
 AstNode la_ast_create_a_proc_la(AstNode package, AstNode external_declarations)
@@ -409,12 +409,12 @@ void iterate_ast(AstNode obj, ast_iterator iterator)
                 sa = scope_action_created;
                 break;
             }
-            case AST_VARIABLE_LA:
+            case AST_A_LA:
             {
                 scope = autorelease_mmobj(la_ast_impl_create_scope(obj, scope/*last scope*/));
                 pushToAstStack(stack, toAstNode(scope));
 
-                AstVariableLa variableLa = toAstVariableLa(obj);
+                AstALa variableLa = toAstALa(obj);
 
                 if (variableLa->output) pushToAstStack(stack, toAstNode(variableLa->output));       // AST_TYPE_LIST_DECLARATION
                 if (variableLa->body) pushToAstStack(stack, toAstNode(variableLa->body));           // AST_LA_BODY_DECLARATION

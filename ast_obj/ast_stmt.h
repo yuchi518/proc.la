@@ -291,26 +291,28 @@ plat_inline void addStmtToLaBody(AstLaBody obj, AstNode stmt) {
     pushMMListItem(obj->stmts, toMMObject(stmt));
 }
 
-/// ===== Variable - La =====
+
+
+/// ===== La/Proc =====
 /**
  * Includes three parts:
  *   Input, input variable declaration (type + identifier)
  *   Body, statement, expression
  *   Output, output variable declaration (only type)
  */
-typedef struct AstVariableLa {
+typedef struct AstALa {
     // input + body + output declarations
     AstVarDeclareList input;
     AstLaBody body;
     AstTypeList output;
-}*AstVariableLa;
+}*AstALa;
 
-plat_inline AstVariableLa initAstVariableLa(AstVariableLa obj, Unpacker unpkr) {
+plat_inline AstALa initAstVariableLa(AstALa obj, Unpacker unpkr) {
     toAstVariable(obj)->type = ast_type_la;
     return obj;
 }
 
-plat_inline void destroyAstVariableLa(AstVariableLa obj) {
+plat_inline void destroyAstVariableLa(AstALa obj) {
     if (obj->input) {
         release_mmobj(obj->input);
     }
@@ -322,14 +324,14 @@ plat_inline void destroyAstVariableLa(AstVariableLa obj) {
     }
 }
 
-plat_inline void packAstVariableLa(AstVariableLa obj, Packer pkr) {
+plat_inline void packAstVariableLa(AstALa obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_VARIABLE_LA, AstVariableLa, AstVariable, initAstVariableLa, destroyAstVariableLa, packAstVariableLa);
+MMSubObject(AST_A_LA, AstALa, AstVariable, initAstVariableLa, destroyAstVariableLa, packAstVariableLa);
 
-plat_inline AstVariableLa allocAstVariableLaWithImpl(mgn_memory_pool* pool, AstVarDeclareList input, AstLaBody body, AstTypeList output) {
-    AstVariableLa obj = allocAstVariableLa(pool);
+plat_inline AstALa allocAstALaWithImpl(mgn_memory_pool* pool, AstVarDeclareList input, AstLaBody body, AstTypeList output) {
+    AstALa obj = allocAstALa(pool);
     if (obj) {
         obj->input = retain_mmobj(input);
         obj->body = retain_mmobj(body);
