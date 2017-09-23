@@ -287,8 +287,39 @@ AstNode la_ast_create_external_declarations(AstNode first, AstNode second)
 
 AstNode la_ast_create_ast_body(AstNode first, AstNode second)
 {
-    /// TODO: implementation
-    return toAstNode(allocAstLaBody(_pool));
+    AstLaBody first_la_body = toAstLaBody(first);
+    AstLaBody second_la_body = toAstLaBody(second);
+
+    if (first_la_body && second_la_body) {
+        concatLaBody(first_la_body, second_la_body);
+        return retain_mmobj(first);
+    }
+    else if (first_la_body) {
+        if (second) {
+            addStmtToLaBody(first_la_body, toAstNode(second));
+        }
+        return retain_mmobj(first);
+    }
+    else if (second_la_body) {
+        if (first) {
+            insertStmtToLaBodyAt(second_la_body, toAstNode(first), 0);
+        }
+        return retain_mmobj(second);
+    }
+    else {
+        first_la_body = allocAstLaBody(_pool);
+
+        if (first) {
+            addStmtToLaBody(first_la_body, toAstNode(first));
+        }
+
+        if (second) {
+            addStmtToLaBody(first_la_body, toAstNode(second));
+        }
+
+        return toAstNode(first_la_body);
+    }
+
 }
 
 AstNode la_ast_create_la_declaration(AstNode input, AstNode body, AstNode output)

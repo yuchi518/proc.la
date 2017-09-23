@@ -44,7 +44,6 @@ plat_inline void concatExternalDeclarations(AstExternalDeclarations dest_list, A
 }
 
 plat_inline void insertExternalDeclarationAt(AstExternalDeclarations list, AstNode declare, uint idx) {
-    plat_io_printf_dbg("ExtDec: %p\n", declare);
     insertMMListItem(list->external_declarations, toMMObject(declare), idx);
 }
 

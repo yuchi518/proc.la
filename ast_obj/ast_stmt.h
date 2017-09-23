@@ -290,11 +290,25 @@ plat_inline void packAstLaBody(AstLaBody obj, Packer pkr) {
 
 MMSubObject(AST_LA_BODY_DECLARATION, AstLaBody, AstStatement, initAstLaBody, destroyAstLaBody, packAstLaBody);
 
-plat_inline void addStmtToLaBody(AstLaBody obj, AstNode stmt) {
-    pushMMListItem(obj->stmts, toMMObject(stmt));
+plat_inline void addStmtToLaBody(AstLaBody body, AstNode stmt) {
+    pushMMListItem(body->stmts, toMMObject(stmt));
 }
 
+plat_inline void concatLaBody(AstLaBody body, AstLaBody a_list) {
+    concatMMList(body->stmts, a_list->stmts);
+}
 
+plat_inline void insertStmtToLaBodyAt(AstLaBody body, AstNode stmt, uint idx) {
+    insertMMListItem(body->stmts, toMMObject(stmt), idx);
+}
+
+plat_inline uint sizeOfLaBody(AstLaBody body) {
+    return sizeOfMMList(body->stmts);
+}
+
+plat_inline AstNode getStmtFromLaBodyAt(AstLaBody body, uint idx) {
+    return toAstNode(getMMListItem(body->stmts, idx));
+}
 
 /// ===== La/Proc =====
 /**

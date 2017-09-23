@@ -52,12 +52,8 @@ combined_var_type_specifier
     ;
 
 var_type_specifier
-    : basic_var_type_specifier {
-        $$ = $1;
-    }
-    | combined_var_type_specifier {
-        $$ = $1;
-    }
+    : basic_var_type_specifier
+    | combined_var_type_specifier
     ;
 
 var_declaration
@@ -113,8 +109,27 @@ la_output_declaration
     }
     ;
 
+la_body_segment
+    : var_declaration ';'
+    ;
+
+la_body_segments
+    : la_body_segments la_body_segment {
+        $$ = la_ast_create_ast_body($1, $2);
+        release_mmobj($1);
+        release_mmobj($2);
+    }
+    | la_body_segment {
+        $$ = la_ast_create_ast_body($1, null);
+        release_mmobj($1);
+    }
+    ;
+
 la_body_implementation
-    : '{' '}' {
+    : '{' la_body_segments '}' {
+        $$ = $2;
+    }
+    | '{' '}' {
         $$ = la_ast_create_ast_body(null, null);
     }
     ;
@@ -162,12 +177,8 @@ la_alias
     ;
 
 external_declaration
-    : la_alias {
-        $$ = $1;
-    }
-    | la_declaration {
-        $$ = $1;
-    }
+    : la_alias
+    | la_declaration
     ;
 
 external_declaration_list
@@ -183,9 +194,7 @@ external_declaration_list
     ;
 
 package_declare
-    : PACKAGE_NAME {
-        $$ = $1;
-    }
+    : PACKAGE_NAME
     ;
 
 a_proc_la
