@@ -30,7 +30,7 @@ enum {
 
     AST_STATEMENT,
     AST_PACKAGE,
-    AST_VAR_DECLARE,
+    AST_VAR_DECLARE,                    // variable type & name
     AST_VAR_INSTANCE,
     AST_VAR_LIST_DECLARATION,           // A list of var declarations, ex. A La input
     AST_TYPE_LIST_DECLARATION,          // A list of type declarations, ex. A La output
@@ -62,6 +62,22 @@ typedef enum {
     ast_type_list   = 1,
     ast_type_map    = 2,
 } ast_type_combination;
+
+plat_inline const char* ast_type_name(ast_type type) {
+    switch(type) {
+        case ast_type_var: return "var";
+        case ast_type_int: return "int";
+        case ast_type_long: return "long";
+        case ast_type_float: return "float";
+        case ast_type_double: return "double";
+        case ast_type_number: return "number";
+        case ast_type_string: return "string";
+        case ast_type_raw: return "raw";
+        case ast_type_proc: return "proc";
+        case ast_type_la: return "la";
+        default: return "Unknown";
+    }
+}
 
 
 /// ===== Abstract Tree node =====

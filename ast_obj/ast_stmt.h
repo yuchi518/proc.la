@@ -146,6 +146,9 @@ plat_inline void destroyAstVarDeclare(AstVarDeclare obj) {
     if (obj->identifier) {
         release_mmobj(obj->identifier);
     }
+    if (obj->identifier_type) {
+        release_mmobj(obj->identifier_type);
+    }
 }
 
 plat_inline void packAstVarDeclare(AstVarDeclare obj, Packer pkr) {
@@ -163,7 +166,7 @@ plat_inline AstVarDeclare allocAstVarDeclareWithIdentifier(mgn_memory_pool* pool
     AstVarDeclare obj = allocAstVarDeclare(pool);
     if (obj) {
         obj->identifier = retain_mmobj(identifier);
-        obj->identifier_type = type;
+        obj->identifier_type = retain_mmobj(type);
     }
     return obj;
 }

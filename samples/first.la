@@ -16,4 +16,6 @@ declare main:la
 
 } -> (var);
 
-
+// no input/output la
+declare test:la {
+};
