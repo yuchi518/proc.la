@@ -34,7 +34,8 @@ plat_inline void packAstExternalDeclarations(AstExternalDeclarations obj, Packer
 
 MMSubObject(AST_EXTERNAL_DECLARATIONS, AstExternalDeclarations, AstNode, initAstExternalDeclarations, destroyAstExternalDeclarations, packAstExternalDeclarations);
 
-plat_inline void addExternalDeclarationToExternalDeclarations(AstExternalDeclarations external_declarations, AstNode node) {
+plat_inline void addExternalDeclarationTo(AstExternalDeclarations external_declarations, AstNode node) {
+    //plat_io_printf_dbg("ExtDec: %p\n", node);
     pushMMListItem(external_declarations->external_declarations, toMMObject(node));
 }
 
@@ -42,8 +43,17 @@ plat_inline void concatExternalDeclarations(AstExternalDeclarations dest_list, A
     concatMMList(dest_list->external_declarations, a_list->external_declarations);
 }
 
-plat_inline void insertExternalDeclarationToExternalDeclarationsAt(AstExternalDeclarations list, AstNode declare, uint idx) {
+plat_inline void insertExternalDeclarationAt(AstExternalDeclarations list, AstNode declare, uint idx) {
+    plat_io_printf_dbg("ExtDec: %p\n", declare);
     insertMMListItem(list->external_declarations, toMMObject(declare), idx);
+}
+
+plat_inline uint sizeOfExternalDeclarations(AstExternalDeclarations list) {
+    return sizeOfMMList(list->external_declarations);
+}
+
+plat_inline AstNode getExternalDeclarationAt(AstExternalDeclarations list, uint idx) {
+    return toAstNode(getMMListItem(list->external_declarations, idx));
 }
 
 /// ===== A Proc La =====

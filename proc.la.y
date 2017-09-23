@@ -52,8 +52,12 @@ combined_var_type_specifier
     ;
 
 var_type_specifier
-    : basic_var_type_specifier
-    | combined_var_type_specifier
+    : basic_var_type_specifier {
+        $$ = $1;
+    }
+    | combined_var_type_specifier {
+        $$ = $1;
+    }
     ;
 
 var_declaration
@@ -158,8 +162,12 @@ la_alias
     ;
 
 external_declaration
-    : la_alias
-    | la_declaration
+    : la_alias {
+        $$ = $1;
+    }
+    | la_declaration {
+        $$ = $1;
+    }
     ;
 
 external_declaration_list
@@ -175,7 +183,9 @@ external_declaration_list
     ;
 
 package_declare
-    : PACKAGE_NAME
+    : PACKAGE_NAME {
+        $$ = $1;
+    }
     ;
 
 a_proc_la

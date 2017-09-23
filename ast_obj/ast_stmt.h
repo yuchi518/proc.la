@@ -119,6 +119,14 @@ plat_inline void insertTypeToTypeListAt(AstTypeList list, AstType type, uint idx
     insertMMListItem(list->list, toMMObject(type), idx);
 }
 
+plat_inline uint sizeOfTypeList(AstTypeList typeList) {
+    return sizeOfMMList(typeList->list);
+}
+
+plat_inline AstType getTypeFromTypeListAt(AstTypeList typeList, uint idx) {
+    return toAstType(getMMListItem(typeList->list, idx));
+}
+
 /// ===== Statement - Var Declaration =====
 /**
  * Includes two parts:
@@ -197,6 +205,14 @@ plat_inline void insertVarDeclareToVarDeclareListAt(AstVarDeclareList list, AstV
     insertMMListItem(list->list, toMMObject(declare), idx);
 }
 
+plat_inline uint sizeOfVarDeclareListAt(AstVarDeclareList varDeclareList) {
+    return sizeOfMMList(varDeclareList->list);
+}
+
+plat_inline AstVarDeclare getVarDeclareFromAstVarDeclareListAt(AstVarDeclareList varDeclareList, uint idx) {
+    return toAstVarDeclare(getMMListItem(varDeclareList->list, idx));
+}
+
 /// ===== Statement - Var Instance =====
 /**
  * Includes two parts:
@@ -250,18 +266,18 @@ plat_inline AstVarInstance allocAstVarInstantWithDeclareAndInstance(mgn_memory_p
 /// ===== Statement - La body =====
 
 typedef struct AstLaBody {
-    MMList list;
+    MMList stmts;               // not all AstStatement objs,
 }*AstLaBody;
 
 plat_inline AstLaBody initAstLaBody(AstLaBody obj, Unpacker unpkr) {
-    obj->list = allocMMList(pool_of_mmobj(obj));
-    if (obj->list == null) return null;
+    obj->stmts = allocMMList(pool_of_mmobj(obj));
+    if (obj->stmts == null) return null;
     return obj;
 }
 
 plat_inline void destroyAstLaBody(AstLaBody obj) {
-    if (obj->list) {
-        release_mmobj(obj->list);
+    if (obj->stmts) {
+        release_mmobj(obj->stmts);
     }
 }
 
@@ -271,8 +287,8 @@ plat_inline void packAstLaBody(AstLaBody obj, Packer pkr) {
 
 MMSubObject(AST_LA_BODY_DECLARATION, AstLaBody, AstStatement, initAstLaBody, destroyAstLaBody, packAstLaBody);
 
-plat_inline void addStmtToLaBody(AstLaBody obj, AstStatement stmt) {
-    pushMMListItem(obj->list, toMMObject(stmt));
+plat_inline void addStmtToLaBody(AstLaBody obj, AstNode stmt) {
+    pushMMListItem(obj->stmts, toMMObject(stmt));
 }
 
 /// ===== Variable - La =====

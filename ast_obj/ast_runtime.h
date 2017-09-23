@@ -37,6 +37,22 @@ plat_inline AstStack allocAstStackWithANode(mgn_memory_pool* pool, AstNode node)
     return obj;
 }
 
+plat_inline uint sizeOfAstStack(AstStack stack) {
+    return sizeOfMMList(stack->nodes);
+}
+
+plat_inline bool isEmptyAstStack(AstStack stack) {
+    return (sizeOfAstStack(stack) == 0)?true:false;
+}
+
+plat_inline void pushToAstStack(AstStack stack, AstNode node) {
+    pushMMListItem(stack->nodes, toMMObject(node));
+}
+
+plat_inline AstNode popFromAstStack(AstStack stack) {
+    MMObject obj = popMMListItem(stack->nodes);
+    return toAstNode(obj);
+}
 
 /// ===== Scope =====
 

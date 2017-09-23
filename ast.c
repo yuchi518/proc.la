@@ -1,10 +1,8 @@
 //
 // Created by Yuchi Chen on 2017/8/13.
 //
-#include <stdarg.h>
 
 #include "ast.h"
-#include "ast_runtime.h"
 #include "proc.la.l.c"
 
 static struct src_stack *_curbs = null;
@@ -62,7 +60,7 @@ AstNode la_ast_create_type(ast_type type)
 
 AstNode la_ast_create_combined_type(AstNode base_type, ast_type_combination container_typ)
 {
-    //if (verbose) plat_io_printf_std("la_ast_create_combined_type - %s - %d\n", name_of_mmobj(base_type), container_typ);
+    //if (verbose) plat_io_printf_dbg("la_ast_create_combined_type - %s - %d\n", name_of_mmobj(base_type), container_typ);
 
     AstTypeCombination combination = toAstTypeCombination(base_type);
 
@@ -98,7 +96,7 @@ AstNode la_ast_create_combined_type(AstNode base_type, ast_type_combination cont
 
 AstNode la_ast_create_const_i(char* value)
 {
-    if (verbose) plat_io_printf_std("Create int - %s\n", value);
+    if (verbose) plat_io_printf_dbg("Create int - %s\n", value);
 
     // TODO: implement parser
     // include three types: la_ast_inst_int, la_ast_inst_long, la_ast_inst_number
@@ -119,7 +117,7 @@ AstNode la_ast_create_const_i(char* value)
 
 AstNode la_ast_create_const_f(char* value)
 {
-    if (verbose) plat_io_printf_std("Create float - %s\n", value);
+    if (verbose) plat_io_printf_dbg("Create float - %s\n", value);
 
     AstNode obj = toAstNode(allocVariableWithFloatValue(_pool, 0));
     // TODO: implement float, double parser
@@ -129,7 +127,7 @@ AstNode la_ast_create_const_f(char* value)
 
 AstNode la_ast_create_const_s(char* value)
 {
-    if (verbose) plat_io_printf_std("Create string - %s\n", value);
+    if (verbose) plat_io_printf_dbg("Create string - %s\n", value);
 
     return toAstNode(allocVariableWithCString(_pool, value));
 }
@@ -180,7 +178,7 @@ AstNode la_ast_create_var_declare(AstNode type, AstNode identifier)
 AstNode la_ast_create_type_list(AstNode first, AstNode second)
 {
     AstTypeList first_list = toAstTypeList(first);
-    AstTypeList second_list = toAstTypeList(first);
+    AstTypeList second_list = toAstTypeList(second);
 
     if (first_list && second_list) {
         concatTypeList(first_list, second_list);
@@ -216,7 +214,7 @@ AstNode la_ast_create_type_list(AstNode first, AstNode second)
 AstNode la_ast_create_var_list(AstNode first, AstNode second)
 {
     AstVarDeclareList first_list = toAstVarDeclareList(first);
-    AstVarDeclareList second_list = toAstVarDeclareList(first);
+    AstVarDeclareList second_list = toAstVarDeclareList(second);
 
     if (first_list && second_list) {
         concatVarDeclareList(first_list, second_list);
@@ -252,7 +250,9 @@ AstNode la_ast_create_var_list(AstNode first, AstNode second)
 AstNode la_ast_create_external_declarations(AstNode first, AstNode second)
 {
     AstExternalDeclarations first_list = toAstExternalDeclarations(first);
-    AstExternalDeclarations second_list = toAstExternalDeclarations(first);
+    AstExternalDeclarations second_list = toAstExternalDeclarations(second);
+
+    //plat_io_printf_dbg("ext_dec %s(%p) - %s(%p)\n", last_name_of_mmobj(first), first, last_name_of_mmobj(second), second);
 
     if (first_list && second_list) {
         concatExternalDeclarations(first_list, second_list);
@@ -260,13 +260,13 @@ AstNode la_ast_create_external_declarations(AstNode first, AstNode second)
     }
     else if (first_list) {
         if (second) {
-            addExternalDeclarationToExternalDeclarations(first_list, toAstNode(second));
+            addExternalDeclarationTo(first_list, toAstNode(second));
         }
         return retain_mmobj(first);
     }
     else if (second_list) {
         if (first) {
-            insertExternalDeclarationToExternalDeclarationsAt(second_list, toAstNode(first), 0);
+            insertExternalDeclarationAt(second_list, toAstNode(first), 0);
         }
         return retain_mmobj(second);
     }
@@ -274,11 +274,11 @@ AstNode la_ast_create_external_declarations(AstNode first, AstNode second)
         first_list = allocAstExternalDeclarations(_pool);
 
         if (first) {
-            addExternalDeclarationToExternalDeclarations(first_list, toAstNode(first));
+            addExternalDeclarationTo(first_list, toAstNode(first));
         }
 
         if (second) {
-            addExternalDeclarationToExternalDeclarations(first_list, toAstNode(second));
+            addExternalDeclarationTo(first_list, toAstNode(second));
         }
 
         return toAstNode(first_list);
@@ -293,7 +293,7 @@ AstNode la_ast_create_ast_body(AstNode first, AstNode second)
 
 AstNode la_ast_create_la_declaration(AstNode input, AstNode body, AstNode output)
 {
-    if (verbose) plat_io_printf_std("Declare la\n");
+    if (verbose) plat_io_printf_dbg("Declare la\n");
 
     if (input == null)
     {
@@ -328,7 +328,7 @@ AstNode la_ast_create_la_declaration(AstNode input, AstNode body, AstNode output
 
 AstNode la_ast_create_a_proc_la(AstNode package, AstNode external_declarations)
 {
-    if (verbose) plat_io_printf_std("la_ast_create_a_proc_la\n");
+    if (verbose) plat_io_printf_dbg("la_ast_create_a_proc_la\n");
     AstPackage package_obj = toAstPackage(package);
     AstExternalDeclarations external_declarations_obj = toAstExternalDeclarations(external_declarations);
 
@@ -338,7 +338,7 @@ AstNode la_ast_create_a_proc_la(AstNode package, AstNode external_declarations)
 
 AstScope la_ast_impl_create_scope(AstNode trigger, AstScope last_scope)
 {
-    if (verbose) plat_io_printf_std("la_ast_impl_create_scope\n");
+    if (verbose) plat_io_printf_dbg("la_ast_impl_create_scope\n");
 
     AstScope scope = allocAstScopeWithTriggerAndLastScope(_pool, trigger, last_scope);
 
@@ -348,123 +348,174 @@ AstScope la_ast_impl_create_scope(AstNode trigger, AstScope last_scope)
 
 /// ============================= AST implementation =======================================================
 
-#if 0
+plat_inline void pushAllToAstStack(AstStack stack, MMList list, bool revert) {
+    const uint size = sizeOfMMList(list);
+    uint idx;
+    if (size)
+    {
+        if (revert) {
+            idx = size;
+            do {
+                idx--;
+                AstNode node = toAstNode(getMMListItem(list, idx));
+                pushToAstStack(stack, node);
+                //plat_io_printf_dbg("%d. %p\n", idx, node);
+            } while (idx > 0);
+        } else {
+            for (idx=0; idx<size; idx++) {
+                AstNode node = toAstNode(getMMListItem(list, idx));
+                pushToAstStack(stack, node);
+                //plat_io_printf_dbg("%d. %p\n", idx, node);
+            }
+        }
+    }
+}
+
 void iterate_ast(AstNode obj, ast_iterator iterator)
 {
-    struct la_ast* scope = null;
-    struct la_ast_impl_scope* scopeObj = null;
+    AstScope scope = null;
 
-    struct la_ast* stack = la_ast_create_collection(la_ast_impl_stack, obj, null);
-    struct la_ast_collection* stackObj = _obj2inst(stack, struct la_ast_collection);
+    AstStack stack = allocAstStackWithANode(_pool, obj);
+    fflush(stdout);
     uint level = 0;
-    bool postpone;
+    scope_action sa;
 
-    while (utarray_len(&stackObj->collection))
+    while (!isEmptyAstStack(stack))
     {
-        void* tmp_ptr = utarray_back(&stackObj->collection);;
-        obj = *(struct la_ast**)tmp_ptr;
-        //if (obj==null) break;
-        utarray_pop_back(&stackObj->collection);
+        obj = popFromAstStack(stack);
 
-        switch(obj->typ)
+        switch(oid_of_mmobj(obj))
         {
-            case la_ast_var_list_declaration:
-            case la_ast_type_list_declaration:
-            case la_ast_external_declarations:
-            case la_ast_la_body_declaration:
+            case AST_A_PROC_LA:
             {
-                level++;
-
-                scope = la_ast_impl_create_scope(obj, scope/*last scope*/);
-                scopeObj = _obj2inst(scope, struct la_ast_impl_scope);
-                utarray_push_back(&stackObj->collection, &scope);
+                scope = autorelease_mmobj(la_ast_impl_create_scope(obj, scope/*last scope*/));
+                pushToAstStack(stack, toAstNode(scope));
                 // put all items
-                struct la_ast_collection* collObj = _obj2inst(obj, struct la_ast_collection);
-                //utarray_concat(&stackObj->collection, &collObj->collection);
-                struct la_ast** p;
-                for(p=(struct la_ast**)utarray_back(&collObj->collection); p!=NULL; p=(struct la_ast**)utarray_prev(&collObj->collection,p))
-                {
-                    utarray_push_back(&stackObj->collection, p);
+                AstAProcLa aprocObj = toAstAProcLa(obj);
+                pushToAstStack(stack, toAstNode(aprocObj->external_declarations));
+                pushToAstStack(stack, toAstNode(aprocObj->package));
+
+                sa = scope_action_created;
+                break;
+            }
+            case AST_EXTERNAL_DECLARATIONS:
+            {
+                scope = autorelease_mmobj(la_ast_impl_create_scope(obj, scope/*last scope*/));
+                pushToAstStack(stack, toAstNode(scope));
+                // put all items
+                AstExternalDeclarations externalDeclarations = toAstExternalDeclarations(obj);
+                pushAllToAstStack(stack, externalDeclarations->external_declarations, true);
+
+                sa = scope_action_created;
+                break;
+            }
+            case AST_VARIABLE_LA:
+            {
+                scope = autorelease_mmobj(la_ast_impl_create_scope(obj, scope/*last scope*/));
+                pushToAstStack(stack, toAstNode(scope));
+
+                AstVariableLa variableLa = toAstVariableLa(obj);
+
+                if (variableLa->output) pushToAstStack(stack, toAstNode(variableLa->output));       // AST_TYPE_LIST_DECLARATION
+                if (variableLa->body) pushToAstStack(stack, toAstNode(variableLa->body));           // AST_LA_BODY_DECLARATION
+                if (variableLa->input) pushToAstStack(stack, toAstNode(variableLa->input));         // AST_VAR_LIST_DECLARATION
+
+                sa = scope_action_created;
+                break;
+            }
+            case AST_TYPE_LIST_DECLARATION:
+            {
+                scope = autorelease_mmobj(la_ast_impl_create_scope(obj, scope/*last scope*/));
+                pushToAstStack(stack, toAstNode(scope));
+                // put all items
+                AstTypeList typeList = toAstTypeList(obj);
+                pushAllToAstStack(stack, typeList->list, true);
+
+                sa = scope_action_created;
+                break;
+            }
+            case AST_VAR_LIST_DECLARATION:
+            {
+                scope = autorelease_mmobj(la_ast_impl_create_scope(obj, scope/*last scope*/));
+                pushToAstStack(stack, toAstNode(scope));
+                // put all items
+                AstVarDeclareList varDeclareList = toAstVarDeclareList(obj);
+                pushAllToAstStack(stack, varDeclareList->list, true);
+
+                sa = scope_action_created;
+                break;
+            }
+            case AST_LA_BODY_DECLARATION:
+            {
+                scope = autorelease_mmobj(la_ast_impl_create_scope(obj, scope/*last scope*/));
+                pushToAstStack(stack, toAstNode(scope));
+                // put all items
+                AstLaBody laBody = toAstLaBody(obj);
+                pushAllToAstStack(stack, laBody->stmts, true);
+
+                sa = scope_action_created;
+                break;
+            }
+            case AST_VAR_INSTANCE:
+            {
+                scope = autorelease_mmobj(la_ast_impl_create_scope(obj, scope/*last scope*/));
+                pushToAstStack(stack, toAstNode(scope));
+
+                AstVarInstance varInstance = toAstVarInstance(obj);
+                pushToAstStack(stack, toAstNode(varInstance->inst));
+                pushToAstStack(stack, toAstNode(varInstance->declare));
+
+                sa = scope_action_created;
+                break;
+            }
+            case AST_SCOPE:
+            {
+                if (scope != toAstScope(obj)) {
+                    plat_io_printf_err("Impossible\n");
                 }
+                scope = toAstScope(obj);
+                obj = scope->trigger;
 
-                postpone = true;
-                break;
-            }
-            case la_ast_var_instance:
-            {
-                level ++;
-
-                scope = la_ast_impl_create_scope(obj, scope/*last scope*/);
-                scopeObj = _obj2inst(scope, struct la_ast_impl_scope);
-                utarray_push_back(&stackObj->collection, &scope);
-
-                struct la_ast_var_instance* varInstObj = _obj2inst(obj, struct la_ast_var_instance);
-                if (varInstObj->inst) utarray_push_back(&stackObj->collection, &varInstObj->inst);
-                if (varInstObj->declare) utarray_push_back(&stackObj->collection, &varInstObj->declare);
-
-                postpone = true;
-                break;
-            }
-            case la_ast_la_declaration:
-            {
-                level ++;
-
-                scope = la_ast_impl_create_scope(obj, scope/*last scope*/);
-                scopeObj = _obj2inst(scope, struct la_ast_impl_scope);
-                utarray_push_back(&stackObj->collection, &scope);
-
-                struct la_ast_la_declaration* laObj = _obj2inst(obj, struct la_ast_la_declaration);
-                if (laObj->body) utarray_push_back(&stackObj->collection, &laObj->body);
-                if (laObj->output) utarray_push_back(&stackObj->collection, &laObj->output);
-                if (laObj->input) utarray_push_back(&stackObj->collection, &laObj->input);
-
-                postpone = true;
-                break;
-            }
-            case la_ast_a_proc_la:
-            {
-                level ++;
-
-                scope = la_ast_impl_create_scope(obj, scope/*last scope*/);
-                scopeObj = _obj2inst(scope, struct la_ast_impl_scope);
-                utarray_push_back(&stackObj->collection, &scope);
-                // put all items
-                struct la_ast_a_proc_la* aprocObj = _obj2inst(obj, struct la_ast_a_proc_la);
-                utarray_push_back(&stackObj->collection, &aprocObj->external_declarations);
-                utarray_push_back(&stackObj->collection, &aprocObj->package_name);
-
-                postpone = true;
-                break;
-            }
-            case la_ast_impl_scope:
-            {
-                level--;
-
-                scopeObj = _obj2inst(obj, struct la_ast_impl_scope);
-                // restore last section
-                obj = scopeObj->trigger;
-                scope = scopeObj->last_scope;
-                release_mmobj(&scopeObj->is_a);
-                scopeObj = _obj2inst(scope, struct la_ast_impl_scope);
-
-                postpone = false;
+                sa = scope_action_destroyed;
                 break;
             }
             default:
             {
-                postpone = false;
+                sa = scope_action_using;
                 break;
             }
+
         }
 
-        if (!postpone) iterator(obj, level);
+        if (sa == scope_action_destroyed)
+        {
+            level --;
+        }
 
+        iterator(obj, level, sa, scope);
 
+        if (sa == scope_action_created)
+        {
+            level ++;
+        }
+        else if (sa == scope_action_destroyed)
+        {
+            // restore last scope
+            scope = scope->last_scope;
 
+            // == garbage collection ==
+            uint size0 = mgn_mem_count_of_mem(_pool);
+            mgn_mem_release_unused(_pool);
+            uint size1 = mgn_mem_count_of_mem(_pool);
+            if (size0 != size1) {
+                //plat_io_printf_dbg("GC, autorelease count: %u\n", size0-size1);
+            }
+        }
     }
 
     release_mmobj(stack);
 
 }
 
-#endif
+
+

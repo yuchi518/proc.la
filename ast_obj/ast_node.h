@@ -22,10 +22,10 @@ enum {
     AST_TYPE,
     AST_TYPE_COMBINATION,
 
-    AST_VARIABLE,
+    AST_VARIABLE,                       // primary type variable
     AST_VARIABLE_COMBINATION,
-    AST_VARIABLE_LIST,
-    AST_VARIABLE_MAP,
+    //AST_VARIABLE_LIST,
+    //AST_VARIABLE_MAP,
     AST_VARIABLE_LA,                    // input + body + output
     AST_VARIABLE_DOMAIN_NAME,
 
@@ -33,9 +33,9 @@ enum {
     AST_PACKAGE,
     AST_VAR_DECLARE,
     AST_VAR_INSTANCE,
-    AST_VAR_LIST_DECLARATION,
-    AST_TYPE_LIST_DECLARATION,
-    AST_LA_BODY_DECLARATION,            // only body
+    AST_VAR_LIST_DECLARATION,           // A list of var declarations, ex. A La input
+    AST_TYPE_LIST_DECLARATION,          // A list of type declarations, ex. A La output
+    AST_LA_BODY_DECLARATION,            // A la body
     AST_EXTERNAL_DECLARATIONS,
 
     AST_A_PROC_LA,

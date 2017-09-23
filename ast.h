@@ -6,6 +6,7 @@
 #define PROC_LA_AST_C_H
 
 #include "ast_la.h"
+#include "ast_runtime.h"
 
 AstNode la_ast_create_none(void);
 AstNode la_ast_create_type(ast_type type);
@@ -29,7 +30,13 @@ AstNode la_ast_create_a_proc_la(AstNode package, AstNode external_declarations);
 
 /// =================== ast management =================
 int create_ast(mgn_memory_pool* pool, char* source_code, uint source_code_size, AstNode* ast);
-typedef bool (*ast_iterator)(AstNode obj, uint level);
+
+typedef enum {
+    scope_action_created    = 2,
+    scope_action_using      = 1,
+    scope_action_destroyed  = 0,
+} scope_action;
+typedef bool (*ast_iterator)(AstNode obj, uint level, scope_action action, AstScope scope);
 void iterate_ast(AstNode obj, ast_iterator iterator);
 
 #endif //PROC_LA_AST_C_H
