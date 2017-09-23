@@ -250,7 +250,7 @@ AstNode ast_create_external_declarations(AstNode first, AstNode second)
     AstExternalDeclarations first_list = toAstExternalDeclarations(first);
     AstExternalDeclarations second_list = toAstExternalDeclarations(second);
 
-    //plat_io_printf_dbg("ext_dec %s(%p) - %s(%p)\n", last_name_of_mmobj(first), first, last_name_of_mmobj(second), second);
+    //plat_io_printf_dbg("ext_dec %s(%p) - %s(%p)\n", name_of_last_mmobj(first), first, name_of_last_mmobj(second), second);
 
     if (first_list && second_list) {
         concatExternalDeclarations(first_list, second_list);
@@ -404,7 +404,7 @@ void iterate_ast(AstNode obj, ast_iterator iterator)
     {
         obj = popFromAstStack(stack);
 
-        switch(oid_of_mmobj(obj))
+        switch(oid_of_last_mmobj(obj))
         {
             case AST_A_PROC_LA:
             {

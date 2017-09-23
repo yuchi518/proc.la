@@ -8,30 +8,30 @@ bool print_ast(AstNode obj, uint level, scope_action action, AstScope scope)
     sc[scope_action_using] = '|';
     sc[scope_action_destroyed] = '-';
 
-    switch(oid_of_mmobj(obj))
+    switch(oid_of_last_mmobj(obj))
     {
         case AST_VARIABLE_DOMAIN_NAME:
         {
-            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], last_name_of_mmobj(obj), obj, retain_count_of_mmobj(obj), toAstDomainName(obj)->name->value);
+            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj), toAstDomainName(obj)->name->value);
             break;
         }
         case AST_VAR_DECLARE:
         {
             AstVarDeclare varDeclare = toAstVarDeclare(obj);
-            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s:%s\n", level<<2, "", sc[action], last_name_of_mmobj(obj), obj, retain_count_of_mmobj(obj),
+            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s:%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
                                varDeclare->identifier->name->value, ast_type_name(varDeclare->identifier_type->type));
 
             break;
         }
         case AST_TYPE:
         {
-            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], last_name_of_mmobj(obj), obj, retain_count_of_mmobj(obj),
+            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
                                ast_type_name(toAstType(obj)->type));
             break;
         }
         default:
         {
-            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\n", level<<2, "", sc[action], last_name_of_mmobj(obj), obj, retain_count_of_mmobj(obj));
+            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj));
             break;
         }
     }
