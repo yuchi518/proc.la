@@ -22,6 +22,7 @@
 //%right          IF ELSE
 //%precedence     IF
 //%precedence     ELSE
+%right          APPLY_TO
 
 %start          a_proc_la
 
@@ -172,27 +173,39 @@ conditional_expression
 
 assignment_expression
 	: conditional_expression
-	| assignment_expression APPLY_TO unary_expression
     ;
 
-//argument_expression_list
-//	: assignment_expression
-//	| argument_expression_list ',' assignment_expression
-//	;
+container_expression
+    : assignment_expression
+	| '[' list_initializer_list ']'
+	| '{' map_initializer_list '}'
+	;
+
+list_initializer_list
+    : container_expression
+    | list_initializer_list ',' container_expression
+    ;
+
+map_initializer_list
+    : string ':' container_expression
+    | map_initializer_list ',' string ':' container_expression
+    ;
 
 expression
-    : assignment_expression
-	| value_initializer
+    : container_expression
     | expression ',' assignment_expression
 	| '(' ')'
 //	| '(' expression ')'
+    | expression la_statement la_body_declaration
+	| expression APPLY_TO IDENTIFIER
     ;
 
 expression_statement
 	: ';'
 	| expression ';'
 	| expression APPLY_TO OUT ';'
-	| la_assignment_expression ';'
+    | expression la_statement IDENTIFIER ';'
+    | expression la_statement OUT ';'
 	;
 
 // ===== la statement/expression =====
@@ -200,12 +213,6 @@ expression_statement
 la_statement
     : pipe_op la_body_declaration pipe_op
     | la_statement pipe_op la_body_declaration pipe_op
-    ;
-
-la_assignment_expression
-    : expression la_statement IDENTIFIER
-    | expression la_statement OUT
-    | expression la_statement pipe_op la_body_declaration
     ;
 
 pipe_op
@@ -222,31 +229,13 @@ declaration
 	;
 
 init_declarator
-	: value_initializer APPLY_TO declarator
+	: container_expression APPLY_TO declarator
 	| declarator
 	;
 
 declarator
     : var_declaration
     ;
-
-value_initializer
-    : assignment_expression
-	| '[' list_initializer_list ']'
-	| '{' map_initializer_list '}'
-	;
-
-list_initializer_list
-    : value_initializer
-//    | assignment_expression
-    | list_initializer_list ',' assignment_expression
-    ;
-
-map_initializer_list
-    : value_initializer
-    | string ':' assignment_expression
-    | map_initializer_list ',' string ':' assignment_expression
-
 
 // ==== statement flow =====
 
