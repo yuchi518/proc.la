@@ -15,7 +15,13 @@
 
 %token          RIGHT_ASSIGN LEFT_ASSIGN ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN AND_ASSIGN XOR_ASSIGN OR_ASSIGN
 %token          RIGHT_OP LEFT_OP INC_OP DEC_OP AND_OP OR_OP LE_OP GE_OP EQ_OP NE_OP
+
+%token          AUTO BREAK CASE CONTINUE DEFAULT DO ELSE FOR GOTO IF SWITCH WHILE
 %token          IS OUT DECLARE SYNC DOMAIN_NAME PACKAGE_NAME
+
+//%right          IF ELSE
+//%precedence     IF
+//%precedence     ELSE
 
 %start          a_proc_la
 
@@ -48,40 +54,272 @@ combined_var_type_specifier
     ;
 
 
-la_const
+primary_expression
+    : IDENTIFIER
+    | constant
+    | string
+    | '(' expression ')'
+    ;
+
+// only for case statement
+value_expression
+    : IDENTIFIER
+    | constant
+    | string
+    | '(' value_expression ')'
+    ;
+
+constant
     : N_CONSTANT
     | I_CONSTANT
     | F_CONSTANT
-    | STRING_LITERAL
     ;
 
-la_math_op_0
-    : la_express '*' la_express
-    | la_express '/' la_express
-    | la_express '%' la_express
+string
+    : STRING_LITERAL
     ;
 
-la_math_op_1
-    : la_express '+' la_express
-    | la_express '-' la_express
+// === expression ===
+
+postfix_expression
+	: primary_expression
+	| postfix_expression '[' expression ']'
+	| postfix_expression '{' expression '}'
+//	| postfix_expression '.' IDENTIFIER
+//	| postfix_expression PTR_OP IDENTIFIER
+	| postfix_expression INC_OP
+	| postfix_expression DEC_OP
+//	| '(' type_name ')' '{' initializer_list '}'
+//	| '(' type_name ')' '{' initializer_list ',' '}'
+	;
+
+unary_expression
+    : postfix_expression
+    | INC_OP unary_expression
+    | DEC_OP unary_expression
+    | unary_operator unary_expression
     ;
 
-la_express
-    : la_const
-    | IDENTIFIER
-    | la_math_op_1
-    | '(' la_express ')' {
-        $$ = $2;
-    }
-    | la_express APPLY_TO IDENTIFIER {
+unary_operator
+	: '+'
+	| '-'
+	| '~'
+	| '!'
+	;
 
-    }
+multiplicative_expression
+	: unary_expression
+	| multiplicative_expression '*' unary_expression
+	| multiplicative_expression '/' unary_expression
+	| multiplicative_expression '%' unary_expression
+	;
+
+additive_expression
+	: multiplicative_expression
+	| additive_expression '+' multiplicative_expression
+	| additive_expression '-' multiplicative_expression
+	;
+
+shift_expression
+	: additive_expression
+	| shift_expression LEFT_OP additive_expression
+	| shift_expression RIGHT_OP additive_expression
+	;
+
+relational_expression
+	: shift_expression
+	| relational_expression '<' shift_expression
+	| relational_expression '>' shift_expression
+	| relational_expression LE_OP shift_expression
+	| relational_expression GE_OP shift_expression
+	;
+
+equality_expression
+	: relational_expression
+	| equality_expression EQ_OP relational_expression
+	| equality_expression NE_OP relational_expression
+	;
+
+and_expression
+	: equality_expression
+	| and_expression '&' equality_expression
+	;
+
+exclusive_or_expression
+	: and_expression
+	| exclusive_or_expression '^' and_expression
+	;
+
+inclusive_or_expression
+	: exclusive_or_expression
+	| inclusive_or_expression '|' exclusive_or_expression
+	;
+
+logical_and_expression
+	: inclusive_or_expression
+	| logical_and_expression AND_OP inclusive_or_expression
+	;
+
+logical_or_expression
+	: logical_and_expression
+	| logical_or_expression OR_OP logical_and_expression
+	;
+
+conditional_expression
+	: logical_or_expression
+	| logical_or_expression '?' expression ':' conditional_expression
+	;
+
+assignment_expression
+	: conditional_expression
+	| assignment_expression APPLY_TO unary_expression
     ;
 
-la_segment
-    : var_declaration ';'
-    | la_express ';'
+//argument_expression_list
+//	: assignment_expression
+//	| argument_expression_list ',' assignment_expression
+//	;
+
+expression
+    : assignment_expression
+	| value_initializer
+    | expression ',' assignment_expression
+	| '(' ')'
+//	| '(' expression ')'
     ;
+
+expression_statement
+	: ';'
+	| expression ';'
+	| expression APPLY_TO OUT ';'
+	| la_assignment_expression ';'
+	;
+
+// ===== la statement/expression =====
+
+la_statement
+    : pipe_op la_body_declaration pipe_op
+    | la_statement pipe_op la_body_declaration pipe_op
+    ;
+
+la_assignment_expression
+    : expression la_statement IDENTIFIER
+    | expression la_statement OUT
+    | expression la_statement pipe_op la_body_declaration
+    ;
+
+pipe_op
+    : PIPE_1_TO_1
+    | PIPE_REDUCE
+    | PIPE_EXPAND
+    | PIPE_INJECT
+    ;
+
+// ======================== declaration ==================
+
+declaration
+	: init_declarator ';'
+	;
+
+init_declarator
+	: value_initializer APPLY_TO declarator
+	| declarator
+	;
+
+declarator
+    : var_declaration
+    ;
+
+value_initializer
+    : assignment_expression
+	| '[' list_initializer_list ']'
+	| '{' map_initializer_list '}'
+	;
+
+list_initializer_list
+    : value_initializer
+//    | assignment_expression
+    | list_initializer_list ',' assignment_expression
+    ;
+
+map_initializer_list
+    : value_initializer
+    | string ':' assignment_expression
+    | map_initializer_list ',' string ':' assignment_expression
+
+
+// ==== statement flow =====
+
+statement
+	: labeled_statement
+	| compound_statement
+	| expression_statement
+	| selection_statement
+	| iteration_statement
+	| jump_statement
+	;
+
+labeled_statement
+	: IDENTIFIER ':' statement
+	;
+
+case_statement
+    : CASE value_expression ':' statement
+    | DEFAULT ':' statement
+    ;
+
+cases_block_statement
+    : cases_block_statement case_statement
+    | case_statement
+    ;
+
+compound_statement
+    : '{' '}' {
+        // TODO: refine the function
+	    $$ = ast_create_ast_body(null, null);
+	}
+	| '{'  block_item_list '}' {
+	    $$ = $2;
+	}
+	;
+
+block_item_list
+	: block_item
+	| block_item_list block_item {
+	    // TODO: refine the function
+	    $$ = ast_create_ast_body($1, $2);
+	}
+	;
+
+block_item
+	: declaration
+	| statement
+	;
+
+selection_statement
+	: IF '(' expression ')' statement ELSE statement
+	| IF '(' expression ')' statement
+	| SWITCH '(' expression ')' '{' cases_block_statement '}'
+	;
+
+iteration_statement
+	: WHILE '(' expression ')' statement
+	| DO statement WHILE '(' expression ')' ';'
+	| FOR '(' expression_statement expression_statement ')' statement
+	| FOR '(' expression_statement expression_statement expression ')' statement
+	| FOR '(' declaration expression_statement ')' statement
+	| FOR '(' declaration expression_statement expression ')' statement
+	;
+
+jump_statement
+	: GOTO IDENTIFIER ';'
+	| CONTINUE ';'
+	| BREAK ';'
+//	| RETURN ';'
+//	| RETURN expression ';'
+	;
+
+/// ====================================================
 
 var_type_specifier
     : basic_var_type_specifier
@@ -132,35 +370,26 @@ la_output_declaration
     }
     ;
 
-la_body_segments
-    : la_body_segments la_segment {
-        $$ = ast_create_ast_body($1, $2);
-    }
-    | la_segment {
-        $$ = ast_create_ast_body($1, null);
-    }
-    ;
-
-la_body_implementation
-    : '{' la_body_segments '}' {
-        $$ = $2;
-    }
-    | '{' '}' {
-        $$ = ast_create_ast_body(null, null);
-    }
-    ;
-
 la_body_declaration
-    : la_input_declaration APPLY_TO la_body_implementation APPLY_TO la_output_declaration {
+    : la_input_declaration APPLY_TO compound_statement APPLY_TO la_output_declaration {
         $$ = ast_create_la_declaration($1, $3, $5);
     }
-    | la_input_declaration APPLY_TO la_body_implementation {
+    | la_input_declaration compound_statement la_output_declaration {
+        $$ = ast_create_la_declaration($1, $2, $3);
+    }
+    | la_input_declaration APPLY_TO compound_statement {
         $$ = ast_create_la_declaration($1, $3, null);
     }
-    | la_body_implementation APPLY_TO la_output_declaration {
+    | la_input_declaration compound_statement {
+        $$ = ast_create_la_declaration($1, $2, null);
+    }
+    | compound_statement APPLY_TO la_output_declaration {
         $$ = ast_create_la_declaration(null, $1, $3);
     }
-    | la_body_implementation {
+    | compound_statement la_output_declaration {
+        $$ = ast_create_la_declaration(null, $1, $2);
+    }
+    | compound_statement {
         $$ = ast_create_la_declaration(null, $1, null);
     }
     ;

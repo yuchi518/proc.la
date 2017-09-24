@@ -45,6 +45,20 @@ struct src_stack
 "/*"                                                    { comment(); }
 "//".*                                                  { /*log_verb("CMD", 0);*/ /* consume //-comment */ }
 
+"auto"					                                { return(AUTO); }
+"break"			                                		{ return(BREAK); }
+"case"					                                { return(CASE); }
+"continue"				                                { return(CONTINUE); }
+"default"				                                { return(DEFAULT); }
+"do"					                                { return(DO); }
+"else"					                                { return(ELSE); }
+"for"					                                { return(FOR); }
+"goto"					                                { return(GOTO); }
+"if"					                                { return(IF); }
+"switch"				                                { return(SWITCH); }
+"while"					                                { return(WHILE); }
+
+
 "int"					                                { yylval = ast_create_type(ast_type_int); return(INT); }
 "long"					                                { yylval = ast_create_type(ast_type_long); return(LONG); }
 "float"					                                { yylval = ast_create_type(ast_type_float); return(FLOAT); }
