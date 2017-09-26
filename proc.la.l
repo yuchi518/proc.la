@@ -57,7 +57,8 @@ struct src_stack
 "if"					                                { return(IF); }
 "switch"				                                { return(SWITCH); }
 "while"					                                { return(WHILE); }
-
+"loop"                                                  { return(LOOP); }
+"each"                                                  { return(EACH); }
 
 "int"					                                { yylval = ast_create_type(ast_type_int); return(INT); }
 "long"					                                { yylval = ast_create_type(ast_type_long); return(LONG); }

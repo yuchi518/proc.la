@@ -46,13 +46,13 @@ i"key_of_description" -> s:string;
 %keywords: math, add
 #description:
 declare add:la
-(int a1, int a2) -> {
+(int a1, int a2) {
     (a1 + a2) -> out;
-} -> (int)
+} (int)
 
 // proc compatibly
 declare add:la
-(var in) -> {
+(var in) {
     if (in is int[])
     {
         0 -> total:int;
@@ -64,7 +64,7 @@ declare add:la
     }
 
     "aaa" -> error;
-} -> (var)
+} (var)
 
 declare add2:la
 (a:int, b:int) {
@@ -73,7 +73,7 @@ declare add2:la
 
 
 declare main:la
-(in:var) -> {
+(in:var) {
 
     if (in is [])
     {
@@ -81,11 +81,11 @@ declare main:la
     }
 
     none -> out;
-} -> (var)
+} (var)
 
 
 declare main:la
-(input:var) -> {
+(input:var) {
 
     (1) -> out;
 
@@ -99,5 +99,5 @@ declare main:la
     list --> length --> size:int;
     while (; size != 0
 
-} -> (var);
+} (var);
 

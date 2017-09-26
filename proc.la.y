@@ -16,13 +16,15 @@
 %token          RIGHT_ASSIGN LEFT_ASSIGN ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN AND_ASSIGN XOR_ASSIGN OR_ASSIGN
 %token          RIGHT_OP LEFT_OP INC_OP DEC_OP AND_OP OR_OP LE_OP GE_OP EQ_OP NE_OP
 
-%token          AUTO BREAK CASE CONTINUE DEFAULT DO ELSE FOR GOTO IF SWITCH WHILE
+%token          AUTO BREAK CASE CONTINUE DEFAULT DO ELSE FOR GOTO IF SWITCH WHILE LOOP EACH
 %token          IS OUT DECLARE SYNC DOMAIN_NAME PACKAGE_NAME
 
 //%right          IF ELSE
-//%precedence     IF
-//%precedence     ELSE
-%right          APPLY_TO
+//%precedence     ':'
+//%precedence     var_type_specifier
+//%right          APPLY_TO
+%right          IDENTIFIER ':'
+%right          ')' ELSE
 
 %start          a_proc_la
 
@@ -194,25 +196,33 @@ map_initializer_list
 expression
     : container_expression
     | expression ',' assignment_expression
+    | var_declaration
 	| '(' ')'
-//	| '(' expression ')'
     | expression la_statement la_body_declaration
-	| expression APPLY_TO IDENTIFIER
+	| expression la_statement IDENTIFIER
+    | expression la_statement var_declaration
+    | expression APPLY_TO var_declaration
     ;
 
 expression_statement
 	: ';'
 	| expression ';'
-	| expression APPLY_TO OUT ';'
-    | expression la_statement IDENTIFIER ';'
     | expression la_statement OUT ';'
+    | expression APPLY_TO OUT ';'
 	;
+
+/*identifier_or_declarator
+    : IDENTIFIER
+    | IDENTIFIER ':' var_type_specifier
+    ;*/
 
 // ===== la statement/expression =====
 
 la_statement
-    : pipe_op la_body_declaration pipe_op
+    : pipe_op IDENTIFIER pipe_op
+    | pipe_op la_body_declaration pipe_op
     | la_statement pipe_op la_body_declaration pipe_op
+    | la_statement pipe_op IDENTIFIER pipe_op
     ;
 
 pipe_op
@@ -223,7 +233,7 @@ pipe_op
     ;
 
 // ======================== declaration ==================
-
+/*
 declaration
 	: init_declarator ';'
 	;
@@ -236,7 +246,7 @@ init_declarator
 declarator
     : var_declaration
     ;
-
+*/
 // ==== statement flow =====
 
 statement
@@ -281,23 +291,24 @@ block_item_list
 	;
 
 block_item
-	: declaration
-	| statement
+	: statement
 	;
 
 selection_statement
-	: IF '(' expression ')' statement ELSE statement
-	| IF '(' expression ')' statement
+	: IF '(' expression ')' statement
+	| IF '(' expression ')' statement ELSE statement
 	| SWITCH '(' expression ')' '{' cases_block_statement '}'
 	;
 
 iteration_statement
-	: WHILE '(' expression ')' statement
-	| DO statement WHILE '(' expression ')' ';'
-	| FOR '(' expression_statement expression_statement ')' statement
-	| FOR '(' expression_statement expression_statement expression ')' statement
-	| FOR '(' declaration expression_statement ')' statement
-	| FOR '(' declaration expression_statement expression ')' statement
+    : LOOP statement
+    | EACH '(' expression ')' statement
+//	: WHILE '(' expression ')' statement
+///	| DO statement WHILE '(' expression ')' ';'
+//	| FOR '(' expression_statement expression_statement ')' statement
+//	| FOR '(' expression_statement expression_statement expression ')' statement
+//	| FOR '(' declaration expression_statement ')' statement
+//	| FOR '(' declaration expression_statement expression ')' statement
 	;
 
 jump_statement
@@ -360,21 +371,21 @@ la_output_declaration
     ;
 
 la_body_declaration
-    : la_input_declaration APPLY_TO compound_statement APPLY_TO la_output_declaration {
+    : /*la_input_declaration APPLY_TO compound_statement APPLY_TO la_output_declaration {
         $$ = ast_create_la_declaration($1, $3, $5);
     }
-    | la_input_declaration compound_statement la_output_declaration {
+    |*/ la_input_declaration compound_statement la_output_declaration {
         $$ = ast_create_la_declaration($1, $2, $3);
     }
-    | la_input_declaration APPLY_TO compound_statement {
-        $$ = ast_create_la_declaration($1, $3, null);
-    }
+    //| la_input_declaration APPLY_TO compound_statement {
+    //    $$ = ast_create_la_declaration($1, $3, null);
+    //}
     | la_input_declaration compound_statement {
         $$ = ast_create_la_declaration($1, $2, null);
     }
-    | compound_statement APPLY_TO la_output_declaration {
-        $$ = ast_create_la_declaration(null, $1, $3);
-    }
+    //| compound_statement APPLY_TO la_output_declaration {
+    //    $$ = ast_create_la_declaration(null, $1, $3);
+    //}
     | compound_statement la_output_declaration {
         $$ = ast_create_la_declaration(null, $1, $2);
     }

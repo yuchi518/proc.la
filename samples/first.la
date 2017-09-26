@@ -7,15 +7,15 @@
 la.proc.matrix.add -> matrix_add:la;
 
 declare add:la
-(a:int, b:int) -> {
-    c:double;
-} -> (int);
+(a:int, b:int) {
+    (c:double);
+} (int);
 
 // main la
 declare main:la
-(input:var) -> {
+(input:var) {
 
-} -> (var);
+} (var);
 
 // no input/output la
 declare test:la {
