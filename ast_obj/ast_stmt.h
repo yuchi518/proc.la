@@ -9,33 +9,6 @@
 #include "ast_variable.h"
 #include "ast_ctrl.h"
 
-/// ===== Statement =====
-
-typedef struct AstStatement {
-
-}*AstStatement;
-
-plat_inline AstStatement initAstStatement(AstStatement obj, Unpacker unpkr) {
-    return obj;
-}
-
-plat_inline void destroyAstStatement(AstStatement obj) {
-
-}
-
-plat_inline void packAstStatement(AstStatement obj, Packer pkr) {
-
-}
-
-MMSubObject(AST_STATEMENT, AstStatement, AstNode , initAstStatement, destroyAstStatement, packAstStatement);
-
-plat_inline AstStatement allocAstStatementWith(mgn_memory_pool* pool, ...) {
-    AstStatement obj = allocAstStatement(pool);
-    if (obj) {
-    }
-    return obj;
-}
-
 
 /// ===== Stmt - Package =====
 
@@ -216,145 +189,49 @@ plat_inline AstVarDeclare getVarDeclareFromAstVarDeclareListAt(AstVarDeclareList
     return toAstVarDeclare(getMMListItem(varDeclareList->list, idx));
 }
 
-/// ===== Statement - Var Instance =====
-/**
- * Includes two parts:
- *   var declare
- *   variable
- */
-
-typedef struct AstVarInstance {
-    AstVarDeclare declare;
-    AstVariable inst;
-}*AstVarInstance;
-
-plat_inline AstVarInstance initAstVarInstant(AstVarInstance obj, Unpacker unpkr) {
-    return obj;
-}
-
-plat_inline void destroyAstVarInstant(AstVarInstance obj) {
-    if (obj->declare) {
-        release_mmobj(obj->declare);
-    }
-    if (obj->inst) {
-        release_mmobj(obj->inst);
-    }
-}
-
-plat_inline void packAstVarInstant(AstVarInstance obj, Packer pkr) {
-
-}
-
-MMSubObject(AST_VAR_INSTANCE, AstVarInstance, AstStatement, initAstVarInstant, destroyAstVarInstant, packAstVarInstant);
-
-plat_inline AstVarInstance allocAstVarInstantWithDeclareAndInstance(mgn_memory_pool* pool, AstVarDeclare declare, AstVariable instance) {
-    if (declare == null) {
-        plat_io_printf_err("Declare can not be null\n");
-        return null;
-    }
-    if (instance == null) {
-        plat_io_printf_err("Instance can't be null\n");
-        return null;
-    }
-
-    AstVarInstance obj = allocAstVarInstance(pool);
-    if (obj) {
-        obj->declare = retain_mmobj(declare);
-        obj->inst = retain_mmobj(instance);
-    }
-    return obj;
-}
-
 
 /// ===== Statement - La body =====
 
-typedef struct AstLaBody {
+typedef struct AstBlockStatement {
     MMList stmts;               // not all AstStatement objs,
-}*AstLaBody;
+}*AstBlockStatement;
 
-plat_inline AstLaBody initAstLaBody(AstLaBody obj, Unpacker unpkr) {
+plat_inline AstBlockStatement initAstBlockStatement(AstBlockStatement obj, Unpacker unpkr) {
     obj->stmts = allocMMList(pool_of_mmobj(obj));
     if (obj->stmts == null) return null;
     return obj;
 }
 
-plat_inline void destroyAstLaBody(AstLaBody obj) {
+plat_inline void destroyAstBlockStatement(AstBlockStatement obj) {
     if (obj->stmts) {
         release_mmobj(obj->stmts);
     }
 }
 
-plat_inline void packAstLaBody(AstLaBody obj, Packer pkr) {
+plat_inline void packAstBlockStatement(AstBlockStatement obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_LA_BODY_DECLARATION, AstLaBody, AstStatement, initAstLaBody, destroyAstLaBody, packAstLaBody);
+MMSubObject(AST_LA_BODY_DECLARATION, AstBlockStatement, AstStatement, initAstBlockStatement, destroyAstBlockStatement, packAstBlockStatement);
 
-plat_inline void addStmtToLaBody(AstLaBody body, AstNode stmt) {
-    pushMMListItem(body->stmts, toMMObject(stmt));
+plat_inline void addStmtToBlock(AstBlockStatement block, AstNode stmt) {
+    pushMMListItem(block->stmts, toMMObject(stmt));
 }
 
-plat_inline void concatLaBody(AstLaBody body, AstLaBody a_list) {
-    concatMMList(body->stmts, a_list->stmts);
+plat_inline void concatBlock(AstBlockStatement block, AstBlockStatement a_list) {
+    concatMMList(block->stmts, a_list->stmts);
 }
 
-plat_inline void insertStmtToLaBodyAt(AstLaBody body, AstNode stmt, uint idx) {
-    insertMMListItem(body->stmts, toMMObject(stmt), idx);
+plat_inline void insertStmtToBlockAt(AstBlockStatement block, AstNode stmt, uint idx) {
+    insertMMListItem(block->stmts, toMMObject(stmt), idx);
 }
 
-plat_inline uint sizeOfLaBody(AstLaBody body) {
-    return sizeOfMMList(body->stmts);
+plat_inline uint sizeOfBlock(AstBlockStatement block) {
+    return sizeOfMMList(block->stmts);
 }
 
-plat_inline AstNode getStmtFromLaBodyAt(AstLaBody body, uint idx) {
-    return toAstNode(getMMListItem(body->stmts, idx));
-}
-
-/// ===== La/Proc =====
-/**
- * Includes three parts:
- *   Input, input variable declaration (type + identifier)
- *   Body, statement, expression
- *   Output, output variable declaration (only type)
- */
-typedef struct AstALa {
-    // input + body + output declarations
-    AstVarDeclareList input;
-    AstLaBody body;
-    AstTypeList output;
-}*AstALa;
-
-plat_inline AstALa initAstVariableLa(AstALa obj, Unpacker unpkr) {
-    toAstVariable(obj)->type = ast_type_la;
-    return obj;
-}
-
-plat_inline void destroyAstVariableLa(AstALa obj) {
-    if (obj->input) {
-        release_mmobj(obj->input);
-    }
-    if (obj->body) {
-        release_mmobj(obj->body);
-    }
-    if (obj->output) {
-        release_mmobj(obj->output);
-    }
-}
-
-plat_inline void packAstVariableLa(AstALa obj, Packer pkr) {
-
-}
-
-MMSubObject(AST_A_LA, AstALa, AstVariable, initAstVariableLa, destroyAstVariableLa, packAstVariableLa);
-
-plat_inline AstALa allocAstALaWithImpl(mgn_memory_pool* pool, AstVarDeclareList input, AstLaBody body, AstTypeList output) {
-    AstALa obj = allocAstALa(pool);
-    if (obj) {
-        obj->input = retain_mmobj(input);
-        obj->body = retain_mmobj(body);
-        obj->output = retain_mmobj(output);
-    }
-    return obj;
+plat_inline AstNode getStmtFromBlockAt(AstBlockStatement block, uint idx) {
+    return toAstNode(getMMListItem(block->stmts, idx));
 }
 
 

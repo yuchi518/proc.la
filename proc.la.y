@@ -61,7 +61,9 @@ primary_expression
     : IDENTIFIER
     | constant
     | string
-    | '(' expression ')'
+    | '(' expression ')' {
+        $$ = ast_create_parentheses_expr($2);
+    }
     ;
 
 // only for case statement
@@ -69,7 +71,9 @@ value_expression
     : IDENTIFIER
     | constant
     | string
-    | '(' value_expression ')'
+    | '(' value_expression ')' {
+        $$ = ast_create_parentheses_expr($2);
+    }
     ;
 
 constant
@@ -86,91 +90,151 @@ string
 
 postfix_expression
 	: primary_expression
-	| postfix_expression '[' expression ']'
-	| postfix_expression '{' expression '}'
+	| postfix_expression '[' expression ']' {
+	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_list_access);
+	}
+	| postfix_expression '{' expression '}' {
+	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_map_access);
+	}
 //	| postfix_expression '.' IDENTIFIER
 //	| postfix_expression PTR_OP IDENTIFIER
-	| postfix_expression INC_OP
-	| postfix_expression DEC_OP
+	| postfix_expression INC_OP {
+	    $$ = ast_create_unary_op_expr($1, ast_unary_op_inc_f);
+	}
+	| postfix_expression DEC_OP {
+	    $$ = ast_create_unary_op_expr($1, ast_unary_op_dec_l);
+	}
 //	| '(' type_name ')' '{' initializer_list '}'
 //	| '(' type_name ')' '{' initializer_list ',' '}'
 	;
 
 unary_expression
     : postfix_expression
-    | INC_OP unary_expression
-    | DEC_OP unary_expression
-    | unary_operator unary_expression
+    | INC_OP unary_expression {
+        $$ = ast_create_unary_op_expr($2, ast_unary_op_inc_f);
+    }
+    | DEC_OP unary_expression {
+        $$ = ast_create_unary_op_expr($2, ast_unary_op_dec_f);
+    }
+    | unary_operator unary_expression {
+        $$ = ast_create_unary_op_expr_ex($2, $1);
+    }
     ;
 
 unary_operator
-	: '+'
-	| '-'
-	| '~'
-	| '!'
+	: '+' {
+	    $$ = ast_create_unary_op_expr(null, ast_unary_op_plus);
+	}
+	| '-' {
+	    $$ = ast_create_unary_op_expr(null, ast_unary_op_minus);
+	}
+	| '~' {
+	    $$ = ast_create_unary_op_expr(null, ast_unary_op_invert);
+	}
+	| '!' {
+	    $$ = ast_create_unary_op_expr(null, ast_unary_op_not);
+	}
 	;
 
 multiplicative_expression
 	: unary_expression
-	| multiplicative_expression '*' unary_expression
-	| multiplicative_expression '/' unary_expression
-	| multiplicative_expression '%' unary_expression
+	| multiplicative_expression '*' unary_expression {
+	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_multiply);
+	}
+	| multiplicative_expression '/' unary_expression {
+	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_divide);
+	}
+	| multiplicative_expression '%' unary_expression {
+	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_modulo);
+	}
 	;
 
 additive_expression
 	: multiplicative_expression
-	| additive_expression '+' multiplicative_expression
-	| additive_expression '-' multiplicative_expression
+	| additive_expression '+' multiplicative_expression {
+	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_add);
+	}
+	| additive_expression '-' multiplicative_expression {
+	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_subtract);
+	}
 	;
 
 shift_expression
 	: additive_expression
-	| shift_expression LEFT_OP additive_expression
-	| shift_expression RIGHT_OP additive_expression
+	| shift_expression LEFT_OP additive_expression {
+	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_shift_left);
+	}
+	| shift_expression RIGHT_OP additive_expression {
+	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_shift_right);
+	}
 	;
 
 relational_expression
 	: shift_expression
-	| relational_expression '<' shift_expression
-	| relational_expression '>' shift_expression
-	| relational_expression LE_OP shift_expression
-	| relational_expression GE_OP shift_expression
+	| relational_expression '<' shift_expression {
+	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_less);
+	}
+	| relational_expression '>' shift_expression {
+	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_great);
+	}
+	| relational_expression LE_OP shift_expression {
+	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_less_or_equal);
+	}
+	| relational_expression GE_OP shift_expression {
+	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_great_or_equal);
+	}
 	;
 
 equality_expression
 	: relational_expression
-	| equality_expression EQ_OP relational_expression
-	| equality_expression NE_OP relational_expression
+	| equality_expression EQ_OP relational_expression {
+	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_equal);
+	}
+	| equality_expression NE_OP relational_expression {
+	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_not_equal);
+	}
 	;
 
 and_expression
 	: equality_expression
-	| and_expression '&' equality_expression
+	| and_expression '&' equality_expression {
+	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_bit_and);
+	}
 	;
 
 exclusive_or_expression
 	: and_expression
-	| exclusive_or_expression '^' and_expression
+	| exclusive_or_expression '^' and_expression {
+	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_bit_xor);
+	}
 	;
 
 inclusive_or_expression
 	: exclusive_or_expression
-	| inclusive_or_expression '|' exclusive_or_expression
+	| inclusive_or_expression '|' exclusive_or_expression {
+	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_bit_or);
+	}
 	;
 
 logical_and_expression
 	: inclusive_or_expression
-	| logical_and_expression AND_OP inclusive_or_expression
+	| logical_and_expression AND_OP inclusive_or_expression {
+	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_and);
+	}
 	;
 
 logical_or_expression
 	: logical_and_expression
-	| logical_or_expression OR_OP logical_and_expression
+	| logical_or_expression OR_OP logical_and_expression {
+	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_or);
+	}
 	;
 
 conditional_expression
 	: logical_or_expression
-	| logical_or_expression '?' expression ':' conditional_expression
+	| logical_or_expression '?' expression ':' conditional_expression {
+	    $$ = ast_create_ternary_op_expr($1, $3, $5, ast_ternary_op_conditional);
+	}
 	;
 
 assignment_expression
@@ -223,6 +287,7 @@ la_statement
     | pipe_op la_body_declaration pipe_op
     | la_statement pipe_op la_body_declaration pipe_op
     | la_statement pipe_op IDENTIFIER pipe_op
+    | la_statement pipe_op DOMAIN_NAME pipe_op
     ;
 
 pipe_op
@@ -251,7 +316,7 @@ declarator
 
 statement
 	: labeled_statement
-	| compound_statement
+	| block_statement
 	| expression_statement
 	| selection_statement
 	| iteration_statement
@@ -272,10 +337,10 @@ cases_block_statement
     | case_statement
     ;
 
-compound_statement
+block_statement
     : '{' '}' {
         // TODO: refine the function
-	    $$ = ast_create_ast_body(null, null);
+	    $$ = ast_create_block(null, null);
 	}
 	| '{'  block_item_list '}' {
 	    $$ = $2;
@@ -286,7 +351,7 @@ block_item_list
 	: block_item
 	| block_item_list block_item {
 	    // TODO: refine the function
-	    $$ = ast_create_ast_body($1, $2);
+	    $$ = ast_create_block($1, $2);
 	}
 	;
 
@@ -371,25 +436,25 @@ la_output_declaration
     ;
 
 la_body_declaration
-    : /*la_input_declaration APPLY_TO compound_statement APPLY_TO la_output_declaration {
+    : /*la_input_declaration APPLY_TO block_statement APPLY_TO la_output_declaration {
         $$ = ast_create_la_declaration($1, $3, $5);
     }
-    |*/ la_input_declaration compound_statement la_output_declaration {
+    |*/ la_input_declaration block_statement la_output_declaration {
         $$ = ast_create_la_declaration($1, $2, $3);
     }
-    //| la_input_declaration APPLY_TO compound_statement {
+    //| la_input_declaration APPLY_TO block_statement {
     //    $$ = ast_create_la_declaration($1, $3, null);
     //}
-    | la_input_declaration compound_statement {
+    | la_input_declaration block_statement {
         $$ = ast_create_la_declaration($1, $2, null);
     }
-    //| compound_statement APPLY_TO la_output_declaration {
+    //| block_statement APPLY_TO la_output_declaration {
     //    $$ = ast_create_la_declaration(null, $1, $3);
     //}
-    | compound_statement la_output_declaration {
+    | block_statement la_output_declaration {
         $$ = ast_create_la_declaration(null, $1, $2);
     }
-    | compound_statement {
+    | block_statement {
         $$ = ast_create_la_declaration(null, $1, null);
     }
     ;

@@ -150,6 +150,108 @@ AstNode ast_create_identifier(char* value)
     return toAstNode(autorelease_mmobj(allocAstIdentifierWithCStringName(_pool, value)));
 }
 
+AstNode ast_create_parentheses_expr(AstNode expr)
+{
+    return toAstNode(autorelease_mmobj(allocAstParenthesesExprWithExpr(_pool, toAstExpression(expr))));
+}
+
+AstNode ast_create_unary_op_expr(AstNode expr, ast_unary_op op)
+{
+    switch (op)
+    {
+        case ast_unary_op_plus:
+        case ast_unary_op_minus:
+        case ast_unary_op_invert:
+        case ast_unary_op_not:
+        case ast_unary_op_inc_f:
+        case ast_unary_op_inc_l:
+        case ast_unary_op_dec_f:
+        case ast_unary_op_dec_l:
+            break;
+        default: {
+            plat_io_printf_err("Incorrect unary op(%d)\n", op);
+            return null;
+        }
+    }
+
+    // expr can be null
+
+    return toAstNode(autorelease_mmobj(allocAstUnaryOpExprWithOp(_pool, toAstExpression(expr), op)));
+}
+
+AstNode ast_create_unary_op_expr_ex(AstNode expr, AstNode op) {
+    AstUnaryOpExpr opExpr = toAstUnaryOpExpr(op);
+    if (opExpr == null) {
+        plat_io_printf_err("Op(%s) is not a op expr.\n", name_of_last_mmobj(op));
+        return null;
+    }
+    if (expr == null) {
+        plat_io_printf_err("Expr can't be null.\n");
+        return null;
+    }
+    AstExpression expression = toAstExpression(expr);
+    if (expression == null) {
+        plat_io_printf_err("expr(%s) is an expr object.\n", name_of_last_mmobj(expr));
+        return null;
+    }
+
+    opExpr->expr = retain_mmobj(expression);
+
+    return op;
+}
+
+AstNode ast_create_binary_op_expr(AstNode expr_a, AstNode expr_b, ast_binary_op op)
+{
+    switch (op)
+    {
+        case ast_binary_op_add:
+        case ast_binary_op_subtract:
+        case ast_binary_op_multiply:
+        case ast_binary_op_divide:
+        case ast_binary_op_modulo:
+
+        case ast_binary_op_list_access:
+        case ast_binary_op_map_access:
+
+        case ast_binary_op_shift_left:
+        case ast_binary_op_shift_right:
+
+        case ast_binary_op_equal:
+        case ast_binary_op_not_equal:
+        case ast_binary_op_less:
+        case ast_binary_op_great:
+        case ast_binary_op_less_or_equal:
+        case ast_binary_op_great_or_equal:
+        case ast_binary_op_and:
+        case ast_binary_op_or:
+
+        case ast_binary_op_bit_and:
+        case ast_binary_op_bit_or:
+        case ast_binary_op_bit_xor:
+            break;
+        default: {
+            plat_io_printf_err("Incorrect binary op(%d)\n", op);
+            return null;
+        }
+    }
+
+    return toAstNode(autorelease_mmobj(allocAstBinaryOpExprWithOp(_pool, toAstExpression(expr_a), toAstExpression(expr_b), op)));
+}
+
+AstNode ast_create_ternary_op_expr(AstNode expr_a, AstNode expr_b, AstNode expr_c, ast_ternary_op op)
+{
+    switch (op)
+    {
+        case ast_ternary_op_conditional:
+            break;
+        default: {
+            plat_io_printf_err("Incorrect ternary op(%d)\n", op);
+            return null;
+        }
+    }
+
+    return toAstNode(autorelease_mmobj(allocAstTernaryOpExprWithOp(_pool, toAstExpression(expr_a), toAstExpression(expr_b), toAstExpression(expr_c), op)));
+}
 
 AstNode ast_create_var_instance(AstNode declare, AstNode inst)
 {
@@ -283,39 +385,39 @@ AstNode ast_create_external_declarations(AstNode first, AstNode second)
     }
 }
 
-AstNode ast_create_ast_body(AstNode first, AstNode second)
+AstNode ast_create_block(AstNode first, AstNode second)
 {
-    AstLaBody first_la_body = toAstLaBody(first);
-    AstLaBody second_la_body = toAstLaBody(second);
+    AstBlockStatement first_block = toAstBlockStatement(first);
+    AstBlockStatement second_block = toAstBlockStatement(second);
 
-    if (first_la_body && second_la_body) {
-        concatLaBody(first_la_body, second_la_body);
+    if (first_block && second_block) {
+        concatBlock(first_block, second_block);
         return (first);
     }
-    else if (first_la_body) {
+    else if (first_block) {
         if (second) {
-            addStmtToLaBody(first_la_body, toAstNode(second));
+            addStmtToBlock(first_block, toAstNode(second));
         }
         return (first);
     }
-    else if (second_la_body) {
+    else if (second_block) {
         if (first) {
-            insertStmtToLaBodyAt(second_la_body, toAstNode(first), 0);
+            insertStmtToBlockAt(second_block, toAstNode(first), 0);
         }
         return (second);
     }
     else {
-        first_la_body = allocAstLaBody(_pool);
+        first_block = allocAstBlockStatement(_pool);
 
         if (first) {
-            addStmtToLaBody(first_la_body, toAstNode(first));
+            addStmtToBlock(first_block, toAstNode(first));
         }
 
         if (second) {
-            addStmtToLaBody(first_la_body, toAstNode(second));
+            addStmtToBlock(first_block, toAstNode(second));
         }
 
-        return toAstNode(autorelease_mmobj(first_la_body));
+        return toAstNode(autorelease_mmobj(first_block));
     }
 
 }
@@ -332,7 +434,6 @@ AstNode ast_create_la_declaration(AstNode input, AstNode body, AstNode output)
         AstNode var_obj = ast_create_var_declare(type_obj, name_obj);
 
         input = ast_create_var_list(var_obj, null);
-
     }
 
     if (output == null)
@@ -343,7 +444,7 @@ AstNode ast_create_la_declaration(AstNode input, AstNode body, AstNode output)
         output = ast_create_type_list(type_obj, null);
     }
 
-    return toAstNode(autorelease_mmobj(allocAstALaWithImpl(_pool, toAstVarDeclareList(input), toAstLaBody(body), toAstTypeList(output))));
+    return toAstNode(autorelease_mmobj(allocAstALaWithImpl(_pool, toAstVarDeclareList(input), toAstBlockStatement(body), toAstTypeList(output))));
 }
 
 AstNode ast_create_a_proc_la(AstNode package, AstNode external_declarations)
@@ -470,7 +571,7 @@ void iterate_ast(AstNode obj, ast_iterator iterator)
                 scope = ast_impl_create_scope(obj, scope/*last scope*/);
                 pushToAstStack(stack, toAstNode(scope));
                 // put all items
-                AstLaBody laBody = toAstLaBody(obj);
+                AstBlockStatement laBody = toAstBlockStatement(obj);
                 pushAllToAstStack(stack, laBody->stmts, true);
 
                 sa = scope_action_created;

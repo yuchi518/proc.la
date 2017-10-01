@@ -22,24 +22,28 @@ enum {
     AST_TYPE,
     AST_TYPE_COMBINATION,
 
-    AST_VARIABLE,                       // primary type variable
-    AST_VARIABLE_COMBINATION,
-    //AST_VARIABLE_LIST,
-    //AST_VARIABLE_MAP,
-    AST_VARIABLE_DOMAIN_NAME,
-
-    AST_EXPRESSION,
-    AST_APPLY_CHAIN,
-
     AST_STATEMENT,
     AST_PACKAGE,
     AST_VAR_DECLARE,                    // variable type & name
-    AST_VAR_INSTANCE,
     AST_VAR_LIST_DECLARATION,           // A list of var declarations, ex. A La input
     AST_TYPE_LIST_DECLARATION,          // A list of type declarations, ex. A La output
     AST_LA_BODY_DECLARATION,            // A la body
     AST_EXTERNAL_DECLARATIONS,
     AST_A_LA,                           // input + body + output
+
+    AST_EXPRESSION,
+    AST_VAR_INSTANCE,
+    AST_PARENTHESES_EXPR,
+    AST_UNARY_OP_EXPR,
+    AST_BINARY_OP_EXPR,
+    AST_TERNARY_OP_EXPR,
+    AST_APPLY_CHAIN,
+
+    AST_VARIABLE,                       // primary type variable
+    AST_VARIABLE_COMBINATION,
+    AST_VARIABLE_DOMAIN_NAME,
+    //AST_VARIABLE_LIST,
+    //AST_VARIABLE_MAP,
 
     AST_A_PROC_LA,                      // A proc.la file
 
@@ -82,6 +86,48 @@ plat_inline const char* ast_type_name(ast_type type) {
     }
 }
 
+typedef enum {
+    ast_unary_op_plus,      // +
+    ast_unary_op_minus,     // -
+    ast_unary_op_invert,    // ~
+    ast_unary_op_not,       // !
+
+    ast_unary_op_inc_f,     // ++N
+    ast_unary_op_inc_l,     // N++
+    ast_unary_op_dec_f,     // --N
+    ast_unary_op_dec_l,     // N--
+} ast_unary_op;
+
+typedef enum {
+    ast_binary_op_add,
+    ast_binary_op_subtract,
+    ast_binary_op_multiply,
+    ast_binary_op_divide,
+    ast_binary_op_modulo,
+
+    ast_binary_op_list_access,
+    ast_binary_op_map_access,
+
+    ast_binary_op_shift_left,
+    ast_binary_op_shift_right,
+
+    ast_binary_op_equal,
+    ast_binary_op_not_equal,
+    ast_binary_op_less,
+    ast_binary_op_great,
+    ast_binary_op_less_or_equal,
+    ast_binary_op_great_or_equal,
+    ast_binary_op_and,
+    ast_binary_op_or,
+
+    ast_binary_op_bit_and,
+    ast_binary_op_bit_or,
+    ast_binary_op_bit_xor,
+} ast_binary_op;
+
+typedef enum {
+    ast_ternary_op_conditional,
+} ast_ternary_op;
 
 /// ===== Abstract Tree node =====
 typedef struct AstNode {
@@ -123,6 +169,239 @@ plat_inline void packAstNone(AstNone obj, Packer pkr) {
 
 MMSubObject(AST_NONE, AstNone, AstNode , initAstNone, destroyAstNone, packAstNone);
 
+/// ===== Statement =====
+
+typedef struct AstStatement {
+
+}*AstStatement;
+
+plat_inline AstStatement initAstStatement(AstStatement obj, Unpacker unpkr) {
+    return obj;
+}
+
+plat_inline void destroyAstStatement(AstStatement obj) {
+
+}
+
+plat_inline void packAstStatement(AstStatement obj, Packer pkr) {
+
+}
+
+MMSubObject(AST_STATEMENT, AstStatement, AstNode , initAstStatement, destroyAstStatement, packAstStatement);
+
+plat_inline AstStatement allocAstStatementWith(mgn_memory_pool* pool, ...) {
+    AstStatement obj = allocAstStatement(pool);
+    if (obj) {
+    }
+    return obj;
+}
+
+/// ===== Expression =====
+
+typedef struct AstExpression {
+
+}*AstExpression;
+
+plat_inline AstExpression initAstExpression(AstExpression obj, Unpacker unpkr) {
+    return obj;
+}
+
+plat_inline void destroyAstExpression(AstExpression obj) {
+
+}
+
+plat_inline void packAstExpression(AstExpression obj, Packer pkr) {
+
+}
+
+MMSubObject(AST_EXPRESSION, AstExpression, AstStatement , initAstExpression, destroyAstExpression, packAstExpression);
+
+plat_inline AstExpression allocAstExpressionWith(mgn_memory_pool* pool, ...) {
+    AstExpression obj = allocAstExpression(pool);
+    if (obj) {
+    }
+    return obj;
+}
+
+
+/// ===== Variable =====
+/**
+ * One of following variables:
+ *  int, long, float, double, number, string, raw
+ *  list, map, la
+ */
+
+typedef struct AstVariable {
+    ast_type type;
+    bool is_const;
+    MMObject value;
+}*AstVariable;
+
+plat_inline AstVariable initAstVariable(AstVariable obj, Unpacker unpkr) {
+    obj->type = ast_type_var;
+    obj->is_const = false;
+    return obj;
+}
+
+plat_inline void destroyAstVariable(AstVariable obj) {
+    if (obj->value) {
+        release_mmobj(obj->value);
+    }
+}
+
+plat_inline void packAstVariable(AstVariable obj, Packer pkr) {
+
+}
+
+MMSubObject(AST_VARIABLE, AstVariable, AstExpression, initAstVariable, destroyAstVariable, packAstVariable);
+
+plat_inline AstVariable allocVariableWithIntValue(mgn_memory_pool* pool, int32 value)
+{
+    AstVariable obj = allocAstVariable(pool);
+    if (obj) {
+        obj->type = ast_type_int;
+        obj->value = toMMObject(allocMMIntWithValue(pool, value));
+        if (obj->value == null) {
+            release_mmobj(obj);
+            obj = null;
+        }
+    }
+    return obj;
+}
+
+plat_inline AstVariable allocVariableWithConstIntValue(mgn_memory_pool* pool, int32 value)
+{
+    AstVariable obj = allocVariableWithIntValue(pool, value);
+    if (obj) {
+        obj->is_const = true;
+    }
+    return obj;
+}
+
+plat_inline AstVariable allocVariableWithLongValue(mgn_memory_pool* pool, int64 value)
+{
+    AstVariable obj = allocAstVariable(pool);
+    if (obj) {
+        obj->type = ast_type_long;
+        obj->value = toMMObject(allocMMLongWithValue(pool, value));
+        if (obj->value == null) {
+            release_mmobj(obj);
+            obj = null;
+        }
+    }
+    return obj;
+}
+
+plat_inline AstVariable allocVariableWithConstLongValue(mgn_memory_pool* pool, int64 value)
+{
+    AstVariable obj = allocVariableWithLongValue(pool, value);
+    if (obj) {
+        obj->is_const = true;
+    }
+    return obj;
+}
+
+plat_inline AstVariable allocVariableWithFloatValue(mgn_memory_pool* pool, float value)
+{
+    AstVariable obj = allocAstVariable(pool);
+    if (obj) {
+        obj->type = ast_type_float;
+        obj->value = toMMObject(allocMMFloatWithValue(pool, value));
+        if (obj->value == null) {
+            release_mmobj(obj);
+            obj = null;
+        }
+    }
+    return obj;
+}
+
+plat_inline AstVariable allocVariableWithConstFloatValue(mgn_memory_pool* pool, float value)
+{
+    AstVariable obj = allocVariableWithFloatValue(pool, value);
+    if (obj) {
+        obj->is_const = true;
+    }
+    return obj;
+}
+
+
+plat_inline AstVariable allocVariableWithDoubleValue(mgn_memory_pool* pool, double value)
+{
+    AstVariable obj = allocAstVariable(pool);
+    if (obj) {
+        obj->type = ast_type_double;
+        obj->value = toMMObject(allocMMDoubleWithValue(pool, value));
+        if (obj->value == null) {
+            release_mmobj(obj);
+            obj = null;
+        }
+    }
+    return obj;
+}
+
+plat_inline AstVariable allocVariableWithConstDoubleValue(mgn_memory_pool* pool, double value)
+{
+    AstVariable obj = allocVariableWithDoubleValue(pool, value);
+    if (obj) {
+        obj->is_const = true;
+    }
+    return obj;
+}
+
+plat_inline AstVariable allocVariableWithNumberValue(mgn_memory_pool* pool, double value)
+{
+    AstVariable obj = allocAstVariable(pool);
+    if (obj) {
+        obj->type = ast_type_number;
+        /// TODO: implementation
+    }
+    return obj;
+}
+
+plat_inline AstVariable allocVariableWithConstNumberValue(mgn_memory_pool* pool, double value)
+{
+    AstVariable obj = allocVariableWithNumberValue(pool, value);
+    if (obj) {
+        obj->is_const = true;
+    }
+    return obj;
+}
+
+plat_inline AstVariable allocVariableWithCString(mgn_memory_pool* pool, char* cstring)
+{
+    AstVariable obj = allocAstVariable(pool);
+    if (obj) {
+        obj->type = ast_type_string;
+        obj->value = toMMObject(allocMMStringWithCString(pool, cstring));
+        if (obj->value == null) {
+            release_mmobj(obj);
+            obj = null;
+        }
+    }
+    return obj;
+}
+
+plat_inline AstVariable allocVariableWithConstCString(mgn_memory_pool* pool, char* cstring)
+{
+    AstVariable obj = allocVariableWithCString(pool, cstring);
+    if (obj) {
+        obj->is_const = true;
+    }
+    return obj;
+}
+
+plat_inline AstVariable allocVariableWithRawData(mgn_memory_pool* pool, void* data, uint size) {
+    AstVariable obj = allocAstVariable(pool);
+    if (obj) {
+        obj->type = ast_type_raw;
+        obj->value = toMMObject(allocMMDataWithData(pool, data, size));
+        if (obj->value == null) {
+            release_mmobj(obj);
+            return null;
+        }
+    }
+    return obj;
+}
 
 /// ===== Identifier =====
 
@@ -145,7 +424,7 @@ plat_inline void packAstIdentifier(AstIdentifier obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_IDENTIFIER, AstIdentifier, AstNode, initAstIdentifier, destroyAstIdentifier, packAstIdentifier);
+MMSubObject(AST_IDENTIFIER, AstIdentifier, AstExpression, initAstIdentifier, destroyAstIdentifier, packAstIdentifier);
 
 plat_inline AstIdentifier allocAstIdentifierWithName(mgn_memory_pool* pool, MMString name) {
     if (name == null) {
