@@ -1,0 +1,23 @@
+@la.proc
+
+/**
+ *  Samples
+ */
+
+la.proc.matrix.add -> matrix_add:la;
+
+declare add:la
+(a:int, b:int) {
+    (g:double);
+    a * b -> f:float -> d:double;
+} (int);
+
+// main la
+declare main:la
+(input:var) {
+
+} (var);
+
+// no input/output la
+declare test:la {
+};

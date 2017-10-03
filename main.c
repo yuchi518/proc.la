@@ -38,17 +38,14 @@ bool print_ast(AstNode obj, uint level, scope_action action, AstScope scope)
     return true;
 }
 
-int main() {
-    //printf("Hello, World!\n");
+int load_file_and_create_ast(const char* file_name) {
     char* content;
     uint content_size;
     int res;
     AstNode ast;
     mgn_memory_pool pool = null;
 
-    unit_test_mmobj();
-
-    res = plat_io_get_resource("first.la", (void**)&content, &content_size);
+    res = plat_io_get_resource(file_name, (void**)&content, &content_size);
 
     if (res == 0)
     {
@@ -70,15 +67,27 @@ int main() {
             release_mmobj(ast);
             mgn_mem_release_unused(&pool);
 
-            plat_io_printf_dbg("=== done ===\n");
-
             if (mgn_mem_count_of_mem(&pool) > 0) {
+                plat_io_printf_err("=== Fail ===\n");
                 plat_io_printf_err("Zombie objects count:%zu\n", mgn_mem_count_of_mem(&pool));
+            } else {
+                plat_io_printf_dbg("=== Pass ===\n");
             }
         }
     }
 
     mgn_mem_release_all(&pool);
+
+    return 0;
+}
+
+
+int main() {
+
+    unit_test_mmobj();
+
+    //load_file_and_create_ast("first.la");
+    load_file_and_create_ast("expr.la");
 
     return 0;
 }

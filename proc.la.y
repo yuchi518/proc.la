@@ -25,6 +25,7 @@
 //%right          APPLY_TO
 %right          IDENTIFIER ':'
 %right          ')' ELSE
+//%right          ''
 
 %start          a_proc_la
 
@@ -56,23 +57,9 @@ combined_var_type_specifier
     }
     ;
 
-
-primary_expression
-    : IDENTIFIER
-    | constant
-    | string
-    | '(' expression ')' {
-        $$ = ast_create_parentheses_expr($2);
-    }
-    ;
-
-// only for case statement
-value_expression
-    : IDENTIFIER
-    | constant
-    | string
-    | '(' value_expression ')' {
-        $$ = ast_create_parentheses_expr($2);
+var_declaration
+    : IDENTIFIER ':' var_type_specifier {
+        $$ = ast_create_var_declare($3, $1);
     }
     ;
 
@@ -86,16 +73,67 @@ string
     : STRING_LITERAL
     ;
 
+primary_expression
+    : constant
+    | string
+    | IDENTIFIER
+    | var_declaration
+    ;
+
+list_expression
+    : '[' list_item_list ']'
+    ;
+
+list_item_list
+    : expression
+    | list_item_list ',' expression
+    ;
+
+map_expression
+    : '{' map_item_list '}'
+    ;
+
+map_item_list
+    : string ':' expression
+    | map_item_list ',' string ':' expression
+    ;
+
+tuple_expression
+    : '(' tuple_item_list ')'
+    ;
+
+tuple_item_list
+    : expression
+    | tuple_item_list ',' expression
+    ;
+
+container_access_expression
+    : primary_expression
+    | container_access_expression '[' expression ']' {
+        $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_list_access);
+    }
+    | container_access_expression '{' expression '}' {
+        $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_map_access);
+    }
+
+container_expression
+    : list_expression
+    | map_expression
+    | tuple_expression
+    | container_access_expression
+    ;
+
+
 // === expression ===
 
 postfix_expression
-	: primary_expression
-	| postfix_expression '[' expression ']' {
+	: container_expression
+	/*| postfix_expression '[' expression ']' {
 	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_list_access);
 	}
 	| postfix_expression '{' expression '}' {
 	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_map_access);
-	}
+	}*/
 //	| postfix_expression '.' IDENTIFIER
 //	| postfix_expression PTR_OP IDENTIFIER
 	| postfix_expression INC_OP {
@@ -241,53 +279,25 @@ assignment_expression
 	: conditional_expression
     ;
 
-container_expression
-    : assignment_expression
-	| '[' list_initializer_list ']'
-	| '{' map_initializer_list '}'
-	;
-
-list_initializer_list
-    : container_expression
-    | list_initializer_list ',' container_expression
-    ;
-
-map_initializer_list
-    : string ':' container_expression
-    | map_initializer_list ',' string ':' container_expression
-    ;
-
 expression
-    : container_expression
-    | expression ',' assignment_expression
-    | var_declaration
-	| '(' ')'
-    | expression la_statement la_body_declaration
-	| expression la_statement IDENTIFIER
-    | expression la_statement var_declaration
-    | expression APPLY_TO var_declaration
+    : assignment_expression
+    | expression APPLY_TO assignment_expression
+	| expression la_statement
     ;
 
 expression_statement
 	: ';'
 	| expression ';'
-    | expression la_statement OUT ';'
     | expression APPLY_TO OUT ';'
 	;
-
-/*identifier_or_declarator
-    : IDENTIFIER
-    | IDENTIFIER ':' var_type_specifier
-    ;*/
 
 // ===== la statement/expression =====
 
 la_statement
-    : pipe_op IDENTIFIER pipe_op
-    | pipe_op la_body_declaration pipe_op
-    | la_statement pipe_op la_body_declaration pipe_op
-    | la_statement pipe_op IDENTIFIER pipe_op
-    | la_statement pipe_op DOMAIN_NAME pipe_op
+    : pipe_op DOMAIN_NAME
+    | pipe_op la_body_declaration
+    | pipe_op OUT
+    | pipe_op assignment_expression
     ;
 
 pipe_op
@@ -328,7 +338,7 @@ labeled_statement
 	;
 
 case_statement
-    : CASE value_expression ':' statement
+    : CASE expression ':' statement
     | DEFAULT ':' statement
     ;
 
@@ -391,20 +401,14 @@ var_type_specifier
     | combined_var_type_specifier
     ;
 
-var_declaration
-    : IDENTIFIER ':' var_type_specifier {
-        $$ = ast_create_var_declare($3, $1);
-    }
-    ;
-
-var_list_declaration
-    : var_list_declaration ',' var_declaration {
+/*var_list_declaration
+    : var_list_declaration ',' identifier_or_declarator {
         $$ = ast_create_var_list($1, $3);
     }
-    | var_declaration {
+    | identifier_or_declarator {
         $$ = ast_create_var_list($1, null);
     }
-    ;
+    ;*/
 
 type_list_declaration
     : type_list_declaration ',' var_type_specifier {
@@ -416,9 +420,10 @@ type_list_declaration
     ;
 
 la_input_declaration
-    : '(' var_list_declaration ')' {
+    : tuple_expression
+    /*: '(' var_list_declaration ')' {
         $$ = $2;
-    }
+    }*/
     | '(' ')' {
         // create an empty list
         $$ = ast_create_var_list(null, null);
