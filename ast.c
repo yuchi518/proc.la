@@ -253,6 +253,74 @@ AstNode ast_create_ternary_op_expr(AstNode expr_a, AstNode expr_b, AstNode expr_
     return toAstNode(autorelease_mmobj(allocAstTernaryOpExprWithOp(_pool, toAstExpression(expr_a), toAstExpression(expr_b), toAstExpression(expr_c), op)));
 }
 
+AstNode ast_create_container(AstNode expr_a, AstNode expr_b, ast_container_type type)
+{
+    AstExprContainer exprContainerA = toAstExprContainer(expr_a);
+    AstExprContainer exprContainerB = toAstExprContainer(expr_b);
+
+    if (isExprContainerClosed(exprContainerA)) {
+        exprContainerA = null;      // it is just an expression, not a container.
+    }
+
+    if (isExprContainerClosed(exprContainerB)) {
+        exprContainerB = null;      // it is just an expression, not a container.
+    }
+
+    if (exprContainerA && exprContainerB) {
+        concatExprContainer(exprContainerA, exprContainerB);
+        return (expr_a);
+    } else if (exprContainerA) {
+        if (expr_b) {
+            addExprToExprContainer(exprContainerA, toAstExpression(expr_b));
+        }
+        return (expr_a);
+    }
+    else if (exprContainerB) {
+        if (expr_a) {
+            insertExprToExprContainerAt(exprContainerB, toAstExpression(expr_a), 0);
+        }
+        return (expr_b);
+    }
+    else {
+        exprContainerA = allocAstExprContainerWithType(_pool, type);
+
+        if (expr_a) {
+            addExprToExprContainer(exprContainerA, toAstExpression(expr_a));
+        }
+
+        if (expr_b) {
+            addExprToExprContainer(exprContainerA, toAstExpression(expr_b));
+        }
+
+        return toAstNode(autorelease_mmobj(exprContainerA));
+    }
+}
+
+AstNode ast_close_container(AstNode expr)
+{
+    AstExprContainer exprContainer = toAstExprContainer(expr);
+    if (exprContainer == null) {
+        plat_io_printf_err("Is this a container?(%s)\n", name_of_last_mmobj(expr));
+        return null;
+    }
+    closeExprContainer(exprContainer);
+    return expr;
+}
+
+AstNode ast_create_pair(AstNode key, AstNode value)
+{
+    AstExpression expression_key = toAstExpression(key);
+    if (expression_key == null) {
+        plat_io_printf_err("Key is not an expression.(%s)\n", name_of_last_mmobj(key));
+    }
+    AstExpression expression_value = toAstExpression(value);
+    if (expression_value == null) {
+        plat_io_printf_err("Value is not an expression.(%s)\n", name_of_last_mmobj(value));
+    }
+
+    return toAstNode(autorelease_mmobj(allocAstExprPairWithKeyAndValue(_pool, expression_key, expression_value)));
+}
+
 AstNode ast_create_var_instance(AstNode declare, AstNode inst)
 {
     AstVarDeclare declare_obj = toAstVarDeclare(declare);

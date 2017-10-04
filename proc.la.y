@@ -81,37 +81,55 @@ primary_expression
     ;
 
 list_expression
-    : '[' list_item_list ']'
+    : '[' list_item_list ']' {
+        $$ = ast_close_container($2);
+    }
     | '[' ']' {
         $$ = ast_create_none();
     }
     ;
 
 list_item_list
-    : expression
-    | list_item_list ',' expression
+    : expression {
+        $$ = ast_create_container($1, null, ast_container_type_list);
+    }
+    | list_item_list ',' expression {
+        $$ = ast_create_container($1, $3, ast_container_type_list);
+    }
     ;
 
 map_expression
-    : '{' map_item_list '}'
+    : '{' map_item_list '}' {
+        $$ = ast_close_container($2);
+    }
     //| '{' '}'  // This is a empty block.
     ;
 
 map_item_list
-    : expression ':' expression
-    | map_item_list ',' expression ':' expression
+    : expression ':' expression {
+        $$ = ast_create_container(ast_create_pair($1, $3), null, ast_container_type_map);
+    }
+    | map_item_list ',' expression ':' expression {
+        $$ = ast_create_container($1, ast_create_pair($3, $5), ast_container_type_map);
+    }
     ;
 
 tuple_expression
-    : '(' tuple_item_list ')'
+    : '(' tuple_item_list ')' {
+        $$ = ast_close_container($2);
+    }
     | '(' ')' {
         $$ = ast_create_none();
     }
     ;
 
 tuple_item_list
-    : expression
-    | tuple_item_list ',' expression
+    : expression {
+        $$ = ast_create_container($1, null, ast_container_type_tuple);
+    }
+    | tuple_item_list ',' expression {
+         $$ = ast_create_container($1, $3, ast_container_type_tuple);
+    }
     ;
 
 container_access_expression

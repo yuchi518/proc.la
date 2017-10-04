@@ -25,6 +25,10 @@ AstNode ast_create_unary_op_expr_ex(AstNode expr, AstNode op);
 AstNode ast_create_binary_op_expr(AstNode expr_a, AstNode expr_b, ast_binary_op op);
 AstNode ast_create_ternary_op_expr(AstNode expr_a, AstNode expr_b, AstNode expr_c, ast_ternary_op op);
 
+AstNode ast_create_container(AstNode expr_a, AstNode expr_b, ast_container_type type);
+AstNode ast_close_container(AstNode expr);
+AstNode ast_create_pair(AstNode key, AstNode value);
+
 AstNode ast_create_var_instance(AstNode declare, AstNode inst);
 AstNode ast_create_var_instance_ex(AstNode type, AstNode identifier, AstNode inst);
 AstNode ast_create_var_declare(AstNode var_typ, AstNode identifier);

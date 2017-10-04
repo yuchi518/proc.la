@@ -486,19 +486,19 @@ static const yytype_uint16 yyrline[] =
 {
        0,    35,    35,    36,    37,    38,    39,    40,    41,    42,
       46,    49,    52,    55,    61,    67,    68,    69,    73,    77,
-      78,    79,    80,    84,    85,    91,    92,    96,   101,   102,
-     106,   107,   113,   114,   118,   119,   122,   127,   128,   129,
-     130,   137,   146,   149,   157,   158,   161,   164,   170,   173,
-     176,   179,   185,   186,   189,   192,   198,   199,   202,   208,
-     209,   212,   218,   219,   222,   225,   228,   234,   235,   238,
-     244,   245,   251,   252,   258,   259,   265,   266,   272,   273,
-     279,   280,   286,   290,   291,   292,   296,   297,   298,   304,
-     305,   306,   307,   311,   312,   313,   314,   335,   336,   337,
-     338,   339,   340,   344,   348,   349,   353,   354,   358,   363,
-     369,   370,   377,   381,   382,   383,   387,   388,   398,   399,
-     400,   408,   409,   422,   425,   431,   442,   445,   455,   461,
-     467,   470,   476,   482,   488,   489,   493,   496,   502,   506,
-     509
+      78,    79,    80,    84,    87,    93,    96,   102,   109,   112,
+     118,   121,   127,   130,   136,   137,   140,   145,   146,   147,
+     148,   155,   164,   167,   175,   176,   179,   182,   188,   191,
+     194,   197,   203,   204,   207,   210,   216,   217,   220,   226,
+     227,   230,   236,   237,   240,   243,   246,   252,   253,   256,
+     262,   263,   269,   270,   276,   277,   283,   284,   290,   291,
+     297,   298,   304,   308,   309,   310,   314,   315,   316,   322,
+     323,   324,   325,   329,   330,   331,   332,   353,   354,   355,
+     356,   357,   358,   362,   366,   367,   371,   372,   376,   381,
+     387,   388,   395,   399,   400,   401,   405,   406,   416,   417,
+     418,   426,   427,   440,   443,   449,   460,   463,   473,   479,
+     485,   488,   494,   500,   506,   507,   511,   514,   520,   524,
+     527
 };
 #endif
 
@@ -1537,404 +1537,476 @@ yyreduce:
 #line 1538 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 24:
-#line 85 "proc.la.y" /* yacc.c:1661  */
+  case 23:
+#line 84 "proc.la.y" /* yacc.c:1661  */
     {
-        (yyval) = ast_create_none();
+        (yyval) = ast_close_container((yyvsp[-1]));
     }
 #line 1546 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 31:
-#line 107 "proc.la.y" /* yacc.c:1661  */
+  case 24:
+#line 87 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = ast_create_none();
     }
 #line 1554 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 35:
-#line 119 "proc.la.y" /* yacc.c:1661  */
+  case 25:
+#line 93 "proc.la.y" /* yacc.c:1661  */
     {
-        (yyval) = ast_create_binary_op_expr((yyvsp[-3]), (yyvsp[-1]), ast_binary_op_list_access);
+        (yyval) = ast_create_container((yyvsp[0]), null, ast_container_type_list);
     }
 #line 1562 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 36:
-#line 122 "proc.la.y" /* yacc.c:1661  */
+  case 26:
+#line 96 "proc.la.y" /* yacc.c:1661  */
     {
-        (yyval) = ast_create_binary_op_expr((yyvsp[-3]), (yyvsp[-1]), ast_binary_op_map_access);
+        (yyval) = ast_create_container((yyvsp[-2]), (yyvsp[0]), ast_container_type_list);
     }
 #line 1570 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 42:
-#line 146 "proc.la.y" /* yacc.c:1661  */
+  case 27:
+#line 102 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_unary_op_expr((yyvsp[-1]), ast_unary_op_inc_f);
-	}
+        (yyval) = ast_close_container((yyvsp[-1]));
+    }
 #line 1578 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 43:
-#line 149 "proc.la.y" /* yacc.c:1661  */
+  case 28:
+#line 109 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_unary_op_expr((yyvsp[-1]), ast_unary_op_dec_l);
-	}
+        (yyval) = ast_create_container(ast_create_pair((yyvsp[-2]), (yyvsp[0])), null, ast_container_type_map);
+    }
 #line 1586 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 45:
-#line 158 "proc.la.y" /* yacc.c:1661  */
+  case 29:
+#line 112 "proc.la.y" /* yacc.c:1661  */
     {
-        (yyval) = ast_create_unary_op_expr((yyvsp[0]), ast_unary_op_inc_f);
+        (yyval) = ast_create_container((yyvsp[-4]), ast_create_pair((yyvsp[-2]), (yyvsp[0])), ast_container_type_map);
     }
 #line 1594 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 46:
-#line 161 "proc.la.y" /* yacc.c:1661  */
+  case 30:
+#line 118 "proc.la.y" /* yacc.c:1661  */
     {
-        (yyval) = ast_create_unary_op_expr((yyvsp[0]), ast_unary_op_dec_f);
+        (yyval) = ast_close_container((yyvsp[-1]));
     }
 #line 1602 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 47:
-#line 164 "proc.la.y" /* yacc.c:1661  */
+  case 31:
+#line 121 "proc.la.y" /* yacc.c:1661  */
     {
-        (yyval) = ast_create_unary_op_expr_ex((yyvsp[0]), (yyvsp[-1]));
+        (yyval) = ast_create_none();
     }
 #line 1610 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 48:
-#line 170 "proc.la.y" /* yacc.c:1661  */
+  case 32:
+#line 127 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_unary_op_expr(null, ast_unary_op_plus);
-	}
+        (yyval) = ast_create_container((yyvsp[0]), null, ast_container_type_tuple);
+    }
 #line 1618 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 49:
-#line 173 "proc.la.y" /* yacc.c:1661  */
+  case 33:
+#line 130 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_unary_op_expr(null, ast_unary_op_minus);
-	}
+         (yyval) = ast_create_container((yyvsp[-2]), (yyvsp[0]), ast_container_type_tuple);
+    }
 #line 1626 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 50:
-#line 176 "proc.la.y" /* yacc.c:1661  */
+  case 35:
+#line 137 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_unary_op_expr(null, ast_unary_op_invert);
-	}
+        (yyval) = ast_create_binary_op_expr((yyvsp[-3]), (yyvsp[-1]), ast_binary_op_list_access);
+    }
 #line 1634 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 51:
-#line 179 "proc.la.y" /* yacc.c:1661  */
+  case 36:
+#line 140 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_unary_op_expr(null, ast_unary_op_not);
-	}
+        (yyval) = ast_create_binary_op_expr((yyvsp[-3]), (yyvsp[-1]), ast_binary_op_map_access);
+    }
 #line 1642 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 53:
-#line 186 "proc.la.y" /* yacc.c:1661  */
+  case 42:
+#line 164 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_multiply);
+	    (yyval) = ast_create_unary_op_expr((yyvsp[-1]), ast_unary_op_inc_f);
 	}
 #line 1650 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 54:
-#line 189 "proc.la.y" /* yacc.c:1661  */
+  case 43:
+#line 167 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_divide);
+	    (yyval) = ast_create_unary_op_expr((yyvsp[-1]), ast_unary_op_dec_l);
 	}
 #line 1658 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 55:
-#line 192 "proc.la.y" /* yacc.c:1661  */
+  case 45:
+#line 176 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_modulo);
-	}
+        (yyval) = ast_create_unary_op_expr((yyvsp[0]), ast_unary_op_inc_f);
+    }
 #line 1666 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 57:
-#line 199 "proc.la.y" /* yacc.c:1661  */
+  case 46:
+#line 179 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_add);
-	}
+        (yyval) = ast_create_unary_op_expr((yyvsp[0]), ast_unary_op_dec_f);
+    }
 #line 1674 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 58:
-#line 202 "proc.la.y" /* yacc.c:1661  */
+  case 47:
+#line 182 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_subtract);
-	}
+        (yyval) = ast_create_unary_op_expr_ex((yyvsp[0]), (yyvsp[-1]));
+    }
 #line 1682 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 60:
-#line 209 "proc.la.y" /* yacc.c:1661  */
+  case 48:
+#line 188 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_shift_left);
+	    (yyval) = ast_create_unary_op_expr(null, ast_unary_op_plus);
 	}
 #line 1690 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 61:
-#line 212 "proc.la.y" /* yacc.c:1661  */
+  case 49:
+#line 191 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_shift_right);
+	    (yyval) = ast_create_unary_op_expr(null, ast_unary_op_minus);
 	}
 #line 1698 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 63:
-#line 219 "proc.la.y" /* yacc.c:1661  */
+  case 50:
+#line 194 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_less);
+	    (yyval) = ast_create_unary_op_expr(null, ast_unary_op_invert);
 	}
 #line 1706 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 64:
-#line 222 "proc.la.y" /* yacc.c:1661  */
+  case 51:
+#line 197 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_great);
+	    (yyval) = ast_create_unary_op_expr(null, ast_unary_op_not);
 	}
 #line 1714 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 65:
-#line 225 "proc.la.y" /* yacc.c:1661  */
+  case 53:
+#line 204 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_less_or_equal);
+	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_multiply);
 	}
 #line 1722 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 66:
-#line 228 "proc.la.y" /* yacc.c:1661  */
+  case 54:
+#line 207 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_great_or_equal);
+	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_divide);
 	}
 #line 1730 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 68:
-#line 235 "proc.la.y" /* yacc.c:1661  */
+  case 55:
+#line 210 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_equal);
+	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_modulo);
 	}
 #line 1738 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 69:
-#line 238 "proc.la.y" /* yacc.c:1661  */
+  case 57:
+#line 217 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_not_equal);
+	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_add);
 	}
 #line 1746 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 71:
-#line 245 "proc.la.y" /* yacc.c:1661  */
+  case 58:
+#line 220 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_bit_and);
+	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_subtract);
 	}
 #line 1754 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 73:
-#line 252 "proc.la.y" /* yacc.c:1661  */
+  case 60:
+#line 227 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_bit_xor);
+	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_shift_left);
 	}
 #line 1762 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 75:
-#line 259 "proc.la.y" /* yacc.c:1661  */
+  case 61:
+#line 230 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_bit_or);
+	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_shift_right);
 	}
 #line 1770 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 77:
-#line 266 "proc.la.y" /* yacc.c:1661  */
+  case 63:
+#line 237 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_and);
+	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_less);
 	}
 #line 1778 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 79:
-#line 273 "proc.la.y" /* yacc.c:1661  */
+  case 64:
+#line 240 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_or);
+	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_great);
 	}
 #line 1786 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 81:
-#line 280 "proc.la.y" /* yacc.c:1661  */
+  case 65:
+#line 243 "proc.la.y" /* yacc.c:1661  */
     {
-	    (yyval) = ast_create_ternary_op_expr((yyvsp[-4]), (yyvsp[-2]), (yyvsp[0]), ast_ternary_op_conditional);
+	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_less_or_equal);
 	}
 #line 1794 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
+  case 66:
+#line 246 "proc.la.y" /* yacc.c:1661  */
+    {
+	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_great_or_equal);
+	}
+#line 1802 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 68:
+#line 253 "proc.la.y" /* yacc.c:1661  */
+    {
+	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_equal);
+	}
+#line 1810 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 69:
+#line 256 "proc.la.y" /* yacc.c:1661  */
+    {
+	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_not_equal);
+	}
+#line 1818 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 71:
+#line 263 "proc.la.y" /* yacc.c:1661  */
+    {
+	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_bit_and);
+	}
+#line 1826 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 73:
+#line 270 "proc.la.y" /* yacc.c:1661  */
+    {
+	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_bit_xor);
+	}
+#line 1834 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 75:
+#line 277 "proc.la.y" /* yacc.c:1661  */
+    {
+	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_bit_or);
+	}
+#line 1842 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 77:
+#line 284 "proc.la.y" /* yacc.c:1661  */
+    {
+	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_and);
+	}
+#line 1850 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 79:
+#line 291 "proc.la.y" /* yacc.c:1661  */
+    {
+	    (yyval) = ast_create_binary_op_expr((yyvsp[-2]), (yyvsp[0]), ast_binary_op_or);
+	}
+#line 1858 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 81:
+#line 298 "proc.la.y" /* yacc.c:1661  */
+    {
+	    (yyval) = ast_create_ternary_op_expr((yyvsp[-4]), (yyvsp[-2]), (yyvsp[0]), ast_ternary_op_conditional);
+	}
+#line 1866 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
   case 108:
-#line 358 "proc.la.y" /* yacc.c:1661  */
+#line 376 "proc.la.y" /* yacc.c:1661  */
     {
         // TODO: refine the function
         // This is also a empty map.
 	    (yyval) = ast_create_block(null, null);
 	}
-#line 1804 "proc.la.y.c" /* yacc.c:1661  */
+#line 1876 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
   case 109:
-#line 363 "proc.la.y" /* yacc.c:1661  */
+#line 381 "proc.la.y" /* yacc.c:1661  */
     {
 	    (yyval) = (yyvsp[-1]);
 	}
-#line 1812 "proc.la.y.c" /* yacc.c:1661  */
+#line 1884 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
   case 111:
-#line 370 "proc.la.y" /* yacc.c:1661  */
+#line 388 "proc.la.y" /* yacc.c:1661  */
     {
 	    // TODO: refine the function
 	    (yyval) = ast_create_block((yyvsp[-1]), (yyvsp[0]));
 	}
-#line 1821 "proc.la.y.c" /* yacc.c:1661  */
+#line 1893 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
   case 123:
-#line 422 "proc.la.y" /* yacc.c:1661  */
+#line 440 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = ast_create_type_list((yyvsp[-2]), (yyvsp[0]));
     }
-#line 1829 "proc.la.y.c" /* yacc.c:1661  */
+#line 1901 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
   case 124:
-#line 425 "proc.la.y" /* yacc.c:1661  */
+#line 443 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = ast_create_type_list((yyvsp[0]), null);
     }
-#line 1837 "proc.la.y.c" /* yacc.c:1661  */
+#line 1909 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
   case 126:
-#line 442 "proc.la.y" /* yacc.c:1661  */
+#line 460 "proc.la.y" /* yacc.c:1661  */
     {
         (yyval) = (yyvsp[-1]);
     }
-#line 1845 "proc.la.y.c" /* yacc.c:1661  */
+#line 1917 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
   case 127:
-#line 445 "proc.la.y" /* yacc.c:1661  */
+#line 463 "proc.la.y" /* yacc.c:1661  */
     {
         // create an empty list
         (yyval) = ast_create_type_list(null, null);
     }
-#line 1854 "proc.la.y.c" /* yacc.c:1661  */
-    break;
-
-  case 128:
-#line 455 "proc.la.y" /* yacc.c:1661  */
-    {
-        (yyval) = ast_create_la_declaration((yyvsp[-2]), (yyvsp[-1]), (yyvsp[0]));
-    }
-#line 1862 "proc.la.y.c" /* yacc.c:1661  */
-    break;
-
-  case 129:
-#line 461 "proc.la.y" /* yacc.c:1661  */
-    {
-        (yyval) = ast_create_la_declaration((yyvsp[-1]), (yyvsp[0]), null);
-    }
-#line 1870 "proc.la.y.c" /* yacc.c:1661  */
-    break;
-
-  case 130:
-#line 467 "proc.la.y" /* yacc.c:1661  */
-    {
-        (yyval) = ast_create_la_declaration(null, (yyvsp[-1]), (yyvsp[0]));
-    }
-#line 1878 "proc.la.y.c" /* yacc.c:1661  */
-    break;
-
-  case 131:
-#line 470 "proc.la.y" /* yacc.c:1661  */
-    {
-        (yyval) = ast_create_la_declaration(null, (yyvsp[0]), null);
-    }
-#line 1886 "proc.la.y.c" /* yacc.c:1661  */
-    break;
-
-  case 132:
-#line 476 "proc.la.y" /* yacc.c:1661  */
-    {
-        (yyval) = ast_create_var_instance_ex((yyvsp[-2]), (yyvsp[-4]), (yyvsp[-1]));
-    }
-#line 1894 "proc.la.y.c" /* yacc.c:1661  */
-    break;
-
-  case 133:
-#line 482 "proc.la.y" /* yacc.c:1661  */
-    {
-        (yyval) = ast_create_var_instance_ex((yyvsp[-1]), (yyvsp[-3]), (yyvsp[-5]));
-    }
-#line 1902 "proc.la.y.c" /* yacc.c:1661  */
-    break;
-
-  case 136:
-#line 493 "proc.la.y" /* yacc.c:1661  */
-    {
-        (yyval) = ast_create_external_declarations((yyvsp[-1]), (yyvsp[0]));
-    }
-#line 1910 "proc.la.y.c" /* yacc.c:1661  */
-    break;
-
-  case 137:
-#line 496 "proc.la.y" /* yacc.c:1661  */
-    {
-        (yyval) = ast_create_external_declarations((yyvsp[0]), null);
-    }
-#line 1918 "proc.la.y.c" /* yacc.c:1661  */
-    break;
-
-  case 139:
-#line 506 "proc.la.y" /* yacc.c:1661  */
-    {
-        (yyval) = ast_create_a_proc_la((yyvsp[-1]), (yyvsp[0]));
-    }
 #line 1926 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
-  case 140:
-#line 509 "proc.la.y" /* yacc.c:1661  */
+  case 128:
+#line 473 "proc.la.y" /* yacc.c:1661  */
     {
-        (yyval) = ast_create_a_proc_la(null, (yyvsp[0]));
+        (yyval) = ast_create_la_declaration((yyvsp[-2]), (yyvsp[-1]), (yyvsp[0]));
     }
 #line 1934 "proc.la.y.c" /* yacc.c:1661  */
     break;
 
+  case 129:
+#line 479 "proc.la.y" /* yacc.c:1661  */
+    {
+        (yyval) = ast_create_la_declaration((yyvsp[-1]), (yyvsp[0]), null);
+    }
+#line 1942 "proc.la.y.c" /* yacc.c:1661  */
+    break;
 
-#line 1938 "proc.la.y.c" /* yacc.c:1661  */
+  case 130:
+#line 485 "proc.la.y" /* yacc.c:1661  */
+    {
+        (yyval) = ast_create_la_declaration(null, (yyvsp[-1]), (yyvsp[0]));
+    }
+#line 1950 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 131:
+#line 488 "proc.la.y" /* yacc.c:1661  */
+    {
+        (yyval) = ast_create_la_declaration(null, (yyvsp[0]), null);
+    }
+#line 1958 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 132:
+#line 494 "proc.la.y" /* yacc.c:1661  */
+    {
+        (yyval) = ast_create_var_instance_ex((yyvsp[-2]), (yyvsp[-4]), (yyvsp[-1]));
+    }
+#line 1966 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 133:
+#line 500 "proc.la.y" /* yacc.c:1661  */
+    {
+        (yyval) = ast_create_var_instance_ex((yyvsp[-1]), (yyvsp[-3]), (yyvsp[-5]));
+    }
+#line 1974 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 136:
+#line 511 "proc.la.y" /* yacc.c:1661  */
+    {
+        (yyval) = ast_create_external_declarations((yyvsp[-1]), (yyvsp[0]));
+    }
+#line 1982 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 137:
+#line 514 "proc.la.y" /* yacc.c:1661  */
+    {
+        (yyval) = ast_create_external_declarations((yyvsp[0]), null);
+    }
+#line 1990 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 139:
+#line 524 "proc.la.y" /* yacc.c:1661  */
+    {
+        (yyval) = ast_create_a_proc_la((yyvsp[-1]), (yyvsp[0]));
+    }
+#line 1998 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+  case 140:
+#line 527 "proc.la.y" /* yacc.c:1661  */
+    {
+        (yyval) = ast_create_a_proc_la(null, (yyvsp[0]));
+    }
+#line 2006 "proc.la.y.c" /* yacc.c:1661  */
+    break;
+
+
+#line 2010 "proc.la.y.c" /* yacc.c:1661  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2162,7 +2234,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 514 "proc.la.y" /* yacc.c:1906  */
+#line 532 "proc.la.y" /* yacc.c:1906  */
 
 
 #include <stdio.h>

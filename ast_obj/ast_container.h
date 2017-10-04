@@ -17,6 +17,7 @@
  */
 
 typedef struct AstExprContainer {
+    ast_container_type type;
     bool closed;
     MMList list;
 }*AstExprContainer;
@@ -37,32 +38,81 @@ plat_inline void packAstContainer(AstExprContainer obj, Packer pkr) {
 
 MMSubObject(AST_EXPR_CONTAINER, AstExprContainer, AstExpression, initAstContainer, destroyAstContainer, packAstContainer);
 
-plat_inline bool isExprListclosed(AstExprContainer exprList) {
+plat_inline AstExprContainer allocAstExprContainerWithType(mgn_memory_pool* pool, ast_container_type type) {
+    AstExprContainer exprContainer = allocAstExprContainer(pool);
+    if (exprContainer) {
+        exprContainer->type = type;
+    }
+    return exprContainer;
+}
+
+plat_inline bool isExprContainerClosed(AstExprContainer exprList) {
     return exprList->closed;
 }
 
 // If closed, it can't add more expressions.
-plat_inline void closeExprList(AstExprContainer exprList) {
-    exprList->closed = true;
+plat_inline void closeExprContainer(AstExprContainer exprContainer) {
+    exprContainer->closed = true;
 }
 
-plat_inline void addExprToExprList(AstExprContainer exprList, AstExpression expr) {
-    pushMMListItem(exprList->list, toMMObject(expr));
+plat_inline void addExprToExprContainer(AstExprContainer exprContainer, AstExpression expr) {
+    pushMMListItem(exprContainer->list, toMMObject(expr));
 }
 
-plat_inline void concatExprList(AstExprContainer exprList1, AstExprContainer exprList2) {
-    concatMMList(exprList1->list, exprList2->list);
+plat_inline void insertExprToExprContainerAt(AstExprContainer exprContainer, AstExpression expr, uint idx) {
+    insertMMListItem(exprContainer->list, toMMObject(expr), idx);
 }
 
-plat_inline uint sizeOfExprList(AstExprContainer exprList) {
-    return sizeOfMMList(exprList->list);
+plat_inline void concatExprContainer(AstExprContainer exprContainer1, AstExprContainer exprContainer2) {
+    concatMMList(exprContainer1->list, exprContainer2->list);
 }
 
-plat_inline AstExpression getExprFromExprListAt(AstExprContainer exprList, uint idx) {
-    return toAstExpression(getMMListItem(exprList->list, idx));
+plat_inline uint sizeOfExprContainer(AstExprContainer exprContainer) {
+    return sizeOfMMList(exprContainer->list);
 }
 
+plat_inline AstExpression getExprFromExprContainerAt(AstExprContainer exprContainer, uint idx) {
+    return toAstExpression(getMMListItem(exprContainer->list, idx));
+}
 
+plat_inline ast_container_type getExprContainerType(AstExprContainer exprContainer) {
+    return exprContainer->type;
+}
+
+/*plat_inline void setExprContainerType(AstExprContainer exprContainer, ast_container_type type) {
+    exprContainer->type = type;
+}*/
+
+/// ===== Expr - Pair =====
+
+typedef struct AstExprPair {
+    AstExpression expr_k;
+    AstExpression expr_v;
+}*AstExprPair;
+
+plat_inline AstExprPair initAstExprPair(AstExprPair obj, Unpacker unpkr) {
+    return obj;
+}
+
+plat_inline void destroyAstExprPair(AstExprPair obj) {
+    if (obj->expr_k) release_mmobj(obj->expr_k);
+    if (obj->expr_v) release_mmobj(obj->expr_v);
+}
+
+plat_inline void packAstExprPair(AstExprPair obj, Packer pkr) {
+
+}
+
+MMSubObject(AST_EXPR_PAIR, AstExprPair, AstExpression, initAstExprPair, destroyAstExprPair, packAstExprPair);
+
+plat_inline AstExprPair allocAstExprPairWithKeyAndValue(mgn_memory_pool* pool, AstExpression key, AstExpression value) {
+    AstExprPair obj = allocAstExprPair(pool);
+    if (obj) {
+        obj->expr_k = retain_mmobj(key);
+        obj->expr_v = retain_mmobj(value);
+    }
+    return obj;
+}
 
 
 #endif //PROC_LA_AST_CONTAINER_H

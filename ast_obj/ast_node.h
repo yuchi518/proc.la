@@ -41,6 +41,7 @@ enum {
     //AST_VARIABLE_MAP,
 
     AST_EXPR_CONTAINER,
+    AST_EXPR_PAIR,
 
     AST_VAR_INSTANCE,
     AST_PARENTHESES_EXPR,
@@ -89,6 +90,12 @@ plat_inline const char* ast_type_name(ast_type type) {
         default: return "Unknown";
     }
 }
+
+typedef enum {
+    ast_container_type_list = 1,
+    ast_container_type_map = 2,
+    ast_container_type_tuple = 3,
+} ast_container_type;
 
 typedef enum {
     ast_unary_op_plus,      // +

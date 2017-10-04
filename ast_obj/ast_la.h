@@ -10,6 +10,7 @@
 #include "ast_variable.h"
 #include "ast_expr.h"
 #include "ast_stmt.h"
+#include "ast_container.h"
 
 /// ===== External Declarations =====
 
