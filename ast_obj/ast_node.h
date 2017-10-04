@@ -12,7 +12,6 @@
 
 enum {
     AST_NODE     = 0,
-    AST_NONE,
 
     AST_CTRL,
     AST_CTRL_FLOW,
@@ -32,18 +31,23 @@ enum {
     AST_A_LA,                           // input + body + output
 
     AST_EXPRESSION,
-    AST_VAR_INSTANCE,
-    AST_PARENTHESES_EXPR,
-    AST_UNARY_OP_EXPR,
-    AST_BINARY_OP_EXPR,
-    AST_TERNARY_OP_EXPR,
-    AST_APPLY_CHAIN,
+
+    AST_NONE,
 
     AST_VARIABLE,                       // primary type variable
     AST_VARIABLE_COMBINATION,
     AST_VARIABLE_DOMAIN_NAME,
     //AST_VARIABLE_LIST,
     //AST_VARIABLE_MAP,
+
+    AST_EXPR_CONTAINER,
+
+    AST_VAR_INSTANCE,
+    AST_PARENTHESES_EXPR,
+    AST_UNARY_OP_EXPR,
+    AST_BINARY_OP_EXPR,
+    AST_TERNARY_OP_EXPR,
+    AST_APPLY_CHAIN,
 
     AST_A_PROC_LA,                      // A proc.la file
 
@@ -148,27 +152,6 @@ plat_inline void packAstNode(AstNode obj, Packer pkr) {
 
 MMSubObject(AST_NODE, AstNode, MMObject , initAstNode, destroyAstNode, packAstNode);
 
-
-/// ===== NONE =====
-
-typedef struct AstNone {
-
-}*AstNone;
-
-plat_inline AstNone initAstNone(AstNone obj, Unpacker unpkr) {
-    return obj;
-}
-
-plat_inline void destroyAstNone(AstNone obj) {
-
-}
-
-plat_inline void packAstNone(AstNone obj, Packer pkr) {
-
-}
-
-MMSubObject(AST_NONE, AstNone, AstNode , initAstNone, destroyAstNone, packAstNone);
-
 /// ===== Statement =====
 
 typedef struct AstStatement {
@@ -222,6 +205,26 @@ plat_inline AstExpression allocAstExpressionWith(mgn_memory_pool* pool, ...) {
     }
     return obj;
 }
+
+/// ===== NONE =====
+
+typedef struct AstNone {
+
+}*AstNone;
+
+plat_inline AstNone initAstNone(AstNone obj, Unpacker unpkr) {
+    return obj;
+}
+
+plat_inline void destroyAstNone(AstNone obj) {
+
+}
+
+plat_inline void packAstNone(AstNone obj, Packer pkr) {
+
+}
+
+MMSubObject(AST_NONE, AstNone, AstExpression, initAstNone, destroyAstNone, packAstNone);
 
 
 /// ===== Variable =====

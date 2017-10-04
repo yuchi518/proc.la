@@ -82,6 +82,9 @@ primary_expression
 
 list_expression
     : '[' list_item_list ']'
+    | '[' ']' {
+        $$ = ast_create_none();
+    }
     ;
 
 list_item_list
@@ -91,15 +94,19 @@ list_item_list
 
 map_expression
     : '{' map_item_list '}'
+    //| '{' '}'  // This is a empty block.
     ;
 
 map_item_list
-    : string ':' expression
-    | map_item_list ',' string ':' expression
+    : expression ':' expression
+    | map_item_list ',' expression ':' expression
     ;
 
 tuple_expression
     : '(' tuple_item_list ')'
+    | '(' ')' {
+        $$ = ast_create_none();
+    }
     ;
 
 tuple_item_list
@@ -350,6 +357,7 @@ cases_block_statement
 block_statement
     : '{' '}' {
         // TODO: refine the function
+        // This is also a empty map.
 	    $$ = ast_create_block(null, null);
 	}
 	| '{'  block_item_list '}' {
@@ -423,11 +431,11 @@ la_input_declaration
     : tuple_expression
     /*: '(' var_list_declaration ')' {
         $$ = $2;
-    }*/
+    }
     | '(' ')' {
         // create an empty list
         $$ = ast_create_var_list(null, null);
-    }
+    }*/
     ;
 
 la_output_declaration
