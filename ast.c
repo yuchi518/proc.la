@@ -135,10 +135,10 @@ AstNode ast_create_const_s(char* value)
     return toAstNode(autorelease_mmobj(allocVariableWithCString(_pool, value)));
 }
 
-AstNode ast_create_ctrl(ast_ctrl_type ctrl)
+/*AstNode ast_create_ctrl(ast_ctrl_type ctrl)
 {
     return toAstNode(autorelease_mmobj(allocAstCtrlFlowWithCtrl(_pool, ctrl)));
-}
+}*/
 
 AstNode ast_create_package(char* value)
 {
@@ -563,13 +563,23 @@ AstNode ast_create_block(AstNode first, AstNode second)
     }
     else if (first_block) {
         if (second) {
-            addStmtToBlock(first_block, toAstNode(second));
+            AstStatement statement = toAstStatement(second);
+            if (statement == null) {
+                plat_io_printf_err("Why is not a statement?(%s)\n", name_of_last_mmobj(second));
+                return null;
+            }
+            addStmtToBlock(first_block, statement);
         }
         return (first);
     }
     else if (second_block) {
         if (first) {
-            insertStmtToBlockAt(second_block, toAstNode(first), 0);
+            AstStatement statement = toAstStatement(first);
+            if (statement == null) {
+                plat_io_printf_err("Why is not a statement?(%s)\n", name_of_last_mmobj(first));
+                return null;
+            }
+            insertStmtToBlockAt(second_block, statement, 0);
         }
         return (second);
     }
@@ -577,11 +587,21 @@ AstNode ast_create_block(AstNode first, AstNode second)
         first_block = allocAstBlockStatement(_pool);
 
         if (first) {
-            addStmtToBlock(first_block, toAstNode(first));
+            AstStatement statement = toAstStatement(first);
+            if (statement == null) {
+                plat_io_printf_err("Why is not a statement?(%s)\n", name_of_last_mmobj(first));
+                return null;
+            }
+            addStmtToBlock(first_block, statement);
         }
 
         if (second) {
-            addStmtToBlock(first_block, toAstNode(second));
+            AstStatement statement = toAstStatement(second);
+            if (statement == null) {
+                plat_io_printf_err("Why is not a statement?(%s)\n", name_of_last_mmobj(second));
+                return null;
+            }
+            addStmtToBlock(first_block, statement);
         }
 
         return toAstNode(autorelease_mmobj(first_block));
@@ -600,6 +620,31 @@ AstNode ast_close_block(AstNode block)
     closeBlock(blockStatement);
 
     return block;
+}
+
+AstNode ast_create_case(AstNode check)
+{
+    AstExpression expression = toAstExpression(check);
+    if (check && expression==null) {
+        plat_io_printf_err("Check for case needs an expression.(%s)\n", name_of_last_mmobj(check));
+    }
+
+    return toAstNode(autorelease_mmobj(allocAstCaseStatementWithCheck(_pool, expression)));
+}
+
+AstNode ast_create_switch(AstNode eval, AstNode stmt)
+{
+    AstExpression expression = toAstExpression(eval);
+    if (expression == null) {
+        plat_io_printf_err("Switch statement needs an evaluation.(%s)\n", name_of_last_mmobj(eval));
+    }
+
+    AstStatement statement = toAstStatement(stmt);
+    if (statement==null || (toAstNone(stmt)==null && toAstBlockStatement(stmt))) {
+        plat_io_printf_err("Switch statement needs a block statement.(%s)\n", name_of_last_mmobj(stmt));
+    }
+
+    return toAstNode(autorelease_mmobj(allocAstSwitchStatementWithEvalAndStmt(_pool, expression, statement)));
 }
 
 AstNode ast_create_stmt_address(AstNode label)

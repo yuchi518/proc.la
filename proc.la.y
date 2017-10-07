@@ -309,6 +309,12 @@ expression
 	| expression la_statement {
 	    $$ = ast_apply_binary_op_expr_w_expr_b($2, $1);
 	}
+	| expression IS var_type_specifier {
+	    // TODO:  ???
+	}
+	| SYNC IDENTIFIER {
+	    // TODO:
+	}
     ;
 
 expression_statement
@@ -371,18 +377,23 @@ labeled_statement
 	;
 
 case_statement
-    : CASE expression ':' statement
-    | DEFAULT ':' statement
+    : CASE expression ':' statement {
+        $$ = ast_create_block(ast_create_case($2), $4);
+    }
+    | DEFAULT ':' statement {
+        $$ = ast_create_block(ast_create_case(null), $3);
+    }
     ;
 
 cases_block_statement
-    : cases_block_statement case_statement
+    : cases_block_statement case_statement {
+        $$ = ast_create_block($1, $2);
+    }
     | case_statement
     ;
 
 block_statement
     : '{' '}' {
-        // TODO: refine the function
         // This is also a empty map.
 	    //$$ = ast_close_block(ast_create_block(null, null));
 	    $$ = ast_create_none();
@@ -406,7 +417,9 @@ block_item
 selection_statement
 	: IF '(' expression ')' statement
 	| IF '(' expression ')' statement ELSE statement
-	| SWITCH '(' expression ')' '{' cases_block_statement '}'
+	| SWITCH '(' expression ')' '{' cases_block_statement '}' {
+	    $$ = ast_create_switch($3, ast_close_block($6));
+	}
 	;
 
 iteration_statement

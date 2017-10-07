@@ -73,9 +73,9 @@ struct src_stack
 "none"                                                  { yylval = ast_create_none(); return N_CONSTANT; }
 "out"                                                   { yylval = ast_create_out(); return OUT; }
 
-"is"                                                    { yylval = ast_create_ctrl(ast_ctrl_type_is); return IS; }
-"declare"                                               { yylval = ast_create_ctrl(ast_ctrl_type_declare); return DECLARE; }
-"sync"                                                  { yylval = ast_create_ctrl(ast_ctrl_type_sync); return SYNC; }
+"is"                                                    { return IS; }
+"declare"                                               { return DECLARE; }
+"sync"                                                  { return SYNC; }
 
 ({LETTER}{ASCII}*)("."{LETTER}{ASCII}*)+                { yylval = ast_create_domain(yytext); return DOMAIN_NAME; }
 (@{LETTER}{ASCII}*)("."{LETTER}{ASCII}*)*               { yylval = ast_create_package(yytext); return PACKAGE_NAME; }

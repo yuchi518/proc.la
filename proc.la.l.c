@@ -1136,17 +1136,17 @@ YY_RULE_SETUP
 case 29:
 YY_RULE_SETUP
 #line 76 "proc.la.l"
-{ yylval = ast_create_ctrl(ast_ctrl_type_is); return IS; }
+{ return IS; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 77 "proc.la.l"
-{ yylval = ast_create_ctrl(ast_ctrl_type_declare); return DECLARE; }
+{ return DECLARE; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 78 "proc.la.l"
-{ yylval = ast_create_ctrl(ast_ctrl_type_sync); return SYNC; }
+{ return SYNC; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP

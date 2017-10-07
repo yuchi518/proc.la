@@ -95,7 +95,7 @@ plat_inline AstType getTypeFromTypeListAt(AstTypeList typeList, uint idx) {
     return toAstType(getMMListItem(typeList->list, idx));
 }
 
-/// ===== Statement - La body =====
+/// ===== Statement - Block =====
 
 typedef struct AstBlockStatement {
     bool closed;
@@ -119,7 +119,7 @@ plat_inline void packAstBlockStatement(AstBlockStatement obj, Packer pkr) {
 
 MMSubObject(AST_BLOCK_STATEMENT, AstBlockStatement, AstStatement, initAstBlockStatement, destroyAstBlockStatement, packAstBlockStatement);
 
-plat_inline void addStmtToBlock(AstBlockStatement block, AstNode stmt) {
+plat_inline void addStmtToBlock(AstBlockStatement block, AstStatement stmt) {
     pushMMListItem(block->stmts, toMMObject(stmt));
 }
 
@@ -127,7 +127,7 @@ plat_inline void concatBlock(AstBlockStatement block, AstBlockStatement a_list) 
     concatMMList(block->stmts, a_list->stmts);
 }
 
-plat_inline void insertStmtToBlockAt(AstBlockStatement block, AstNode stmt, uint idx) {
+plat_inline void insertStmtToBlockAt(AstBlockStatement block, AstStatement stmt, uint idx) {
     insertMMListItem(block->stmts, toMMObject(stmt), idx);
 }
 
@@ -135,8 +135,8 @@ plat_inline uint sizeOfBlock(AstBlockStatement block) {
     return sizeOfMMList(block->stmts);
 }
 
-plat_inline AstNode getStmtFromBlockAt(AstBlockStatement block, uint idx) {
-    return toAstNode(getMMListItem(block->stmts, idx));
+plat_inline AstStatement getStmtFromBlockAt(AstBlockStatement block, uint idx) {
+    return toAstStatement(getMMListItem(block->stmts, idx));
 }
 
 plat_inline bool isBlockClosed(AstBlockStatement block) {
@@ -147,6 +147,66 @@ plat_inline void closeBlock(AstBlockStatement block) {
     block->closed = true;
 }
 
+
+/// ===== Statement - Case =====
+
+typedef struct AstCaseStatement {
+    AstExpression check;            // if null, means 'default' case.
+}*AstCaseStatement;
+
+plat_inline AstCaseStatement initAstCaseStatement(AstCaseStatement obj, Unpacker unpkr) {
+    return obj;
+}
+
+plat_inline void destroyAstCaseStatement(AstCaseStatement obj) {
+    release_mmobj(obj->check);
+}
+
+plat_inline void packAstCaseStatement(AstCaseStatement obj, Packer pkr) {
+
+}
+
+MMSubObject(AST_CASE_STATEMENT, AstCaseStatement, AstStatement, initAstCaseStatement, destroyAstCaseStatement, packAstCaseStatement);
+
+plat_inline AstCaseStatement allocAstCaseStatementWithCheck(mgn_memory_pool* pool, AstExpression check) {
+    AstCaseStatement obj = allocAstCaseStatement(pool);
+    if (obj) {
+        obj->check = retain_mmobj(check);
+    }
+    return obj;
+}
+
+
+/// ===== Statement - Switch =====
+
+typedef struct AstSwitchStatement {
+    AstExpression eval;
+    AstStatement stmt;
+}*AstSwitchStatement;
+
+plat_inline AstSwitchStatement initAstSwitchStatement(AstSwitchStatement obj, Unpacker unpkr) {
+    return obj;
+}
+
+plat_inline void destroyAstSwitchStatement(AstSwitchStatement obj) {
+    release_mmobj(obj->eval);
+    release_mmobj(obj->stmt);
+}
+
+plat_inline void packAstSwitchStatement(AstSwitchStatement obj, Packer pkr) {
+
+}
+
+MMSubObject(AST_SWITCH_STATEMENT, AstSwitchStatement, AstStatement, initAstSwitchStatement, destroyAstSwitchStatement, packAstSwitchStatement);
+
+plat_inline AstSwitchStatement allocAstSwitchStatementWithEvalAndStmt(mgn_memory_pool* pool, AstExpression eval, AstStatement stmt) {
+    AstSwitchStatement obj = allocAstSwitchStatement(pool);
+    if (obj) {
+        obj->eval = retain_mmobj(eval);
+        obj->stmt = retain_mmobj(stmt);
+    }
+    return obj;
+}
 
 /// ===== Statement - Address =====
 

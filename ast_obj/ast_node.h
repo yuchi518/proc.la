@@ -13,10 +13,8 @@
 enum {
     AST_NODE     = 0,
 
-    AST_CTRL,
-    AST_CTRL_FLOW,
-
-    AST_IDENTIFIER,
+    //AST_CTRL,
+    //AST_CTRL_FLOW,
 
     AST_TYPE,
     AST_TYPE_COMBINATION,
@@ -26,10 +24,14 @@ enum {
     AST_STATEMENT_ADDRESS,              // label
     AST_TYPE_LIST_DECLARATION,          // A list of type declarations, ex. A La output
     AST_BLOCK_STATEMENT,                // A block statement, aka "{ .... }", include a la body.
+    AST_CASE_STATEMENT,                 // case XXX: statement;
+    AST_SWITCH_STATEMENT,
     AST_EXTERNAL_DECLARATIONS,
     AST_A_LA,                           // input + body + output
 
     AST_EXPRESSION,
+
+    AST_IDENTIFIER,
 
     AST_NONE,
     AST_OUT,
@@ -91,9 +93,9 @@ plat_inline const char* ast_type_name(ast_type type) {
 }
 
 typedef enum {
-    ast_container_type_list = 1,
-    ast_container_type_map = 2,
-    ast_container_type_tuple = 3,
+    ast_container_type_list     = 1,
+    ast_container_type_map      = 2,
+    ast_container_type_tuple    = 3,
 } ast_container_type;
 
 typedef enum {

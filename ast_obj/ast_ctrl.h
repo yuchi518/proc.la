@@ -2,6 +2,7 @@
 // Created by Yuchi Chen on 2017/9/16.
 //
 
+#if 0
 #ifndef PROC_LA_AST_CTRL_H
 #define PROC_LA_AST_CTRL_H
 
@@ -80,3 +81,4 @@ plat_inline AstCtrlFlow allocAstCtrlFlowWithCtrl(mgn_memory_pool* pool, ast_ctrl
 
 
 #endif //PROC_LA_AST_CTRL_H
+#endif
