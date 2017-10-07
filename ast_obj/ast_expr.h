@@ -24,12 +24,8 @@ plat_inline AstVarDeclare initAstVarDeclare(AstVarDeclare obj, Unpacker unpkr) {
 }
 
 plat_inline void destroyAstVarDeclare(AstVarDeclare obj) {
-    if (obj->identifier) {
-        release_mmobj(obj->identifier);
-    }
-    if (obj->identifier_type) {
-        release_mmobj(obj->identifier_type);
-    }
+    release_mmobj(obj->identifier);
+    release_mmobj(obj->identifier_type);
 }
 
 plat_inline void packAstVarDeclare(AstVarDeclare obj, Packer pkr) {
@@ -66,9 +62,7 @@ plat_inline AstVarDeclareList initAstVarDeclareList(AstVarDeclareList obj, Unpac
 }
 
 plat_inline void destroyAstVarDeclareList(AstVarDeclareList obj) {
-    if (obj->list) {
-        release_mmobj(obj->list);
-    }
+    release_mmobj(obj->list);
 }
 
 plat_inline void packAstVarDeclareList(AstVarDeclareList obj, Packer pkr) {
@@ -114,12 +108,8 @@ plat_inline AstVarInstance initAstVarInstant(AstVarInstance obj, Unpacker unpkr)
 }
 
 plat_inline void destroyAstVarInstant(AstVarInstance obj) {
-    if (obj->declare) {
-        release_mmobj(obj->declare);
-    }
-    if (obj->inst) {
-        release_mmobj(obj->inst);
-    }
+    release_mmobj(obj->declare);
+    release_mmobj(obj->inst);
 }
 
 plat_inline void packAstVarInstant(AstVarInstance obj, Packer pkr) {
@@ -158,9 +148,7 @@ plat_inline AstParenthesesExpr initAstParenthesesExpr(AstParenthesesExpr obj, Un
 }
 
 plat_inline void destroyAstParenthesesExpr(AstParenthesesExpr obj) {
-    if (obj->expr) {
-        release_mmobj(obj->expr);
-    }
+    release_mmobj(obj->expr);
 }
 
 plat_inline void packAstParenthesesExpr(AstParenthesesExpr obj, Packer pkr) {
@@ -190,9 +178,7 @@ plat_inline AstUnaryOpExpr initAstUnaryExpr(AstUnaryOpExpr obj, Unpacker unpkr) 
 }
 
 plat_inline void destroyAstUnaryExpr(AstUnaryOpExpr obj) {
-    if (obj->expr) {
-        release_mmobj(obj->expr);
-    }
+    release_mmobj(obj->expr);
 }
 
 plat_inline void packAstUnaryExpr(AstUnaryOpExpr obj, Packer pkr) {
@@ -223,12 +209,8 @@ plat_inline AstBinaryOpExpr initAstBinaryOpExpr(AstBinaryOpExpr obj, Unpacker un
 }
 
 plat_inline void destroyAstBinaryOpExpr(AstBinaryOpExpr obj) {
-    if (obj->expr_a) {
-        release_mmobj(obj->expr_a);
-    }
-    if (obj->expr_b) {
-        release_mmobj(obj->expr_b);
-    }
+    release_mmobj(obj->expr_a);
+    release_mmobj(obj->expr_b);
 }
 
 plat_inline void packAstBinaryOpExpr(AstBinaryOpExpr obj, Packer pkr) {
@@ -237,7 +219,7 @@ plat_inline void packAstBinaryOpExpr(AstBinaryOpExpr obj, Packer pkr) {
 
 MMSubObject(AST_BINARY_OP_EXPR, AstBinaryOpExpr, AstExpression, initAstBinaryOpExpr, destroyAstBinaryOpExpr, packAstBinaryOpExpr);
 
-plat_inline AstBinaryOpExpr allocAstBinaryOpExprWithOp(mgn_memory_pool* pool, AstExpression expr_a, AstExpression expr_b, ast_binary_op op) {
+plat_inline AstBinaryOpExpr allocAstBinaryOpExprWithExprsAndOp(mgn_memory_pool* pool, AstExpression expr_a, AstExpression expr_b, ast_binary_op op) {
     AstBinaryOpExpr obj = allocAstBinaryOpExpr(pool);
     if (obj) {
         obj->expr_a = retain_mmobj(expr_a);
@@ -247,7 +229,25 @@ plat_inline AstBinaryOpExpr allocAstBinaryOpExprWithOp(mgn_memory_pool* pool, As
     return obj;
 }
 
-/// =====  =====
+plat_inline AstBinaryOpExpr allocAstBinaryOpExprWithOp(mgn_memory_pool* pool, ast_binary_op op) {
+    AstBinaryOpExpr obj = allocAstBinaryOpExpr(pool);
+    if (obj) {
+        obj->op = op;
+    }
+    return obj;
+}
+
+plat_inline void applyExprAtoBinaryOpExpr(AstBinaryOpExpr opExpr, AstExpression expr_a) {
+    release_mmobj(opExpr->expr_a);
+    opExpr->expr_a = retain_mmobj(expr_a);
+}
+
+plat_inline void applyExprBtoBinaryOpExpr(AstBinaryOpExpr opExpr, AstExpression expr_b) {
+    release_mmobj(opExpr->expr_b);
+    opExpr->expr_b = retain_mmobj(expr_b);
+}
+
+/// ===== Expr - Ternary Op =====
 
 typedef struct AstTernaryOpExpr {
     AstExpression expr_a;
@@ -261,15 +261,9 @@ plat_inline AstTernaryOpExpr initAstTernaryOpExpr(AstTernaryOpExpr obj, Unpacker
 }
 
 plat_inline void destroyAstTernaryOpExpr(AstTernaryOpExpr obj) {
-    if (obj->expr_a) {
-        release_mmobj(obj->expr_a);
-    }
-    if (obj->expr_b) {
-        release_mmobj(obj->expr_b);
-    }
-    if (obj->expr_c) {
-        release_mmobj(obj->expr_c);
-    }
+    release_mmobj(obj->expr_a);
+    release_mmobj(obj->expr_b);
+    release_mmobj(obj->expr_c);
 }
 
 plat_inline void packAstTernaryOpExpr(AstTernaryOpExpr obj, Packer pkr) {
@@ -288,33 +282,5 @@ plat_inline AstTernaryOpExpr allocAstTernaryOpExprWithOp(mgn_memory_pool* pool, 
     }
     return obj;
 }
-
-/// ===== Apply Chain =====
-
-typedef struct AstApplyChain {
-
-}*AstApplyChain;
-
-plat_inline AstApplyChain initAstApplyChain(AstApplyChain obj, Unpacker unpkr) {
-    return obj;
-}
-
-plat_inline void destroyAstApplyChain(AstApplyChain obj) {
-
-}
-
-plat_inline void packAstApplyChain(AstApplyChain obj, Packer pkr) {
-
-}
-
-MMSubObject(AST_APPLY_CHAIN, AstApplyChain, AstExpression, initAstApplyChain, destroyAstApplyChain, packAstApplyChain);
-
-plat_inline AstApplyChain allocAstApplyChainWith(mgn_memory_pool* pool, ...) {
-    AstApplyChain obj = allocAstApplyChain(pool);
-    if (obj) {
-    }
-    return obj;
-}
-
 
 #endif //PROC_LA_AST_EXPR_H

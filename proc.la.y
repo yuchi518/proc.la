@@ -93,6 +93,9 @@ list_item_list
     : expression {
         $$ = ast_create_container($1, null, ast_container_type_list);
     }
+    /*| expression ':' expression ':' expression {
+        // TODO: from ~ to, incremental
+    }*/
     | list_item_list ',' expression {
         $$ = ast_create_container($1, $3, ast_container_type_list);
     }
@@ -153,16 +156,10 @@ container_expression
 
 postfix_expression
 	: container_expression
-	/*| postfix_expression '[' expression ']' {
-	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_list_access);
-	}
-	| postfix_expression '{' expression '}' {
-	    $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_map_access);
-	}*/
 //	| postfix_expression '.' IDENTIFIER
 //	| postfix_expression PTR_OP IDENTIFIER
 	| postfix_expression INC_OP {
-	    $$ = ast_create_unary_op_expr($1, ast_unary_op_inc_f);
+	    $$ = ast_create_unary_op_expr($1, ast_unary_op_inc_l);
 	}
 	| postfix_expression DEC_OP {
 	    $$ = ast_create_unary_op_expr($1, ast_unary_op_dec_l);
@@ -306,47 +303,56 @@ assignment_expression
 
 expression
     : assignment_expression
-    | expression APPLY_TO assignment_expression
-	| expression la_statement
+    | expression APPLY_TO assignment_expression {
+        $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_apply_to);
+    }
+	| expression la_statement {
+	    $$ = ast_apply_binary_op_expr_w_expr_b($2, $1);
+	}
     ;
 
 expression_statement
 	: ';'
-	| expression ';'
-    | expression APPLY_TO OUT ';'
+	| expression ';' {
+	    $$ = $1;
+	}
+    | expression APPLY_TO OUT ';' {
+        $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_apply_to);
+    }
 	;
 
 // ===== la statement/expression =====
 
 la_statement
-    : pipe_op DOMAIN_NAME
-    | pipe_op la_body_declaration
-    | pipe_op OUT
-    | pipe_op assignment_expression
+    : pipe_op DOMAIN_NAME {
+        $$ = ast_apply_binary_op_expr_w_expr_b($1, $2);
+    }
+    | pipe_op la_body_declaration {
+        $$ = ast_apply_binary_op_expr_w_expr_b($1, $2);
+    }
+    | pipe_op OUT {
+        $$ = ast_apply_binary_op_expr_w_expr_b($1, $2);
+    }
+    | pipe_op assignment_expression {
+        $$ = ast_apply_binary_op_expr_w_expr_b($1, $2);
+    }
     ;
 
 pipe_op
-    : PIPE_1_TO_1
-    | PIPE_REDUCE
-    | PIPE_EXPAND
-    | PIPE_INJECT
+    : PIPE_1_TO_1 {
+        $$ = ast_create_binary_op_expr_w_op(ast_binary_op_pipe_1to1);
+    }
+    | PIPE_REDUCE {
+        $$ = ast_create_binary_op_expr_w_op(ast_binary_op_pipe_reduce);
+    }
+    | PIPE_EXPAND {
+        $$ = ast_create_binary_op_expr_w_op(ast_binary_op_pipe_expand);
+    }
+    | PIPE_INJECT {
+        $$ = ast_create_binary_op_expr_w_op(ast_binary_op_pipe_inject);
+    }
     ;
 
-// ======================== declaration ==================
-/*
-declaration
-	: init_declarator ';'
-	;
-
-init_declarator
-	: container_expression APPLY_TO declarator
-	| declarator
-	;
-
-declarator
-    : var_declaration
-    ;
-*/
 // ==== statement flow =====
 
 statement
@@ -359,7 +365,9 @@ statement
 	;
 
 labeled_statement
-	: IDENTIFIER ':' statement
+	: IDENTIFIER ':' statement {
+	    $$ = ast_create_block(ast_create_stmt_address($1), $3);
+	}
 	;
 
 case_statement
@@ -376,17 +384,17 @@ block_statement
     : '{' '}' {
         // TODO: refine the function
         // This is also a empty map.
-	    $$ = ast_create_block(null, null);
+	    //$$ = ast_close_block(ast_create_block(null, null));
+	    $$ = ast_create_none();
 	}
 	| '{'  block_item_list '}' {
-	    $$ = $2;
+	    $$ = ast_close_block($2);
 	}
 	;
 
 block_item_list
 	: block_item
 	| block_item_list block_item {
-	    // TODO: refine the function
 	    $$ = ast_create_block($1, $2);
 	}
 	;
@@ -467,21 +475,12 @@ la_output_declaration
     ;
 
 la_body_declaration
-    : /*la_input_declaration APPLY_TO block_statement APPLY_TO la_output_declaration {
-        $$ = ast_create_la_declaration($1, $3, $5);
-    }
-    |*/ la_input_declaration block_statement la_output_declaration {
+    : la_input_declaration block_statement la_output_declaration {
         $$ = ast_create_la_declaration($1, $2, $3);
     }
-    //| la_input_declaration APPLY_TO block_statement {
-    //    $$ = ast_create_la_declaration($1, $3, null);
-    //}
     | la_input_declaration block_statement {
         $$ = ast_create_la_declaration($1, $2, null);
     }
-    //| block_statement APPLY_TO la_output_declaration {
-    //    $$ = ast_create_la_declaration(null, $1, $3);
-    //}
     | block_statement la_output_declaration {
         $$ = ast_create_la_declaration(null, $1, $2);
     }

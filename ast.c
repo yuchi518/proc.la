@@ -53,6 +53,11 @@ AstNode ast_create_none(void) {
     return toAstNode(autorelease_mmobj(allocAstNone(_pool)));
 }
 
+AstNode ast_create_out(void)
+{
+    return toAstNode(autorelease_mmobj(allocAstOut(_pool)));
+}
+
 AstNode ast_create_type(ast_type type)
 {
     return toAstNode(autorelease_mmobj(allocAstTypeWithType(_pool, type)));
@@ -228,6 +233,56 @@ AstNode ast_create_binary_op_expr(AstNode expr_a, AstNode expr_b, ast_binary_op 
         case ast_binary_op_bit_and:
         case ast_binary_op_bit_or:
         case ast_binary_op_bit_xor:
+
+        case ast_binary_op_apply_to:
+        case ast_binary_op_pipe_1to1:
+        case ast_binary_op_pipe_reduce:
+        case ast_binary_op_pipe_expand:
+        case ast_binary_op_pipe_inject:
+            break;
+        default: {
+            plat_io_printf_err("Incorrect binary op(%d)\n", op);
+            return null;
+        }
+     }
+
+    return toAstNode(autorelease_mmobj(allocAstBinaryOpExprWithExprsAndOp(_pool, toAstExpression(expr_a), toAstExpression(expr_b), op)));
+}
+
+AstNode ast_create_binary_op_expr_w_op(ast_binary_op op)
+{
+    switch (op)
+    {
+        case ast_binary_op_add:
+        case ast_binary_op_subtract:
+        case ast_binary_op_multiply:
+        case ast_binary_op_divide:
+        case ast_binary_op_modulo:
+
+        case ast_binary_op_list_access:
+        case ast_binary_op_map_access:
+
+        case ast_binary_op_shift_left:
+        case ast_binary_op_shift_right:
+
+        case ast_binary_op_equal:
+        case ast_binary_op_not_equal:
+        case ast_binary_op_less:
+        case ast_binary_op_great:
+        case ast_binary_op_less_or_equal:
+        case ast_binary_op_great_or_equal:
+        case ast_binary_op_and:
+        case ast_binary_op_or:
+
+        case ast_binary_op_bit_and:
+        case ast_binary_op_bit_or:
+        case ast_binary_op_bit_xor:
+
+        case ast_binary_op_apply_to:
+        case ast_binary_op_pipe_1to1:
+        case ast_binary_op_pipe_reduce:
+        case ast_binary_op_pipe_expand:
+        case ast_binary_op_pipe_inject:
             break;
         default: {
             plat_io_printf_err("Incorrect binary op(%d)\n", op);
@@ -235,7 +290,43 @@ AstNode ast_create_binary_op_expr(AstNode expr_a, AstNode expr_b, ast_binary_op 
         }
     }
 
-    return toAstNode(autorelease_mmobj(allocAstBinaryOpExprWithOp(_pool, toAstExpression(expr_a), toAstExpression(expr_b), op)));
+    return toAstNode(autorelease_mmobj(allocAstBinaryOpExprWithOp(_pool, op)));
+}
+
+AstNode ast_apply_binary_op_expr_w_expr_a(AstNode op_expr, AstNode expr_a)
+{
+    AstBinaryOpExpr binaryOpExpr = toAstBinaryOpExpr(op_expr);
+    if (binaryOpExpr == null) {
+        plat_io_printf_err("op_expr should be AstBinaryOpExpr.(%s)\n", name_of_last_mmobj(op_expr));
+        return null;
+    }
+
+    AstExpression expression = toAstExpression(expr_a);
+    if (expression == null) {
+        plat_io_printf_err("expr_a should be AstExpression.(%s)\n", name_of_last_mmobj(expr_a));
+        return null;
+    }
+
+    applyExprAtoBinaryOpExpr(binaryOpExpr, expression);
+    return op_expr;
+}
+
+AstNode ast_apply_binary_op_expr_w_expr_b(AstNode op_expr, AstNode expr_b)
+{
+    AstBinaryOpExpr binaryOpExpr = toAstBinaryOpExpr(op_expr);
+    if (binaryOpExpr == null) {
+        plat_io_printf_err("op_expr should be AstBinaryOpExpr.(%s)\n", name_of_last_mmobj(op_expr));
+        return null;
+    }
+
+    AstExpression expression = toAstExpression(expr_b);
+    if (expression == null) {
+        plat_io_printf_err("expr_b should be AstExpression.(%s)\n", name_of_last_mmobj(expr_b));
+        return null;
+    }
+
+    applyExprBtoBinaryOpExpr(binaryOpExpr, expression);
+    return op_expr;
 }
 
 AstNode ast_create_ternary_op_expr(AstNode expr_a, AstNode expr_b, AstNode expr_c, ast_ternary_op op)
@@ -258,11 +349,11 @@ AstNode ast_create_container(AstNode expr_a, AstNode expr_b, ast_container_type 
     AstExprContainer exprContainerA = toAstExprContainer(expr_a);
     AstExprContainer exprContainerB = toAstExprContainer(expr_b);
 
-    if (isExprContainerClosed(exprContainerA)) {
+    if (exprContainerA && isExprContainerClosed(exprContainerA)) {
         exprContainerA = null;      // it is just an expression, not a container.
     }
 
-    if (isExprContainerClosed(exprContainerB)) {
+    if (exprContainerB && isExprContainerClosed(exprContainerB)) {
         exprContainerB = null;      // it is just an expression, not a container.
     }
 
@@ -458,6 +549,14 @@ AstNode ast_create_block(AstNode first, AstNode second)
     AstBlockStatement first_block = toAstBlockStatement(first);
     AstBlockStatement second_block = toAstBlockStatement(second);
 
+    if (first_block && isBlockClosed(first_block)) {
+        first_block = null;
+    }
+
+    if (second_block && isBlockClosed(second_block)) {
+        second_block = null;
+    }
+
     if (first_block && second_block) {
         concatBlock(first_block, second_block);
         return (first);
@@ -487,7 +586,30 @@ AstNode ast_create_block(AstNode first, AstNode second)
 
         return toAstNode(autorelease_mmobj(first_block));
     }
+}
 
+AstNode ast_close_block(AstNode block)
+{
+    AstBlockStatement blockStatement = toAstBlockStatement(block);
+
+    if (blockStatement == null) {
+        plat_io_printf_err("Is this a block statement?(%s)\n", name_of_last_mmobj(block));
+        return null;
+    }
+
+    closeBlock(blockStatement);
+
+    return block;
+}
+
+AstNode ast_create_stmt_address(AstNode label)
+{
+    AstIdentifier identifier = toAstIdentifier(label);
+    if (identifier == null) {
+        plat_io_printf_err("Statement Address needs a identifier label.(%s)\n", name_of_last_mmobj(label));
+    }
+
+    return toAstNode(autorelease_mmobj(allocAstStmtAddressWithLabel(_pool, identifier)));
 }
 
 AstNode ast_create_la_declaration(AstNode input, AstNode body, AstNode output)
@@ -606,7 +728,7 @@ void iterate_ast(AstNode obj, ast_iterator iterator)
                 AstALa variableLa = toAstALa(obj);
 
                 if (variableLa->output) pushToAstStack(stack, toAstNode(variableLa->output));       // AST_TYPE_LIST_DECLARATION
-                if (variableLa->body) pushToAstStack(stack, toAstNode(variableLa->body));           // AST_LA_BODY_DECLARATION
+                if (variableLa->body) pushToAstStack(stack, toAstNode(variableLa->body));           // AST_BLOCK_STATEMENT
                 if (variableLa->input) pushToAstStack(stack, toAstNode(variableLa->input));         // AST_VAR_LIST_DECLARATION
 
                 sa = scope_action_created;
@@ -634,7 +756,7 @@ void iterate_ast(AstNode obj, ast_iterator iterator)
                 sa = scope_action_created;
                 break;
             }
-            case AST_LA_BODY_DECLARATION:
+            case AST_BLOCK_STATEMENT:
             {
                 scope = ast_impl_create_scope(obj, scope/*last scope*/);
                 pushToAstStack(stack, toAstNode(scope));

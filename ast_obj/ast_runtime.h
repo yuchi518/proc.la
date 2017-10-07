@@ -20,7 +20,7 @@ plat_inline AstStack initAstStack(AstStack obj, Unpacker unpkr) {
 }
 
 plat_inline void destroyAstStack(AstStack obj) {
-    if (obj->nodes) release_mmobj(obj->nodes);
+    release_mmobj(obj->nodes);
 }
 
 plat_inline void packAstStack(AstStack obj, Packer pkr) {
@@ -66,8 +66,8 @@ plat_inline AstScope initAstScope(AstScope obj, Unpacker unpkr) {
 }
 
 plat_inline void destroyAstScope(AstScope obj) {
-    if (obj->trigger) release_mmobj(obj->trigger);
-    if (obj->last_scope) release_mmobj(obj->last_scope);
+    release_mmobj(obj->trigger);
+    release_mmobj(obj->last_scope);
 }
 
 plat_inline void packAstScope(AstScope obj, Packer pkr) {

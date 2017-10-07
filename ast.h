@@ -9,6 +9,7 @@
 #include "ast_runtime.h"
 
 AstNode ast_create_none(void);
+AstNode ast_create_out(void);
 AstNode ast_create_type(ast_type type);
 AstNode ast_create_const_i(char* value);
 AstNode ast_create_const_f(char* value);
@@ -23,6 +24,9 @@ AstNode ast_create_parentheses_expr(AstNode expr);
 AstNode ast_create_unary_op_expr(AstNode expr, ast_unary_op op);
 AstNode ast_create_unary_op_expr_ex(AstNode expr, AstNode op);
 AstNode ast_create_binary_op_expr(AstNode expr_a, AstNode expr_b, ast_binary_op op);
+AstNode ast_create_binary_op_expr_w_op(ast_binary_op op);
+AstNode ast_apply_binary_op_expr_w_expr_a(AstNode op_expr, AstNode expr_a);
+AstNode ast_apply_binary_op_expr_w_expr_b(AstNode op_expr, AstNode expr_b);
 AstNode ast_create_ternary_op_expr(AstNode expr_a, AstNode expr_b, AstNode expr_c, ast_ternary_op op);
 
 AstNode ast_create_container(AstNode expr_a, AstNode expr_b, ast_container_type type);
@@ -36,6 +40,8 @@ AstNode ast_create_type_list(AstNode first, AstNode second);
 AstNode ast_create_var_list(AstNode first, AstNode second);
 
 AstNode ast_create_block(AstNode first, AstNode second);
+AstNode ast_close_block(AstNode block);
+AstNode ast_create_stmt_address(AstNode label);
 AstNode ast_create_la_declaration(AstNode input, AstNode body, AstNode output);
 
 

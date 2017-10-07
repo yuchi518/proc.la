@@ -45,10 +45,7 @@ plat_inline AstDomainName initAstDomainName(AstDomainName obj, Unpacker unpkr) {
 }
 
 plat_inline void destroyAstDomainName(AstDomainName obj) {
-    if (obj->name) {
-        release_mmobj(obj->name);
-        obj->name = null;
-    }
+    release_mmobj(obj->name);
 }
 
 plat_inline void packAstDomainName(AstDomainName obj, Packer pkr) {
@@ -100,15 +97,9 @@ plat_inline AstALa initAstVariableLa(AstALa obj, Unpacker unpkr) {
 }
 
 plat_inline void destroyAstVariableLa(AstALa obj) {
-    if (obj->input) {
-        release_mmobj(obj->input);
-    }
-    if (obj->body) {
-        release_mmobj(obj->body);
-    }
-    if (obj->output) {
-        release_mmobj(obj->output);
-    }
+    release_mmobj(obj->input);
+    release_mmobj(obj->body);
+    release_mmobj(obj->output);
 }
 
 plat_inline void packAstVariableLa(AstALa obj, Packer pkr) {

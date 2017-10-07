@@ -29,7 +29,7 @@ plat_inline AstExprContainer initAstContainer(AstExprContainer obj, Unpacker unp
 }
 
 plat_inline void destroyAstContainer(AstExprContainer obj) {
-    if (obj->list) release_mmobj(obj->list);
+    release_mmobj(obj->list);
 }
 
 plat_inline void packAstContainer(AstExprContainer obj, Packer pkr) {
@@ -95,8 +95,8 @@ plat_inline AstExprPair initAstExprPair(AstExprPair obj, Unpacker unpkr) {
 }
 
 plat_inline void destroyAstExprPair(AstExprPair obj) {
-    if (obj->expr_k) release_mmobj(obj->expr_k);
-    if (obj->expr_v) release_mmobj(obj->expr_v);
+    release_mmobj(obj->expr_k);
+    release_mmobj(obj->expr_v);
 }
 
 plat_inline void packAstExprPair(AstExprPair obj, Packer pkr) {

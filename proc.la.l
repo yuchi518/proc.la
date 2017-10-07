@@ -71,8 +71,8 @@ struct src_stack
 "proc"                                                  { yylval = ast_create_type(ast_type_proc); return(PROC); }
 "la"                                                    { yylval = ast_create_type(ast_type_la); return(LA); }
 "none"                                                  { yylval = ast_create_none(); return N_CONSTANT; }
+"out"                                                   { yylval = ast_create_out(); return OUT; }
 
-"out"                                                   { yylval = ast_create_ctrl(ast_ctrl_type_out); return OUT; }
 "is"                                                    { yylval = ast_create_ctrl(ast_ctrl_type_is); return IS; }
 "declare"                                               { yylval = ast_create_ctrl(ast_ctrl_type_declare); return DECLARE; }
 "sync"                                                  { yylval = ast_create_ctrl(ast_ctrl_type_sync); return SYNC; }

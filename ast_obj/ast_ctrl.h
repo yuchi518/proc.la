@@ -8,7 +8,6 @@
 #include "ast_node.h"
 
 typedef enum {
-    ast_ctrl_type_out,
     ast_ctrl_type_is,
     ast_ctrl_type_declare,
     ast_ctrl_type_sync,
@@ -61,7 +60,6 @@ MMSubObject(AST_CTRL_FLOW, AstCtrlFlow, AstCtrl , initAstCtrlFlow, destroyAstCtr
 plat_inline AstCtrlFlow allocAstCtrlFlowWithCtrl(mgn_memory_pool* pool, ast_ctrl_type ctrl) {
     switch (ctrl)
     {
-        case ast_ctrl_type_out:
         case ast_ctrl_type_is:
         case ast_ctrl_type_declare:
         case ast_ctrl_type_sync:

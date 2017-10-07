@@ -21,10 +21,7 @@ plat_inline AstPackage initAstPackage(AstPackage obj, Unpacker unpkr) {
 }
 
 plat_inline void destroyAstPackage(AstPackage obj) {
-    if (obj->name) {
-        release_mmobj(obj->name);
-        obj->name = null;
-    }
+    release_mmobj(obj->name);
 }
 
 plat_inline void packAstPackage(AstPackage obj, Packer pkr) {
@@ -69,9 +66,7 @@ plat_inline AstTypeList initAstTypeList(AstTypeList obj, Unpacker unpkr) {
 }
 
 plat_inline void destroyAstTypeList(AstTypeList obj) {
-    if (obj->list) {
-        release_mmobj(obj->list);
-    }
+    release_mmobj(obj->list);
 }
 
 plat_inline void packAstTypeList(AstTypeList obj, Packer pkr) {
@@ -103,26 +98,26 @@ plat_inline AstType getTypeFromTypeListAt(AstTypeList typeList, uint idx) {
 /// ===== Statement - La body =====
 
 typedef struct AstBlockStatement {
+    bool closed;
     MMList stmts;               // not all AstStatement objs,
 }*AstBlockStatement;
 
 plat_inline AstBlockStatement initAstBlockStatement(AstBlockStatement obj, Unpacker unpkr) {
+    obj->closed = false;
     obj->stmts = allocMMList(pool_of_mmobj(obj));
     if (obj->stmts == null) return null;
     return obj;
 }
 
 plat_inline void destroyAstBlockStatement(AstBlockStatement obj) {
-    if (obj->stmts) {
-        release_mmobj(obj->stmts);
-    }
+    release_mmobj(obj->stmts);
 }
 
 plat_inline void packAstBlockStatement(AstBlockStatement obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_LA_BODY_DECLARATION, AstBlockStatement, AstStatement, initAstBlockStatement, destroyAstBlockStatement, packAstBlockStatement);
+MMSubObject(AST_BLOCK_STATEMENT, AstBlockStatement, AstStatement, initAstBlockStatement, destroyAstBlockStatement, packAstBlockStatement);
 
 plat_inline void addStmtToBlock(AstBlockStatement block, AstNode stmt) {
     pushMMListItem(block->stmts, toMMObject(stmt));
@@ -143,6 +138,44 @@ plat_inline uint sizeOfBlock(AstBlockStatement block) {
 plat_inline AstNode getStmtFromBlockAt(AstBlockStatement block, uint idx) {
     return toAstNode(getMMListItem(block->stmts, idx));
 }
+
+plat_inline bool isBlockClosed(AstBlockStatement block) {
+    return block->closed;
+}
+
+plat_inline void closeBlock(AstBlockStatement block) {
+    block->closed = true;
+}
+
+
+/// ===== Statement - Address =====
+
+typedef struct AstStmtAddress {
+    AstIdentifier label;
+}*AstStmtAddress;
+
+plat_inline AstStmtAddress initAstStmtAddress(AstStmtAddress obj, Unpacker unpkr) {
+    return obj;
+}
+
+plat_inline void destroyAstStmtAddress(AstStmtAddress obj) {
+    release_mmobj(obj->label);
+}
+
+plat_inline void packAstStmtAddress(AstStmtAddress obj, Packer pkr) {
+
+}
+
+MMSubObject(AST_STATEMENT_ADDRESS, AstStmtAddress, AstStatement, initAstStmtAddress, destroyAstStmtAddress, packAstStmtAddress);
+
+plat_inline AstStmtAddress allocAstStmtAddressWithLabel(mgn_memory_pool* pool, AstIdentifier label) {
+    AstStmtAddress obj = allocAstStmtAddress(pool);
+    if (obj) {
+        obj->label = retain_mmobj(label);
+    }
+    return obj;
+}
+
 
 
 #endif //PROC_LA_AST_STMT_H

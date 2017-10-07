@@ -1130,8 +1130,8 @@ YY_RULE_SETUP
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 75 "proc.la.l"
-{ yylval = ast_create_ctrl(ast_ctrl_type_out); return OUT; }
+#line 74 "proc.la.l"
+{ yylval = ast_create_out(); return OUT; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP

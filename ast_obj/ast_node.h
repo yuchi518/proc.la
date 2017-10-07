@@ -23,32 +23,31 @@ enum {
 
     AST_STATEMENT,
     AST_PACKAGE,
-    AST_VAR_DECLARE,                    // variable type & name
-    AST_VAR_LIST_DECLARATION,           // A list of var declarations, ex. A La input
+    AST_STATEMENT_ADDRESS,              // label
     AST_TYPE_LIST_DECLARATION,          // A list of type declarations, ex. A La output
-    AST_LA_BODY_DECLARATION,            // A la body
+    AST_BLOCK_STATEMENT,                // A block statement, aka "{ .... }", include a la body.
     AST_EXTERNAL_DECLARATIONS,
     AST_A_LA,                           // input + body + output
 
     AST_EXPRESSION,
 
     AST_NONE,
+    AST_OUT,
 
     AST_VARIABLE,                       // primary type variable
     AST_VARIABLE_COMBINATION,
     AST_VARIABLE_DOMAIN_NAME,
-    //AST_VARIABLE_LIST,
-    //AST_VARIABLE_MAP,
 
     AST_EXPR_CONTAINER,
     AST_EXPR_PAIR,
 
+    AST_VAR_DECLARE,                    // variable type & name
+    AST_VAR_LIST_DECLARATION,           // A list of var declarations, ex. A La input
     AST_VAR_INSTANCE,
     AST_PARENTHESES_EXPR,
     AST_UNARY_OP_EXPR,
     AST_BINARY_OP_EXPR,
     AST_TERNARY_OP_EXPR,
-    AST_APPLY_CHAIN,
 
     AST_A_PROC_LA,                      // A proc.la file
 
@@ -134,6 +133,12 @@ typedef enum {
     ast_binary_op_bit_and,
     ast_binary_op_bit_or,
     ast_binary_op_bit_xor,
+
+    ast_binary_op_apply_to,
+    ast_binary_op_pipe_1to1,
+    ast_binary_op_pipe_reduce,
+    ast_binary_op_pipe_expand,
+    ast_binary_op_pipe_inject,
 } ast_binary_op;
 
 typedef enum {
@@ -234,6 +239,27 @@ plat_inline void packAstNone(AstNone obj, Packer pkr) {
 MMSubObject(AST_NONE, AstNone, AstExpression, initAstNone, destroyAstNone, packAstNone);
 
 
+/// ===== Out =====
+
+typedef struct AstOut {
+
+}*AstOut;
+
+plat_inline AstOut initAstOut(AstOut obj, Unpacker unpkr) {
+    return obj;
+}
+
+plat_inline void destroyAstOut(AstOut obj) {
+
+}
+
+plat_inline void packAstOut(AstOut obj, Packer pkr) {
+
+}
+
+MMSubObject(AST_OUT, AstOut, AstExpression, initAstOut, destroyAstOut, packAstOut);
+
+
 /// ===== Variable =====
 /**
  * One of following variables:
@@ -254,9 +280,7 @@ plat_inline AstVariable initAstVariable(AstVariable obj, Unpacker unpkr) {
 }
 
 plat_inline void destroyAstVariable(AstVariable obj) {
-    if (obj->value) {
-        release_mmobj(obj->value);
-    }
+    release_mmobj(obj->value);
 }
 
 plat_inline void packAstVariable(AstVariable obj, Packer pkr) {
@@ -424,10 +448,7 @@ plat_inline AstIdentifier initAstIdentifier(AstIdentifier obj, Unpacker unpkr) {
 }
 
 plat_inline void destroyAstIdentifier(AstIdentifier obj) {
-    if (obj->name) {
-        release_mmobj(obj->name);
-        obj->name = null;
-    }
+    release_mmobj(obj->name);
 }
 
 plat_inline void packAstIdentifier(AstIdentifier obj, Packer pkr) {

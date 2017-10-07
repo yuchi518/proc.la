@@ -25,9 +25,7 @@ plat_inline AstExternalDeclarations initAstExternalDeclarations(AstExternalDecla
 }
 
 plat_inline void destroyAstExternalDeclarations(AstExternalDeclarations obj) {
-    if (obj->external_declarations) {
-        release_mmobj(obj->external_declarations);
-    }
+    release_mmobj(obj->external_declarations);
 }
 
 plat_inline void packAstExternalDeclarations(AstExternalDeclarations obj, Packer pkr) {
@@ -69,12 +67,8 @@ plat_inline AstAProcLa initAstAProcLa(AstAProcLa obj, Unpacker unpkr) {
 }
 
 plat_inline void destroyAstAProcLa(AstAProcLa obj) {
-    if (obj->package) {
-        release_mmobj(obj->package);
-    }
-    if (obj->external_declarations) {
-        release_mmobj(obj->external_declarations);
-    }
+    release_mmobj(obj->package);
+    release_mmobj(obj->external_declarations);
 }
 
 plat_inline void packAstAProcLa(AstAProcLa obj, Packer pkr) {
