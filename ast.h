@@ -20,7 +20,7 @@ AstNode ast_create_package(char* value);
 AstNode ast_create_domain(char* value);
 AstNode ast_create_identifier(char* value);
 
-AstNode ast_create_parentheses_expr(AstNode expr);
+//AstNode ast_create_parentheses_expr(AstNode expr);
 AstNode ast_create_unary_op_expr(AstNode expr, ast_unary_op op);
 AstNode ast_create_unary_op_expr_ex(AstNode expr, AstNode op);
 AstNode ast_create_binary_op_expr(AstNode expr_a, AstNode expr_b, ast_binary_op op);
@@ -28,6 +28,7 @@ AstNode ast_create_binary_op_expr_w_op(ast_binary_op op);
 AstNode ast_apply_binary_op_expr_w_expr_a(AstNode op_expr, AstNode expr_a);
 AstNode ast_apply_binary_op_expr_w_expr_b(AstNode op_expr, AstNode expr_b);
 AstNode ast_create_ternary_op_expr(AstNode expr_a, AstNode expr_b, AstNode expr_c, ast_ternary_op op);
+AstNode ast_create_is_expr(AstNode expr, AstNode type);
 
 AstNode ast_create_container(AstNode expr_a, AstNode expr_b, ast_container_type type);
 AstNode ast_close_container(AstNode expr);
@@ -46,9 +47,11 @@ AstNode ast_create_switch(AstNode eval, AstNode stmt);
 AstNode ast_create_ifelse(AstNode eval, AstNode true_stmt, AstNode false_stmt);
 AstNode ast_create_loop(AstNode stmt);
 AstNode ast_create_each(AstNode eval, AstNode stmt);
-AstNode ast_create_stmt_address(AstNode label);
-AstNode ast_create_la_declaration(AstNode input, AstNode body, AstNode output);
+AstNode ast_create_jump(ast_jump_type type, AstNode id);
+AstNode ast_create_anchor(AstNode label);
+AstNode ast_create_sync(AstNode identifier);
 
+AstNode ast_create_la_declaration(AstNode input, AstNode body, AstNode output);
 
 AstNode ast_create_external_declarations(AstNode first, AstNode second);
 AstNode ast_create_a_proc_la(AstNode package, AstNode external_declarations);

@@ -137,7 +137,7 @@ plat_inline AstVarInstance allocAstVarInstantWithDeclareAndInstance(mgn_memory_p
 }
 
 
-/// ===== Expr - () =====
+/*/// ===== Expr - () =====
 
 typedef struct AstParenthesesExpr {
     AstExpression expr;
@@ -164,7 +164,7 @@ plat_inline AstParenthesesExpr allocAstParenthesesExprWithExpr(mgn_memory_pool* 
     }
     return obj;
 }
-
+*/
 
 /// ===== Expr - Unary Op =====
 
@@ -185,7 +185,7 @@ plat_inline void packAstUnaryExpr(AstUnaryOpExpr obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_UNARY_OP_EXPR, AstUnaryOpExpr, AstExpression, initAstUnaryExpr, destroyAstUnaryExpr, packAstUnaryExpr);
+MMSubObject(AST_UNARY_OP, AstUnaryOpExpr, AstExpression, initAstUnaryExpr, destroyAstUnaryExpr, packAstUnaryExpr);
 
 plat_inline AstUnaryOpExpr allocAstUnaryOpExprWithOp(mgn_memory_pool* pool, AstExpression expr, ast_unary_op op) {
     AstUnaryOpExpr obj = allocAstUnaryOpExpr(pool);
@@ -217,7 +217,7 @@ plat_inline void packAstBinaryOpExpr(AstBinaryOpExpr obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_BINARY_OP_EXPR, AstBinaryOpExpr, AstExpression, initAstBinaryOpExpr, destroyAstBinaryOpExpr, packAstBinaryOpExpr);
+MMSubObject(AST_BINARY_OP, AstBinaryOpExpr, AstExpression, initAstBinaryOpExpr, destroyAstBinaryOpExpr, packAstBinaryOpExpr);
 
 plat_inline AstBinaryOpExpr allocAstBinaryOpExprWithExprsAndOp(mgn_memory_pool* pool, AstExpression expr_a, AstExpression expr_b, ast_binary_op op) {
     AstBinaryOpExpr obj = allocAstBinaryOpExpr(pool);
@@ -270,7 +270,7 @@ plat_inline void packAstTernaryOpExpr(AstTernaryOpExpr obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_TERNARY_OP_EXPR, AstTernaryOpExpr, AstExpression, initAstTernaryOpExpr, destroyAstTernaryOpExpr, packAstTernaryOpExpr);
+MMSubObject(AST_TERNARY_OP, AstTernaryOpExpr, AstExpression, initAstTernaryOpExpr, destroyAstTernaryOpExpr, packAstTernaryOpExpr);
 
 plat_inline AstTernaryOpExpr allocAstTernaryOpExprWithOp(mgn_memory_pool* pool, AstExpression expr_a, AstExpression expr_b, AstExpression expr_c, ast_ternary_op op) {
     AstTernaryOpExpr obj = allocAstTernaryOpExpr(pool);
@@ -279,6 +279,37 @@ plat_inline AstTernaryOpExpr allocAstTernaryOpExprWithOp(mgn_memory_pool* pool, 
         obj->expr_b = retain_mmobj(expr_b);
         obj->expr_c = retain_mmobj(expr_c);
         obj->op = op;
+    }
+    return obj;
+}
+
+/// ===== Expression - IS =====
+
+typedef struct AstIsExpr {
+    AstExpression expr;
+    AstType type;
+}*AstIsExpr;
+
+plat_inline AstIsExpr initAstIsExpr(AstIsExpr obj, Unpacker unpkr) {
+    return obj;
+}
+
+plat_inline void destroyAstIsExpr(AstIsExpr obj) {
+    release_mmobj(obj->expr);
+    release_mmobj(obj->type);
+}
+
+plat_inline void packAstIsExpr(AstIsExpr obj, Packer pkr) {
+
+}
+
+MMSubObject(AST_IS, AstIsExpr, AstExpression, initAstIsExpr, destroyAstIsExpr, packAstIsExpr);
+
+plat_inline AstIsExpr allocAstIsExprWithExprAndType(mgn_memory_pool* pool, AstExpression expr, AstType type) {
+    AstIsExpr obj = allocAstIsExpr(pool);
+    if (obj) {
+        obj->expr = retain_mmobj(expr);
+        obj->type = retain_mmobj(type);
     }
     return obj;
 }

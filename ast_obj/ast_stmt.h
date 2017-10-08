@@ -97,79 +97,79 @@ plat_inline AstType getTypeFromTypeListAt(AstTypeList typeList, uint idx) {
 
 /// ===== Statement - Block =====
 
-typedef struct AstBlockStatement {
+typedef struct AstBlockStmt {
     bool closed;
     MMList stmts;               // not all AstStatement objs,
-}*AstBlockStatement;
+}*AstBlockStmt;
 
-plat_inline AstBlockStatement initAstBlockStatement(AstBlockStatement obj, Unpacker unpkr) {
+plat_inline AstBlockStmt initAstBlockStmt(AstBlockStmt obj, Unpacker unpkr) {
     obj->closed = false;
     obj->stmts = allocMMList(pool_of_mmobj(obj));
     if (obj->stmts == null) return null;
     return obj;
 }
 
-plat_inline void destroyAstBlockStatement(AstBlockStatement obj) {
+plat_inline void destroyAstBlockStmt(AstBlockStmt obj) {
     release_mmobj(obj->stmts);
 }
 
-plat_inline void packAstBlockStatement(AstBlockStatement obj, Packer pkr) {
+plat_inline void packAstBlockStmt(AstBlockStmt obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_BLOCK_STATEMENT, AstBlockStatement, AstStatement, initAstBlockStatement, destroyAstBlockStatement, packAstBlockStatement);
+MMSubObject(AST_BLOCK, AstBlockStmt, AstStatement, initAstBlockStmt, destroyAstBlockStmt, packAstBlockStmt);
 
-plat_inline void addStmtToBlock(AstBlockStatement block, AstStatement stmt) {
+plat_inline void addStmtToBlock(AstBlockStmt block, AstStatement stmt) {
     pushMMListItem(block->stmts, toMMObject(stmt));
 }
 
-plat_inline void concatBlock(AstBlockStatement block, AstBlockStatement a_list) {
+plat_inline void concatBlock(AstBlockStmt block, AstBlockStmt a_list) {
     concatMMList(block->stmts, a_list->stmts);
 }
 
-plat_inline void insertStmtToBlockAt(AstBlockStatement block, AstStatement stmt, uint idx) {
+plat_inline void insertStmtToBlockAt(AstBlockStmt block, AstStatement stmt, uint idx) {
     insertMMListItem(block->stmts, toMMObject(stmt), idx);
 }
 
-plat_inline uint sizeOfBlock(AstBlockStatement block) {
+plat_inline uint sizeOfBlock(AstBlockStmt block) {
     return sizeOfMMList(block->stmts);
 }
 
-plat_inline AstStatement getStmtFromBlockAt(AstBlockStatement block, uint idx) {
+plat_inline AstStatement getStmtFromBlockAt(AstBlockStmt block, uint idx) {
     return toAstStatement(getMMListItem(block->stmts, idx));
 }
 
-plat_inline bool isBlockClosed(AstBlockStatement block) {
+plat_inline bool isBlockClosed(AstBlockStmt block) {
     return block->closed;
 }
 
-plat_inline void closeBlock(AstBlockStatement block) {
+plat_inline void closeBlock(AstBlockStmt block) {
     block->closed = true;
 }
 
 
 /// ===== Statement - Case =====
 
-typedef struct AstCaseStatement {
+typedef struct AstCaseStmt {
     AstExpression check;            // if null, means 'default' case.
-}*AstCaseStatement;
+}*AstCaseStmt;
 
-plat_inline AstCaseStatement initAstCaseStatement(AstCaseStatement obj, Unpacker unpkr) {
+plat_inline AstCaseStmt initAstCaseStmt(AstCaseStmt obj, Unpacker unpkr) {
     return obj;
 }
 
-plat_inline void destroyAstCaseStatement(AstCaseStatement obj) {
+plat_inline void destroyAstCaseStmt(AstCaseStmt obj) {
     release_mmobj(obj->check);
 }
 
-plat_inline void packAstCaseStatement(AstCaseStatement obj, Packer pkr) {
+plat_inline void packAstCaseStmt(AstCaseStmt obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_CASE_STATEMENT, AstCaseStatement, AstStatement, initAstCaseStatement, destroyAstCaseStatement, packAstCaseStatement);
+MMSubObject(AST_CASE, AstCaseStmt, AstStatement, initAstCaseStmt, destroyAstCaseStmt, packAstCaseStmt);
 
-plat_inline AstCaseStatement allocAstCaseStatementWithCheck(mgn_memory_pool* pool, AstExpression check) {
-    AstCaseStatement obj = allocAstCaseStatement(pool);
+plat_inline AstCaseStmt allocAstCaseStmtWithCheck(mgn_memory_pool* pool, AstExpression check) {
+    AstCaseStmt obj = allocAstCaseStmt(pool);
     if (obj) {
         obj->check = retain_mmobj(check);
     }
@@ -179,28 +179,28 @@ plat_inline AstCaseStatement allocAstCaseStatementWithCheck(mgn_memory_pool* poo
 
 /// ===== Statement - Switch =====
 
-typedef struct AstSwitchStatement {
+typedef struct AstSwitchStmt {
     AstExpression eval;
     AstStatement stmt;
-}*AstSwitchStatement;
+}*AstSwitchStmt;
 
-plat_inline AstSwitchStatement initAstSwitchStatement(AstSwitchStatement obj, Unpacker unpkr) {
+plat_inline AstSwitchStmt initAstSwitchStmt(AstSwitchStmt obj, Unpacker unpkr) {
     return obj;
 }
 
-plat_inline void destroyAstSwitchStatement(AstSwitchStatement obj) {
+plat_inline void destroyAstSwitchStmt(AstSwitchStmt obj) {
     release_mmobj(obj->eval);
     release_mmobj(obj->stmt);
 }
 
-plat_inline void packAstSwitchStatement(AstSwitchStatement obj, Packer pkr) {
+plat_inline void packAstSwitchStmt(AstSwitchStmt obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_SWITCH_STATEMENT, AstSwitchStatement, AstStatement, initAstSwitchStatement, destroyAstSwitchStatement, packAstSwitchStatement);
+MMSubObject(AST_SWITCH, AstSwitchStmt, AstStatement, initAstSwitchStmt, destroyAstSwitchStmt, packAstSwitchStmt);
 
-plat_inline AstSwitchStatement allocAstSwitchStatementWithEvalAndStmt(mgn_memory_pool* pool, AstExpression eval, AstStatement stmt) {
-    AstSwitchStatement obj = allocAstSwitchStatement(pool);
+plat_inline AstSwitchStmt allocAstSwitchStmtWithEvalAndStmt(mgn_memory_pool* pool, AstExpression eval, AstStatement stmt) {
+    AstSwitchStmt obj = allocAstSwitchStmt(pool);
     if (obj) {
         obj->eval = retain_mmobj(eval);
         obj->stmt = retain_mmobj(stmt);
@@ -210,30 +210,30 @@ plat_inline AstSwitchStatement allocAstSwitchStatementWithEvalAndStmt(mgn_memory
 
 /// ===== Statement - If, Else =====
 
-typedef struct AstIfStatement {
+typedef struct AstIfStmt {
     AstExpression eval;
     AstStatement true_stmt;
     AstStatement false_stmt;
-}*AstIfStatement;
+}*AstIfStmt;
 
-plat_inline AstIfStatement initAstIfStatement(AstIfStatement obj, Unpacker unpkr) {
+plat_inline AstIfStmt initAstIfStmt(AstIfStmt obj, Unpacker unpkr) {
     return obj;
 }
 
-plat_inline void destroyAstIfStatement(AstIfStatement obj) {
+plat_inline void destroyAstIfStmt(AstIfStmt obj) {
     release_mmobj(obj->eval);
     release_mmobj(obj->true_stmt);
     release_mmobj(obj->false_stmt);
 }
 
-plat_inline void packAstIfStatement(AstIfStatement obj, Packer pkr) {
+plat_inline void packAstIfStmt(AstIfStmt obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_IF_STATEMNET, AstIfStatement, AstStatement, initAstIfStatement, destroyAstIfStatement, packAstIfStatement);
+MMSubObject(AST_IF, AstIfStmt, AstStatement, initAstIfStmt, destroyAstIfStmt, packAstIfStmt);
 
-plat_inline AstIfStatement allocAstIfStatementWithEvalAndStmts(mgn_memory_pool* pool, AstExpression eval, AstStatement true_stmt, AstStatement false_stmt) {
-    AstIfStatement obj = allocAstIfStatement(pool);
+plat_inline AstIfStmt allocAstIfStmtWithEvalAndStmts(mgn_memory_pool* pool, AstExpression eval, AstStatement true_stmt, AstStatement false_stmt) {
+    AstIfStmt obj = allocAstIfStmt(pool);
     if (obj) {
         obj->eval = retain_mmobj(eval);
         obj->true_stmt = retain_mmobj(true_stmt);
@@ -245,26 +245,26 @@ plat_inline AstIfStatement allocAstIfStatementWithEvalAndStmts(mgn_memory_pool* 
 
 /// ===== Statement - Loop =====
 
-typedef struct AstLoopStatement {
+typedef struct AstLoopStmt {
     AstStatement stmt;
-}*AstLoopStatement;
+}*AstLoopStmt;
 
-plat_inline AstLoopStatement initAstLoopStatement(AstLoopStatement obj, Unpacker unpkr) {
+plat_inline AstLoopStmt initAstLoopStmt(AstLoopStmt obj, Unpacker unpkr) {
     return obj;
 }
 
-plat_inline void destroyAstLoopStatement(AstLoopStatement obj) {
+plat_inline void destroyAstLoopStmt(AstLoopStmt obj) {
     release_mmobj(obj->stmt);
 }
 
-plat_inline void packAstLoopStatement(AstLoopStatement obj, Packer pkr) {
+plat_inline void packAstLoopStmt(AstLoopStmt obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_LOOP_STATEMENT, AstLoopStatement, AstStatement, initAstLoopStatement, destroyAstLoopStatement, packAstLoopStatement);
+MMSubObject(AST_LOOP, AstLoopStmt, AstStatement, initAstLoopStmt, destroyAstLoopStmt, packAstLoopStmt);
 
-plat_inline AstLoopStatement allocAstLoopStatementWithStmt(mgn_memory_pool* pool, AstStatement stmt) {
-    AstLoopStatement obj = allocAstLoopStatement(pool);
+plat_inline AstLoopStmt allocAstLoopStmtWithStmt(mgn_memory_pool* pool, AstStatement stmt) {
+    AstLoopStmt obj = allocAstLoopStmt(pool);
     if (obj) {
         obj->stmt = retain_mmobj(stmt);
     }
@@ -274,28 +274,28 @@ plat_inline AstLoopStatement allocAstLoopStatementWithStmt(mgn_memory_pool* pool
 
 /// ===== Statement - Each =====
 
-typedef struct AstEachStatement {
+typedef struct AstEachStmt {
     AstExpression eval;
     AstStatement stmt;
-}*AstEachStatement;
+}*AstEachStmt;
 
-plat_inline AstEachStatement initAstEachStatement(AstEachStatement obj, Unpacker unpkr) {
+plat_inline AstEachStmt initAstEachStmt(AstEachStmt obj, Unpacker unpkr) {
     return obj;
 }
 
-plat_inline void destroyAstEachStatement(AstEachStatement obj) {
+plat_inline void destroyAstEachStmt(AstEachStmt obj) {
     release_mmobj(obj->eval);
     release_mmobj(obj->stmt);
 }
 
-plat_inline void packAstEachStatement(AstEachStatement obj, Packer pkr) {
+plat_inline void packAstEachStmt(AstEachStmt obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_EACH_STATEMENT, AstEachStatement, AstStatement, initAstEachStatement, destroyAstEachStatement, packAstEachStatement);
+MMSubObject(AST_EACH, AstEachStmt, AstStatement, initAstEachStmt, destroyAstEachStmt, packAstEachStmt);
 
-plat_inline AstEachStatement allocAstEachStatementWithEvalAndStmt(mgn_memory_pool* pool, AstExpression eval, AstStatement stmt) {
-    AstEachStatement obj = allocAstEachStatement(pool);
+plat_inline AstEachStmt allocAstEachStmtWithEvalAndStmt(mgn_memory_pool* pool, AstExpression eval, AstStatement stmt) {
+    AstEachStmt obj = allocAstEachStmt(pool);
     if (obj) {
         obj->eval = retain_mmobj(eval);
         obj->stmt = retain_mmobj(stmt);
@@ -303,35 +303,92 @@ plat_inline AstEachStatement allocAstEachStatementWithEvalAndStmt(mgn_memory_poo
     return obj;
 }
 
-/// ===== Statement - Address =====
 
-typedef struct AstStmtAddress {
-    AstIdentifier label;
-}*AstStmtAddress;
+/// ===== Statement - Jump =====
 
-plat_inline AstStmtAddress initAstStmtAddress(AstStmtAddress obj, Unpacker unpkr) {
+typedef struct AstJumpStmt {
+    ast_jump_type type;
+    AstIdentifier identifier;
+}*AstJumpStmt;
+
+plat_inline AstJumpStmt initAstJumpStmt(AstJumpStmt obj, Unpacker unpkr) {
     return obj;
 }
 
-plat_inline void destroyAstStmtAddress(AstStmtAddress obj) {
+plat_inline void destroyAstJumpStmt(AstJumpStmt obj) {
+    release_mmobj(obj->identifier);
+}
+
+plat_inline void packAstJumpStmt(AstJumpStmt obj, Packer pkr) {
+
+}
+
+MMSubObject(AST_JUMP, AstJumpStmt, AstStatement, initAstJumpStmt, destroyAstJumpStmt, packAstJumpStmt);
+
+plat_inline AstJumpStmt allocAstJumpStmtWithTypeAndIdentifier(mgn_memory_pool* pool, ast_jump_type type, AstIdentifier identifier) {
+    AstJumpStmt obj = allocAstJumpStmt(pool);
+    if (obj) {
+        obj->type = type;
+        obj->identifier = retain_mmobj(identifier);
+    }
+    return obj;
+}
+
+/// ===== Statement - Anchor =====
+
+typedef struct AstAnchorStmt {
+    AstIdentifier label;
+}*AstAnchorStmt;
+
+plat_inline AstAnchorStmt initAstAnchorStmt(AstAnchorStmt obj, Unpacker unpkr) {
+    return obj;
+}
+
+plat_inline void destroyAstAnchorStmt(AstAnchorStmt obj) {
     release_mmobj(obj->label);
 }
 
-plat_inline void packAstStmtAddress(AstStmtAddress obj, Packer pkr) {
+plat_inline void packAstAnchorStmt(AstAnchorStmt obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_STATEMENT_ADDRESS, AstStmtAddress, AstStatement, initAstStmtAddress, destroyAstStmtAddress, packAstStmtAddress);
+MMSubObject(AST_ANCHOR, AstAnchorStmt, AstStatement, initAstAnchorStmt, destroyAstAnchorStmt, packAstAnchorStmt);
 
-plat_inline AstStmtAddress allocAstStmtAddressWithLabel(mgn_memory_pool* pool, AstIdentifier label) {
-    AstStmtAddress obj = allocAstStmtAddress(pool);
+plat_inline AstAnchorStmt allocAstAnchorStmtWithLabel(mgn_memory_pool* pool, AstIdentifier label) {
+    AstAnchorStmt obj = allocAstAnchorStmt(pool);
     if (obj) {
         obj->label = retain_mmobj(label);
     }
     return obj;
 }
 
+/// ===== Statement - Sync =====
 
+typedef struct AstSyncStmt {
+    AstIdentifier identifier;
+}*AstSyncStmt;
+
+plat_inline AstSyncStmt initAstSync(AstSyncStmt obj, Unpacker unpkr) {
+    return obj;
+}
+
+plat_inline void destroyAstSync(AstSyncStmt obj) {
+    release_mmobj(obj->identifier);
+}
+
+plat_inline void packAstSync(AstSyncStmt obj, Packer pkr) {
+
+}
+
+MMSubObject(AST_SYNC, AstSyncStmt, AstStatement, initAstSync, destroyAstSync, packAstSync);
+
+plat_inline AstSyncStmt allocAstSyncStmtWithIdentifier(mgn_memory_pool* pool, AstIdentifier identifier) {
+    AstSyncStmt obj = allocAstSyncStmt(pool);
+    if (obj) {
+        obj->identifier = retain_mmobj(identifier);
+    }
+    return obj;
+}
 
 
 #endif //PROC_LA_AST_STMT_H

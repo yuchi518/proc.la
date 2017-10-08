@@ -155,10 +155,10 @@ AstNode ast_create_identifier(char* value)
     return toAstNode(autorelease_mmobj(allocAstIdentifierWithCStringName(_pool, value)));
 }
 
-AstNode ast_create_parentheses_expr(AstNode expr)
+/*AstNode ast_create_parentheses_expr(AstNode expr)
 {
     return toAstNode(autorelease_mmobj(allocAstParenthesesExprWithExpr(_pool, toAstExpression(expr))));
-}
+}*/
 
 AstNode ast_create_unary_op_expr(AstNode expr, ast_unary_op op)
 {
@@ -341,7 +341,42 @@ AstNode ast_create_ternary_op_expr(AstNode expr_a, AstNode expr_b, AstNode expr_
         }
     }
 
-    return toAstNode(autorelease_mmobj(allocAstTernaryOpExprWithOp(_pool, toAstExpression(expr_a), toAstExpression(expr_b), toAstExpression(expr_c), op)));
+    AstExpression expression_a = toAstExpression(expr_a);
+    if (expression_a == null) {
+        plat_io_printf_err("Ternary expression needs an expression(a).(%s)\n", name_of_last_mmobj(expr_a));
+        return null;
+    }
+
+    AstExpression expression_b = toAstExpression(expr_b);
+    if (expression_b == null) {
+        plat_io_printf_err("Ternary expression needs an expression(b).(%s)\n", name_of_last_mmobj(expr_b));
+        return null;
+    }
+
+    AstExpression expression_c = toAstExpression(expr_c);
+    if (expression_c == null) {
+        plat_io_printf_err("Ternary expression needs an expression(c).(%s)\n", name_of_last_mmobj(expr_c));
+        return null;
+    }
+
+    return toAstNode(autorelease_mmobj(allocAstTernaryOpExprWithOp(_pool, expression_a, expression_b, expression_c, op)));
+}
+
+AstNode ast_create_is_expr(AstNode expr, AstNode typ)
+{
+    AstExpression expression = toAstExpression(expr);
+    if (expression == null) {
+        plat_io_printf_err("Is expression needs an expression.(%s)\n", name_of_last_mmobj(expr));
+        return null;
+    }
+
+    AstType type = toAstType(typ);
+    if (type == null) {
+        plat_io_printf_err("Is expression needs a type.(%s)\n", name_of_last_mmobj(typ));
+        return null;
+    }
+
+    return toAstNode(autorelease_mmobj(allocAstIsExprWithExprAndType(_pool, expression, type)));
 }
 
 AstNode ast_create_container(AstNode expr_a, AstNode expr_b, ast_container_type type)
@@ -546,8 +581,8 @@ AstNode ast_create_external_declarations(AstNode first, AstNode second)
 
 AstNode ast_create_block(AstNode first, AstNode second)
 {
-    AstBlockStatement first_block = toAstBlockStatement(first);
-    AstBlockStatement second_block = toAstBlockStatement(second);
+    AstBlockStmt first_block = toAstBlockStmt(first);
+    AstBlockStmt second_block = toAstBlockStmt(second);
 
     if (first_block && isBlockClosed(first_block)) {
         first_block = null;
@@ -584,7 +619,7 @@ AstNode ast_create_block(AstNode first, AstNode second)
         return (second);
     }
     else {
-        first_block = allocAstBlockStatement(_pool);
+        first_block = allocAstBlockStmt(_pool);
 
         if (first) {
             AstStatement statement = toAstStatement(first);
@@ -610,7 +645,7 @@ AstNode ast_create_block(AstNode first, AstNode second)
 
 AstNode ast_close_block(AstNode block)
 {
-    AstBlockStatement blockStatement = toAstBlockStatement(block);
+    AstBlockStmt blockStatement = toAstBlockStmt(block);
 
     if (blockStatement == null) {
         plat_io_printf_err("Is this a block statement?(%s)\n", name_of_last_mmobj(block));
@@ -630,7 +665,7 @@ AstNode ast_create_case(AstNode check)
         return null;
     }
 
-    return toAstNode(autorelease_mmobj(allocAstCaseStatementWithCheck(_pool, expression)));
+    return toAstNode(autorelease_mmobj(allocAstCaseStmtWithCheck(_pool, expression)));
 }
 
 AstNode ast_create_switch(AstNode eval, AstNode stmt)
@@ -642,13 +677,13 @@ AstNode ast_create_switch(AstNode eval, AstNode stmt)
     }
 
     AstStatement statement = toAstStatement(stmt);
-    if (statement==null || (toAstNone(stmt)==null && toAstBlockStatement(stmt)==null)) {
+    if (statement==null || (toAstNone(stmt)==null && toAstBlockStmt(stmt)==null)) {
         // Switch statement must uses block statement.
         plat_io_printf_err("Switch statement needs a block statement.(%s)\n", name_of_last_mmobj(stmt));
         return null;
     }
 
-    return toAstNode(autorelease_mmobj(allocAstSwitchStatementWithEvalAndStmt(_pool, expression, statement)));
+    return toAstNode(autorelease_mmobj(allocAstSwitchStmtWithEvalAndStmt(_pool, expression, statement)));
 }
 
 AstNode ast_create_ifelse(AstNode eval, AstNode true_stmt, AstNode false_stmt)
@@ -671,7 +706,7 @@ AstNode ast_create_ifelse(AstNode eval, AstNode true_stmt, AstNode false_stmt)
         return null;
     }
 
-    return toAstNode(autorelease_mmobj(allocAstIfStatementWithEvalAndStmts(_pool, expression, statement_ture, statement_false)));
+    return toAstNode(autorelease_mmobj(allocAstIfStmtWithEvalAndStmts(_pool, expression, statement_ture, statement_false)));
 }
 
 AstNode ast_create_loop(AstNode stmt)
@@ -682,7 +717,7 @@ AstNode ast_create_loop(AstNode stmt)
         return null;
     }
 
-    return toAstNode(autorelease_mmobj(allocAstLoopStatementWithStmt(_pool, statement)));
+    return toAstNode(autorelease_mmobj(allocAstLoopStmtWithStmt(_pool, statement)));
 }
 
 AstNode ast_create_each(AstNode eval, AstNode stmt)
@@ -699,18 +734,56 @@ AstNode ast_create_each(AstNode eval, AstNode stmt)
         return null;
     }
 
-    return toAstNode(autorelease_mmobj(allocAstEachStatementWithEvalAndStmt(_pool, expression, statement)));
+    return toAstNode(autorelease_mmobj(allocAstEachStmtWithEvalAndStmt(_pool, expression, statement)));
 }
 
-AstNode ast_create_stmt_address(AstNode label)
+AstNode ast_create_jump(ast_jump_type type, AstNode id)
+{
+    switch (type) {
+        case ast_jump_type_goto:break;
+        case ast_jump_type_break:break;
+        case ast_jump_type_continue:break;
+        default:
+            plat_io_printf_err("Unknown jump type.(%d)\n", type);
+            break;
+    }
+
+    if (type==ast_jump_type_goto) {
+        AstIdentifier identifier = toAstIdentifier(id);
+        if (identifier == null) {
+            plat_io_printf_err("Goto statement needs an identifier.(%s)\n", name_of_last_mmobj(id));
+            return null;
+        }
+        return toAstNode(autorelease_mmobj(allocAstJumpStmtWithTypeAndIdentifier(_pool, type, identifier)));
+    } else {
+        if (id) {
+            plat_io_printf_err("Redundant identifier:%s\n", name_of_last_mmobj(id));
+            return null;
+        }
+        return toAstNode(autorelease_mmobj(allocAstJumpStmtWithTypeAndIdentifier(_pool, type, null)));
+    }
+}
+
+AstNode ast_create_anchor(AstNode label)
 {
     AstIdentifier identifier = toAstIdentifier(label);
     if (identifier == null) {
-        plat_io_printf_err("Statement Address needs a identifier label.(%s)\n", name_of_last_mmobj(label));
+        plat_io_printf_err("Anchor statement needs a label.(%s)\n", name_of_last_mmobj(label));
         return null;
     }
 
-    return toAstNode(autorelease_mmobj(allocAstStmtAddressWithLabel(_pool, identifier)));
+    return toAstNode(autorelease_mmobj(allocAstAnchorStmtWithLabel(_pool, identifier)));
+}
+
+AstNode ast_create_sync(AstNode id)
+{
+    AstIdentifier identifier = toAstIdentifier(identifier);
+    if (identifier == null) {
+        plat_io_printf_err("Sync statement needs an identifier.(%s)\n", name_of_last_mmobj(id));
+        return null;
+    }
+
+    return toAstNode(autorelease_mmobj(allocAstSyncStmtWithIdentifier(_pool, identifier)));
 }
 
 AstNode ast_create_la_declaration(AstNode input, AstNode body, AstNode output)
@@ -735,7 +808,7 @@ AstNode ast_create_la_declaration(AstNode input, AstNode body, AstNode output)
         output = ast_create_type_list(type_obj, null);
     }
 
-    return toAstNode(autorelease_mmobj(allocAstALaWithImpl(_pool, toAstVarDeclareList(input), toAstBlockStatement(body), toAstTypeList(output))));
+    return toAstNode(autorelease_mmobj(allocAstALaWithImpl(_pool, toAstVarDeclareList(input), toAstBlockStmt(body), toAstTypeList(output))));
 }
 
 AstNode ast_create_a_proc_la(AstNode package, AstNode external_declarations)
@@ -829,7 +902,7 @@ void iterate_ast(AstNode obj, ast_iterator iterator)
                 AstALa variableLa = toAstALa(obj);
 
                 if (variableLa->output) pushToAstStack(stack, toAstNode(variableLa->output));       // AST_TYPE_LIST_DECLARATION
-                if (variableLa->body) pushToAstStack(stack, toAstNode(variableLa->body));           // AST_BLOCK_STATEMENT
+                if (variableLa->body) pushToAstStack(stack, toAstNode(variableLa->body));           // AST_BLOCK
                 if (variableLa->input) pushToAstStack(stack, toAstNode(variableLa->input));         // AST_VAR_LIST_DECLARATION
 
                 sa = scope_action_created;
@@ -857,12 +930,12 @@ void iterate_ast(AstNode obj, ast_iterator iterator)
                 sa = scope_action_created;
                 break;
             }
-            case AST_BLOCK_STATEMENT:
+            case AST_BLOCK:
             {
                 scope = ast_impl_create_scope(obj, scope/*last scope*/);
                 pushToAstStack(stack, toAstNode(scope));
                 // put all items
-                AstBlockStatement laBody = toAstBlockStatement(obj);
+                AstBlockStmt laBody = toAstBlockStmt(obj);
                 pushAllToAstStack(stack, laBody->stmts, true);
 
                 sa = scope_action_created;

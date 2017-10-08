@@ -22,13 +22,14 @@ enum {
     AST_STATEMENT,
     AST_PACKAGE,
     AST_TYPE_LIST_DECLARATION,          // A list of type declarations, ex. A La output
-    AST_BLOCK_STATEMENT,                // A block statement, aka "{ .... }", include a la body.
-    AST_CASE_STATEMENT,                 // case XXX: statement;
-    AST_SWITCH_STATEMENT,
-    AST_IF_STATEMNET,
-    AST_LOOP_STATEMENT,
-    AST_EACH_STATEMENT,
-    AST_STATEMENT_ADDRESS,              // label
+    AST_BLOCK,                          // A block statement, aka "{ .... }", include a la body.
+    AST_CASE,                           // case XXX: statement;
+    AST_SWITCH,
+    AST_IF,
+    AST_LOOP,
+    AST_EACH,
+    AST_JUMP,                           // break, continue, goto, etc.
+    AST_ANCHOR,                         // label
     AST_EXTERNAL_DECLARATIONS,
     AST_A_LA,                           // input + body + output
 
@@ -49,10 +50,12 @@ enum {
     AST_VAR_DECLARE,                    // variable type & name
     AST_VAR_LIST_DECLARATION,           // A list of var declarations, ex. A La input
     AST_VAR_INSTANCE,
-    AST_PARENTHESES_EXPR,
-    AST_UNARY_OP_EXPR,
-    AST_BINARY_OP_EXPR,
-    AST_TERNARY_OP_EXPR,
+    //AST_PARENTHESES_EXPR,
+    AST_UNARY_OP,
+    AST_BINARY_OP,
+    AST_TERNARY_OP,
+    AST_IS,
+    AST_SYNC,
 
     AST_A_PROC_LA,                      // A proc.la file
 
@@ -149,6 +152,12 @@ typedef enum {
 typedef enum {
     ast_ternary_op_conditional,
 } ast_ternary_op;
+
+typedef enum {
+    ast_jump_type_goto,
+    ast_jump_type_break,
+    ast_jump_type_continue,
+} ast_jump_type;
 
 /// ===== Abstract Tree node =====
 typedef struct AstNode {

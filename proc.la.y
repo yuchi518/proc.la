@@ -57,6 +57,20 @@ combined_var_type_specifier
     }
     ;
 
+var_type_specifier
+    : basic_var_type_specifier
+    | combined_var_type_specifier
+    ;
+
+type_list_declaration
+    : type_list_declaration ',' var_type_specifier {
+        $$ = ast_create_type_list($1, $3);
+    }
+    | var_type_specifier {
+        $$ = ast_create_type_list($1, null);
+    }
+    ;
+
 var_declaration
     : IDENTIFIER ':' var_type_specifier {
         $$ = ast_create_var_declare($3, $1);
@@ -310,10 +324,7 @@ expression
 	    $$ = ast_apply_binary_op_expr_w_expr_b($2, $1);
 	}
 	| expression IS var_type_specifier {
-	    // TODO:  ???
-	}
-	| SYNC IDENTIFIER {
-	    // TODO:
+	    $$ = ast_create_is_expr($1, $3);
 	}
     ;
 
@@ -368,11 +379,14 @@ statement
 	| selection_statement
 	| iteration_statement
 	| jump_statement
+	| SYNC IDENTIFIER ';' {
+	    $$ = ast_create_sync($2);
+	}
 	;
 
 labeled_statement
 	: IDENTIFIER ':' statement {
-	    $$ = ast_create_block(ast_create_stmt_address($1), $3);
+	    $$ = ast_create_block(ast_create_anchor($1), $3);
 	}
 	;
 
@@ -436,37 +450,18 @@ iteration_statement
 	;
 
 jump_statement
-	: GOTO IDENTIFIER ';'
-	| CONTINUE ';'
-	| BREAK ';'
-//	| RETURN ';'
-//	| RETURN expression ';'
+	: GOTO IDENTIFIER ';' {
+	    $$ = ast_create_jump(ast_jump_type_goto, $2);
+	}
+	| CONTINUE ';' {
+	    $$ = ast_create_jump(ast_jump_type_continue, null);
+	}
+	| BREAK ';' {
+	    $$ = ast_create_jump(ast_jump_type_break, null);
+	}
 	;
 
 /// ====================================================
-
-var_type_specifier
-    : basic_var_type_specifier
-    | combined_var_type_specifier
-    ;
-
-/*var_list_declaration
-    : var_list_declaration ',' identifier_or_declarator {
-        $$ = ast_create_var_list($1, $3);
-    }
-    | identifier_or_declarator {
-        $$ = ast_create_var_list($1, null);
-    }
-    ;*/
-
-type_list_declaration
-    : type_list_declaration ',' var_type_specifier {
-        $$ = ast_create_type_list($1, $3);
-    }
-    | var_type_specifier {
-        $$ = ast_create_type_list($1, null);
-    }
-    ;
 
 la_input_declaration
     : tuple_expression
