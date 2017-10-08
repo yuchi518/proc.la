@@ -15,7 +15,9 @@ declare add:la
 // main la
 declare main:la
 (input:var) {
-
+    9 -> i:int;
+    i + 2 -> i;
+    h(a0 a1 a2 a3) + o(300 233 007 001 002) -> j:long;
 } (var);
 
 // no input/output la

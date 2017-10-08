@@ -28,6 +28,46 @@ bool print_ast(AstNode obj, uint level, scope_action action, AstScope scope)
 
             break;
         }
+        case AST_VARIABLE:
+        {
+            AstVariable variable = toAstVariable(obj);
+            ast_type type = variable->type;
+            switch (type)
+            {
+                case ast_type_int: {
+                    int32 i = toMMInt(variable->value)->value;
+                    plat_io_printf_std("%*s%c <<%s>> %d(%08x)\n", level<<2, "", sc[action], ast_type_name(type), i, i);
+                    break;
+                }
+                case ast_type_long: {
+                    int64 l = toMMLong(variable->value)->value;
+                    plat_io_printf_std("%*s%c <<%s>> %lld(%16llx)\n", level<<2, "", sc[action], ast_type_name(type), (long long)l, (long long)l);
+                    break;
+                }
+                case ast_type_float: {
+                    plat_io_printf_std("%*s%c <<%s>> %f\n", level<<2, "", sc[action], ast_type_name(type), toMMFloat(variable->value)->value);
+                    break;
+                }
+                case ast_type_double: {
+                    plat_io_printf_std("%*s%c <<%s>> %f\n", level<<2, "", sc[action], ast_type_name(type), toMMDouble(variable->value)->value);
+                    break;
+                }
+                case ast_type_string: {
+                    plat_io_printf_std("%*s%c <<%s>> %s\n", level<<2, "", sc[action], ast_type_name(type), toMMString(variable->value)->value);
+                    break;
+                }
+                case ast_type_number:break;
+                case ast_type_raw:break;
+                case ast_type_proc:break;
+                case ast_type_la:break;
+                case ast_type_var:break;
+                default: {
+                    plat_io_printf_std("%*s%c <<%s>> Not support format.(%d)\n", level<<2, "", sc[action], ast_type_name(type), type);
+                    break;
+                }
+            }
+            break;
+        }
         case AST_TYPE:
         {
             plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),

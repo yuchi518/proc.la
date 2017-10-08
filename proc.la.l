@@ -82,9 +82,9 @@ struct src_stack
 
 {LETTER}{ASCII}*					                    { yylval = ast_create_identifier(yytext); return IDENTIFIER/*check_type()*/; }
 
-([bB]\()({BIN}{BIN}{BIN}{BIN}{BIN}{BIN}{BIN}{BIN})+\)   { yylval = ast_create_const_i(yytext); return I_CONSTANT; }
-([oO]\()({OCT_1st}{OCT}{OCT})+\)                        { yylval = ast_create_const_i(yytext); return I_CONSTANT; }
-([hH]\()({HEX}{HEX})+\)                                 { yylval = ast_create_const_i(yytext); return I_CONSTANT; }
+([bB]\()({WS}*{BIN}{BIN}{BIN}{BIN}{BIN}{BIN}{BIN}{BIN}{WS}*)+\)   { yylval = ast_create_const_i(yytext); return I_CONSTANT; }
+([oO]\()({WS}*{OCT_1st}{OCT}{OCT}{WS}*)+\)                        { yylval = ast_create_const_i(yytext); return I_CONSTANT; }
+([hH]\()({WS}*{HEX}{HEX}{WS}*)+\)                                 { yylval = ast_create_const_i(yytext); return I_CONSTANT; }
 {DIG_NZ}{DIG}*				                            { yylval = ast_create_const_i(yytext); return I_CONSTANT; }
 "'"([^'\\\n]|{ESCAPE})+"'"		                        { yylval = ast_create_const_i(yytext); return I_CONSTANT; }
 

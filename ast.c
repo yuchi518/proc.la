@@ -4,6 +4,7 @@
 
 #include "ast.h"
 #include "proc.la.l.c"
+#include "dybuf.h"
 
 static struct src_stack *_curbs = null;
 static mgn_memory_pool* _pool = null;
@@ -101,29 +102,105 @@ AstNode ast_create_const_i(char* value)
 {
     if (verbose) plat_io_printf_dbg("Create int - %s\n", value);
 
-    // TODO: implement parser
-    // include three types: la_ast_inst_int, la_ast_inst_long, la_ast_inst_number
+    uint base, idx;
+    uint cnt, max_cnt;
+    uint8 v;
+    char c;
+    dybuf* dyb;
 
-    long long long_val = atoll(value);
+    switch (value[0]) {
+        case 'b':
+        case 'B':
+        {
+            // binary format, b(00000001 00000010 00000011 000000100)
+            base = 2;
+            max_cnt = 8;
+            break;
+        }
+        case 'o':
+        case 'O':
+        {
+            // octal format: o(377 377 377 377)
+            base = 8;
+            max_cnt = 3;
+            break;
+        }
+        case 'h':
+        case 'H':
+        {
+            // hex format: h(0a 02 0f 04)
+            base = 16;
+            max_cnt = 2;
+            break;
+        }
+        default:
+        {
+            long long long_val = atoll(value);
 
-    if ((long_val & 0xffffffff00000000) != 0)
-    {
-        return toAstNode(autorelease_mmobj(allocVariableWithLongValue(_pool, (int64)long_val)));
+            if ((long_val & 0xffffffff00000000) != 0)
+            {
+                return toAstNode(autorelease_mmobj(allocVariableWithLongValue(_pool, (int64)long_val)));
+            }
+            else
+            {
+                return toAstNode(autorelease_mmobj(allocVariableWithIntValue(_pool, (int32)long_val)));
+            }
+            break;
+        }
     }
-    else
+
+    idx = 2;
+    cnt = 0;
+    v = 0;
+    dyb = dyb_create(null, 16);
+
+    while ((c=value[idx++]))
     {
-        return toAstNode(autorelease_mmobj(allocVariableWithIntValue(_pool, (int32)long_val)));
+        if (c == ')') break;
+        if (c == ' ') continue;
+
+        v *= base;
+
+        if (c >= '0' && c<='9') {
+            v += c - '0';
+        } else if (c >= 'a' && c <= 'f') {
+            v += c - 'a' + 10;
+        } else if (c >= 'A' && c <= 'F') {
+            v += c - 'A' + 10;
+        }
+
+        if (++cnt >= max_cnt) {
+            dyb_append_u8(dyb, v);
+            v = 0;
+            cnt = 0;
+        }
     }
 
-    return null;
+    AstNode node = null;
+    uint size = dyb_get_position(dyb);
+    dyb_flip(dyb);
+
+    if (size <= 4) {
+        int32 i = (int32)dyb_next_u32(dyb);
+        node = toAstNode(autorelease_mmobj(allocVariableWithIntValue(_pool, i)));
+    } else if (size <= 8) {
+        int64 l = (int64)dyb_next_u64(dyb);
+        node = toAstNode(autorelease_mmobj(allocVariableWithIntValue(_pool, l)));
+    } else {
+        node = toAstNode(autorelease_mmobj(allocVariableWithRawData(_pool, dyb_next_data_without_len(dyb, size), size)));
+    }
+
+    dyb_release(dyb);
+
+    return node;
 }
 
 AstNode ast_create_const_f(char* value)
 {
     if (verbose) plat_io_printf_dbg("Create float - %s\n", value);
 
-    AstNode obj = toAstNode(allocVariableWithFloatValue(_pool, 0));
-    // TODO: implement float, double parser
+    double d = strtod(value, NULL);
+    AstNode obj = toAstNode(allocVariableWithDoubleValue(_pool, d));
 
     return autorelease_mmobj(obj);
 }
