@@ -13,9 +13,6 @@
 enum {
     AST_NODE     = 0,
 
-    //AST_CTRL,
-    //AST_CTRL_FLOW,
-
     AST_TYPE,
     AST_TYPE_COMBINATION,
 
@@ -44,18 +41,16 @@ enum {
     AST_VARIABLE_COMBINATION,
     AST_VARIABLE_DOMAIN_NAME,
 
-    AST_EXPR_CONTAINER,
-    AST_EXPR_PAIR,
+    AST_CONTAINER_EXPR,                 // many expressions
+    AST_PAIR_EXPR,
 
     AST_VAR_DECLARE,                    // variable type & name
-    AST_VAR_LIST_DECLARATION,           // A list of var declarations, ex. A La input
     AST_VAR_INSTANCE,
-    //AST_PARENTHESES_EXPR,
-    AST_UNARY_OP,
-    AST_BINARY_OP,
-    AST_TERNARY_OP,
-    AST_IS,
-    AST_SYNC,
+    AST_UNARY_OP,                       // 1 expression
+    AST_BINARY_OP,                      // 2 expressions
+    AST_TERNARY_OP,                     // 3 expressions
+    AST_IS,                             // 1 expression, 1 type
+    AST_SYNC,                           // 1 identifier
 
     AST_A_PROC_LA,                      // A proc.la file
 
@@ -104,6 +99,15 @@ typedef enum {
     ast_container_type_tuple    = 3,
 } ast_container_type;
 
+plat_inline const char* ast_container_type_text(ast_container_type type) {
+    switch (type) {
+        case ast_container_type_list: return "[]";
+        case ast_container_type_map: return "{}";
+        case ast_container_type_tuple: return "()";
+        default: return "Unknown";
+    }
+}
+
 typedef enum {
     ast_unary_op_plus,      // +
     ast_unary_op_minus,     // -
@@ -115,6 +119,20 @@ typedef enum {
     ast_unary_op_dec_f,     // --N
     ast_unary_op_dec_l,     // N--
 } ast_unary_op;
+
+plat_inline const char* ast_ast_unary_op_text(ast_unary_op op) {
+    switch (op) {
+        case ast_unary_op_plus: return "+";
+        case ast_unary_op_minus: return "-";
+        case ast_unary_op_invert: return "~";
+        case ast_unary_op_not: return "!";
+        case ast_unary_op_inc_f: return "++N";
+        case ast_unary_op_inc_l: return "N++";
+        case ast_unary_op_dec_f: return "--N";
+        case ast_unary_op_dec_l: return "N--";
+        default: return "Unknown Op";
+    }
+}
 
 typedef enum {
     ast_binary_op_add,
@@ -149,9 +167,47 @@ typedef enum {
     ast_binary_op_pipe_inject,
 } ast_binary_op;
 
+plat_inline const char* ast_ast_binary_op_text(ast_binary_op op) {
+    switch (op) {
+        case ast_binary_op_add: return "+";
+        case ast_binary_op_subtract: return "-";
+        case ast_binary_op_multiply: return "*";
+        case ast_binary_op_divide: return "/";
+        case ast_binary_op_modulo: return "%";
+        case ast_binary_op_list_access: return "[i]";
+        case ast_binary_op_map_access: return "{k}";
+        case ast_binary_op_shift_left: return "<<";
+        case ast_binary_op_shift_right: return ">>";
+        case ast_binary_op_equal: return "==";
+        case ast_binary_op_not_equal: return "!=";
+        case ast_binary_op_less: return "<";
+        case ast_binary_op_great: return ">";
+        case ast_binary_op_less_or_equal: return "<=";
+        case ast_binary_op_great_or_equal: return ">=";
+        case ast_binary_op_and: return "&&";
+        case ast_binary_op_or: return "||";
+        case ast_binary_op_bit_and: return "&";
+        case ast_binary_op_bit_or: return "|";
+        case ast_binary_op_bit_xor: return "^";
+        case ast_binary_op_apply_to: return "->";
+        case ast_binary_op_pipe_1to1: return "-->";
+        case ast_binary_op_pipe_reduce: return "=->";
+        case ast_binary_op_pipe_expand: return "-*>";
+        case ast_binary_op_pipe_inject: return "*->";
+        default: return "Unknown";
+    }
+}
+
 typedef enum {
     ast_ternary_op_conditional,
 } ast_ternary_op;
+
+plat_inline const char* ast_ast_ternary_op_text(ast_ternary_op op) {
+    switch (op) {
+        case ast_ternary_op_conditional: return "?:";
+        default: return "Unknown";
+    }
+}
 
 typedef enum {
     ast_jump_type_goto,

@@ -48,49 +48,6 @@ plat_inline AstVarDeclare allocAstVarDeclareWithIdentifier(mgn_memory_pool* pool
     return obj;
 }
 
-
-/// ===== Statement - Var Declaration List =====
-
-typedef struct AstVarDeclareList {
-    MMList list;
-}*AstVarDeclareList;
-
-plat_inline AstVarDeclareList initAstVarDeclareList(AstVarDeclareList obj, Unpacker unpkr) {
-    obj->list = allocMMList(pool_of_mmobj(obj));
-    if (obj->list == null) return null;
-    return obj;
-}
-
-plat_inline void destroyAstVarDeclareList(AstVarDeclareList obj) {
-    release_mmobj(obj->list);
-}
-
-plat_inline void packAstVarDeclareList(AstVarDeclareList obj, Packer pkr) {
-
-}
-
-MMSubObject(AST_VAR_LIST_DECLARATION, AstVarDeclareList, AstExpression , initAstVarDeclareList, destroyAstVarDeclareList, packAstVarDeclareList);
-
-plat_inline void addVarDeclareToVarDeclareList(AstVarDeclareList list, AstVarDeclare declare) {
-    pushMMListItem(list->list, toMMObject(declare));
-}
-
-plat_inline void concatVarDeclareList(AstVarDeclareList dest_list, AstVarDeclareList a_list) {
-    concatMMList(dest_list->list, a_list->list);
-}
-
-plat_inline void insertVarDeclareToVarDeclareListAt(AstVarDeclareList list, AstVarDeclare declare, uint idx) {
-    insertMMListItem(list->list, toMMObject(declare), idx);
-}
-
-plat_inline uint sizeOfVarDeclareListAt(AstVarDeclareList varDeclareList) {
-    return sizeOfMMList(varDeclareList->list);
-}
-
-plat_inline AstVarDeclare getVarDeclareFromAstVarDeclareListAt(AstVarDeclareList varDeclareList, uint idx) {
-    return toAstVarDeclare(getMMListItem(varDeclareList->list, idx));
-}
-
 /// ===== Expr - Var Instance =====
 /**
  * Includes two parts:
@@ -135,36 +92,6 @@ plat_inline AstVarInstance allocAstVarInstantWithDeclareAndInstance(mgn_memory_p
     }
     return obj;
 }
-
-
-/*/// ===== Expr - () =====
-
-typedef struct AstParenthesesExpr {
-    AstExpression expr;
-}*AstParenthesesExpr;
-
-plat_inline AstParenthesesExpr initAstParenthesesExpr(AstParenthesesExpr obj, Unpacker unpkr) {
-    return obj;
-}
-
-plat_inline void destroyAstParenthesesExpr(AstParenthesesExpr obj) {
-    release_mmobj(obj->expr);
-}
-
-plat_inline void packAstParenthesesExpr(AstParenthesesExpr obj, Packer pkr) {
-
-}
-
-MMSubObject(AST_PARENTHESES_EXPR, AstParenthesesExpr, AstExpression , initAstParenthesesExpr, destroyAstParenthesesExpr, packAstParenthesesExpr);
-
-plat_inline AstParenthesesExpr allocAstParenthesesExprWithExpr(mgn_memory_pool* pool, AstExpression expr) {
-    AstParenthesesExpr obj = allocAstParenthesesExpr(pool);
-    if (obj) {
-        obj->expr = retain_mmobj(expr);
-    }
-    return obj;
-}
-*/
 
 /// ===== Expr - Unary Op =====
 

@@ -418,7 +418,9 @@ block_statement
 	;
 
 block_item_list
-	: block_item
+	: block_item {
+	    $$ = ast_create_block($1, null);
+	}
 	| block_item_list block_item {
 	    $$ = ast_create_block($1, $2);
 	}
@@ -465,13 +467,6 @@ jump_statement
 
 la_input_declaration
     : tuple_expression
-    /*: '(' var_list_declaration ')' {
-        $$ = $2;
-    }
-    | '(' ')' {
-        // create an empty list
-        $$ = ast_create_var_list(null, null);
-    }*/
     ;
 
 la_output_declaration

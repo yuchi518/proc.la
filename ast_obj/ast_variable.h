@@ -6,6 +6,7 @@
 #define PROC_LA_AST_VARIABLE_H
 
 #include "ast_expr.h"
+#include "ast_container.h"
 
 
 /// ===== Variable - Combination  =====
@@ -86,7 +87,7 @@ plat_inline AstDomainName allocAstDomainNameWithCStringName(mgn_memory_pool* poo
  */
 typedef struct AstALa {
     // input + body + output declarations
-    AstVarDeclareList input;
+    AstContainerExpr input;
     AstBlockStmt body;
     AstTypeList output;
 }*AstALa;
@@ -108,7 +109,7 @@ plat_inline void packAstVariableLa(AstALa obj, Packer pkr) {
 
 MMSubObject(AST_A_LA, AstALa, AstVariable, initAstVariableLa, destroyAstVariableLa, packAstVariableLa);
 
-plat_inline AstALa allocAstALaWithImpl(mgn_memory_pool* pool, AstVarDeclareList input, AstBlockStmt body, AstTypeList output) {
+plat_inline AstALa allocAstALaWithImpl(mgn_memory_pool* pool, AstContainerExpr input, AstBlockStmt body, AstTypeList output) {
     AstALa obj = allocAstALa(pool);
     if (obj) {
         obj->input = retain_mmobj(input);

@@ -135,11 +135,6 @@ AstNode ast_create_const_s(char* value)
     return toAstNode(autorelease_mmobj(allocVariableWithCString(_pool, value)));
 }
 
-/*AstNode ast_create_ctrl(ast_ctrl_type ctrl)
-{
-    return toAstNode(autorelease_mmobj(allocAstCtrlFlowWithCtrl(_pool, ctrl)));
-}*/
-
 AstNode ast_create_package(char* value)
 {
     return toAstNode(autorelease_mmobj(allocAstPackageWithCStringName(_pool, value)));
@@ -154,11 +149,6 @@ AstNode ast_create_identifier(char* value)
 {
     return toAstNode(autorelease_mmobj(allocAstIdentifierWithCStringName(_pool, value)));
 }
-
-/*AstNode ast_create_parentheses_expr(AstNode expr)
-{
-    return toAstNode(autorelease_mmobj(allocAstParenthesesExprWithExpr(_pool, toAstExpression(expr))));
-}*/
 
 AstNode ast_create_unary_op_expr(AstNode expr, ast_unary_op op)
 {
@@ -187,16 +177,13 @@ AstNode ast_create_unary_op_expr(AstNode expr, ast_unary_op op)
 AstNode ast_create_unary_op_expr_ex(AstNode expr, AstNode op) {
     AstUnaryOpExpr opExpr = toAstUnaryOpExpr(op);
     if (opExpr == null) {
-        plat_io_printf_err("Op(%s) is not a op expr.\n", name_of_last_mmobj(op));
+        plat_io_printf_err("Unary Op is not an Op expression.(%s)\n", name_of_last_mmobj(op));
         return null;
     }
-    if (expr == null) {
-        plat_io_printf_err("Expr can't be null.\n");
-        return null;
-    }
+
     AstExpression expression = toAstExpression(expr);
     if (expression == null) {
-        plat_io_printf_err("expr(%s) is an expr object.\n", name_of_last_mmobj(expr));
+        plat_io_printf_err("Unary Op need an expression.(%s)\n", name_of_last_mmobj(expr));
         return null;
     }
 
@@ -381,55 +368,55 @@ AstNode ast_create_is_expr(AstNode expr, AstNode typ)
 
 AstNode ast_create_container(AstNode expr_a, AstNode expr_b, ast_container_type type)
 {
-    AstExprContainer exprContainerA = toAstExprContainer(expr_a);
-    AstExprContainer exprContainerB = toAstExprContainer(expr_b);
+    AstContainerExpr containerExprA = toAstContainerExpr(expr_a);
+    AstContainerExpr containerExprB = toAstContainerExpr(expr_b);
 
-    if (exprContainerA && isExprContainerClosed(exprContainerA)) {
-        exprContainerA = null;      // it is just an expression, not a container.
+    if (containerExprA && isExprContainerClosed(containerExprA)) {
+        containerExprA = null;      // it is just an expression, not a container.
     }
 
-    if (exprContainerB && isExprContainerClosed(exprContainerB)) {
-        exprContainerB = null;      // it is just an expression, not a container.
+    if (containerExprB && isExprContainerClosed(containerExprB)) {
+        containerExprB = null;      // it is just an expression, not a container.
     }
 
-    if (exprContainerA && exprContainerB) {
-        concatExprContainer(exprContainerA, exprContainerB);
+    if (containerExprA && containerExprB) {
+        concatExprContainer(containerExprA, containerExprB);
         return (expr_a);
-    } else if (exprContainerA) {
+    } else if (containerExprA) {
         if (expr_b) {
-            addExprToExprContainer(exprContainerA, toAstExpression(expr_b));
+            addExprToExprContainer(containerExprA, toAstExpression(expr_b));
         }
         return (expr_a);
     }
-    else if (exprContainerB) {
+    else if (containerExprB) {
         if (expr_a) {
-            insertExprToExprContainerAt(exprContainerB, toAstExpression(expr_a), 0);
+            insertExprToExprContainerAt(containerExprB, toAstExpression(expr_a), 0);
         }
         return (expr_b);
     }
     else {
-        exprContainerA = allocAstExprContainerWithType(_pool, type);
+        containerExprA = allocAstContainerExprWithType(_pool, type);
 
         if (expr_a) {
-            addExprToExprContainer(exprContainerA, toAstExpression(expr_a));
+            addExprToExprContainer(containerExprA, toAstExpression(expr_a));
         }
 
         if (expr_b) {
-            addExprToExprContainer(exprContainerA, toAstExpression(expr_b));
+            addExprToExprContainer(containerExprA, toAstExpression(expr_b));
         }
 
-        return toAstNode(autorelease_mmobj(exprContainerA));
+        return toAstNode(autorelease_mmobj(containerExprA));
     }
 }
 
 AstNode ast_close_container(AstNode expr)
 {
-    AstExprContainer exprContainer = toAstExprContainer(expr);
-    if (exprContainer == null) {
+    AstContainerExpr containerExpr = toAstContainerExpr(expr);
+    if (containerExpr == null) {
         plat_io_printf_err("Is this a container?(%s)\n", name_of_last_mmobj(expr));
         return null;
     }
-    closeExprContainer(exprContainer);
+    closeExprContainer(containerExpr);
     return expr;
 }
 
@@ -444,7 +431,7 @@ AstNode ast_create_pair(AstNode key, AstNode value)
         plat_io_printf_err("Value is not an expression.(%s)\n", name_of_last_mmobj(value));
     }
 
-    return toAstNode(autorelease_mmobj(allocAstExprPairWithKeyAndValue(_pool, expression_key, expression_value)));
+    return toAstNode(autorelease_mmobj(allocAstPairExprWithKeyAndValue(_pool, expression_key, expression_value)));
 }
 
 AstNode ast_create_var_instance(AstNode declare, AstNode inst)
@@ -499,42 +486,6 @@ AstNode ast_create_type_list(AstNode first, AstNode second)
 
         if (second) {
             addTypeToTypeList(first_list, toAstType(second));
-        }
-
-        return toAstNode(autorelease_mmobj(first_list));
-    }
-}
-
-AstNode ast_create_var_list(AstNode first, AstNode second)
-{
-    AstVarDeclareList first_list = toAstVarDeclareList(first);
-    AstVarDeclareList second_list = toAstVarDeclareList(second);
-
-    if (first_list && second_list) {
-        concatVarDeclareList(first_list, second_list);
-        return (first);
-    }
-    else if (first_list) {
-        if (second) {
-            addVarDeclareToVarDeclareList(first_list, toAstVarDeclare(second));
-        }
-        return (first);
-    }
-    else if (second_list) {
-        if (first) {
-            insertVarDeclareToVarDeclareListAt(second_list, toAstVarDeclare(first), 0);
-        }
-        return (second);
-    }
-    else {
-        first_list = allocAstVarDeclareList(_pool);
-
-        if (first) {
-            addVarDeclareToVarDeclareList(first_list, toAstVarDeclare(first));
-        }
-
-        if (second) {
-            addVarDeclareToVarDeclareList(first_list, toAstVarDeclare(second));
         }
 
         return toAstNode(autorelease_mmobj(first_list));
@@ -790,25 +741,33 @@ AstNode ast_create_la_declaration(AstNode input, AstNode body, AstNode output)
 {
     if (verbose) plat_io_printf_dbg("Declare la\n");
 
-    if (input == null)
-    {
+    if (input == null) {
         // mean in:var input variable
         AstNode name_obj = ast_create_identifier("in");
         AstNode type_obj = ast_create_type(ast_type_var);
         AstNode var_obj = ast_create_var_declare(type_obj, name_obj);
-
-        input = ast_create_var_list(var_obj, null);
+        input = ast_close_container(ast_create_container(var_obj, null, ast_container_type_tuple));
+    }
+    else {
+        if (toAstContainerExpr(input) == null) {
+            plat_io_printf_err("La declaration needs an expr container as input.(%s)\n", name_of_last_mmobj(input));
+            return null;
+        }
     }
 
-    if (output == null)
-    {
+    if (output == null) {
         // mean var-type output variable
         AstNode type_obj = ast_create_type(ast_type_var);
-
         output = ast_create_type_list(type_obj, null);
     }
+    else {
+        if (toAstTypeList(output) == null) {
+            plat_io_printf_err("La declaration needs a type list as output.(%s)\n", name_of_last_mmobj(output));
+            return null;
+        }
+    }
 
-    return toAstNode(autorelease_mmobj(allocAstALaWithImpl(_pool, toAstVarDeclareList(input), toAstBlockStmt(body), toAstTypeList(output))));
+    return toAstNode(autorelease_mmobj(allocAstALaWithImpl(_pool, toAstContainerExpr(input), toAstBlockStmt(body), toAstTypeList(output))));
 }
 
 AstNode ast_create_a_proc_la(AstNode package, AstNode external_declarations)
@@ -919,13 +878,46 @@ void iterate_ast(AstNode obj, ast_iterator iterator)
                 sa = scope_action_created;
                 break;
             }
-            case AST_VAR_LIST_DECLARATION:
+            case AST_CONTAINER_EXPR:
             {
                 scope = ast_impl_create_scope(obj, scope/*last scope*/);
                 pushToAstStack(stack, toAstNode(scope));
                 // put all items
-                AstVarDeclareList varDeclareList = toAstVarDeclareList(obj);
-                pushAllToAstStack(stack, varDeclareList->list, true);
+                AstContainerExpr containerExpr = toAstContainerExpr(obj);
+                pushAllToAstStack(stack, containerExpr->list, true);
+
+                sa = scope_action_created;
+                break;
+            }
+            case AST_UNARY_OP:
+            {
+                scope = ast_impl_create_scope(obj, scope/*last scope*/);
+                pushToAstStack(stack, toAstNode(scope));
+                AstUnaryOpExpr unaryOpExpr = toAstUnaryOpExpr(obj);
+                pushToAstStack(stack, toAstNode(unaryOpExpr->expr));
+
+                sa = scope_action_created;
+                break;
+            }
+            case AST_BINARY_OP:
+            {
+                scope = ast_impl_create_scope(obj, scope/*last scope*/);
+                pushToAstStack(stack, toAstNode(scope));
+                AstBinaryOpExpr binaryOpExpr = toAstBinaryOpExpr(obj);
+                pushToAstStack(stack, toAstNode(binaryOpExpr->expr_b));
+                pushToAstStack(stack, toAstNode(binaryOpExpr->expr_a));
+
+                sa = scope_action_created;
+                break;
+            }
+            case AST_TERNARY_OP:
+            {
+                scope = ast_impl_create_scope(obj, scope/*last scope*/);
+                pushToAstStack(stack, toAstNode(scope));
+                AstTernaryOpExpr ternaryOpExpr = toAstTernaryOpExpr(obj);
+                pushToAstStack(stack, toAstNode(ternaryOpExpr->expr_c));
+                pushToAstStack(stack, toAstNode(ternaryOpExpr->expr_b));
+                pushToAstStack(stack, toAstNode(ternaryOpExpr->expr_a));
 
                 sa = scope_action_created;
                 break;

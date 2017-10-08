@@ -15,6 +15,11 @@ bool print_ast(AstNode obj, uint level, scope_action action, AstScope scope)
             plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj), toAstDomainName(obj)->name->value);
             break;
         }
+        case AST_IDENTIFIER:
+        {
+            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj), toAstIdentifier(obj)->name->value);
+            break;
+        }
         case AST_VAR_DECLARE:
         {
             AstVarDeclare varDeclare = toAstVarDeclare(obj);
@@ -27,6 +32,24 @@ bool print_ast(AstNode obj, uint level, scope_action action, AstScope scope)
         {
             plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
                                ast_type_name(toAstType(obj)->type));
+            break;
+        }
+        case AST_UNARY_OP:
+        {
+            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
+                               ast_ast_unary_op_text(toAstUnaryOpExpr(obj)->op));
+            break;
+        }
+        case AST_BINARY_OP:
+        {
+            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
+                               ast_ast_binary_op_text(toAstBinaryOpExpr(obj)->op));
+            break;
+        }
+        case AST_TERNARY_OP:
+        {
+            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
+                               ast_ast_ternary_op_text(toAstTernaryOpExpr(obj)->op));
             break;
         }
         default:
@@ -86,7 +109,7 @@ int main() {
 
     unit_test_mmobj();
 
-    //load_file_and_create_ast("first.la");
+    load_file_and_create_ast("first.la");
     load_file_and_create_ast("expr.la");
 
     return 0;
