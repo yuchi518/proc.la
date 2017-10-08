@@ -627,6 +627,7 @@ AstNode ast_create_case(AstNode check)
     AstExpression expression = toAstExpression(check);
     if (check && expression==null) {
         plat_io_printf_err("Check for case needs an expression.(%s)\n", name_of_last_mmobj(check));
+        return null;
     }
 
     return toAstNode(autorelease_mmobj(allocAstCaseStatementWithCheck(_pool, expression)));
@@ -637,14 +638,68 @@ AstNode ast_create_switch(AstNode eval, AstNode stmt)
     AstExpression expression = toAstExpression(eval);
     if (expression == null) {
         plat_io_printf_err("Switch statement needs an evaluation.(%s)\n", name_of_last_mmobj(eval));
+        return null;
     }
 
     AstStatement statement = toAstStatement(stmt);
-    if (statement==null || (toAstNone(stmt)==null && toAstBlockStatement(stmt))) {
+    if (statement==null || (toAstNone(stmt)==null && toAstBlockStatement(stmt)==null)) {
+        // Switch statement must uses block statement.
         plat_io_printf_err("Switch statement needs a block statement.(%s)\n", name_of_last_mmobj(stmt));
+        return null;
     }
 
     return toAstNode(autorelease_mmobj(allocAstSwitchStatementWithEvalAndStmt(_pool, expression, statement)));
+}
+
+AstNode ast_create_ifelse(AstNode eval, AstNode true_stmt, AstNode false_stmt)
+{
+    AstExpression expression = toAstExpression(eval);
+    if (expression == null) {
+        plat_io_printf_err("If statement needs an evaluation.(%s)\n", name_of_last_mmobj(eval));
+        return null;
+    }
+
+    AstStatement statement_ture = toAstStatement(true_stmt);
+    if (statement_ture==null) {
+        plat_io_printf_err("If statement needs a statement.(%s)\n", name_of_last_mmobj(true_stmt));
+        return null;
+    }
+
+    AstStatement statement_false = toAstStatement(false_stmt);
+    if (false_stmt && statement_false==null) {
+        plat_io_printf_err("Else statement needs a statement.(%s)\n", name_of_last_mmobj(false_stmt));
+        return null;
+    }
+
+    return toAstNode(autorelease_mmobj(allocAstIfStatementWithEvalAndStmts(_pool, expression, statement_ture, statement_false)));
+}
+
+AstNode ast_create_loop(AstNode stmt)
+{
+    AstStatement statement = toAstStatement(stmt);
+    if (statement == null) {
+        plat_io_printf_err("Loop statement needs a statement.(%s)\n", name_of_last_mmobj(stmt));
+        return null;
+    }
+
+    return toAstNode(autorelease_mmobj(allocAstLoopStatementWithStmt(_pool, statement)));
+}
+
+AstNode ast_create_each(AstNode eval, AstNode stmt)
+{
+    AstExpression expression = toAstExpression(eval);
+    if (expression == null) {
+        plat_io_printf_err("Each statement needs an evaluation.(%s)\n", name_of_last_mmobj(eval));
+        return null;
+    }
+
+    AstStatement statement = toAstStatement(stmt);
+    if (statement == null) {
+        plat_io_printf_err("Each statement needs a statement.(%s)\n", name_of_last_mmobj(stmt));
+        return null;
+    }
+
+    return toAstNode(autorelease_mmobj(allocAstEachStatementWithEvalAndStmt(_pool, expression, statement)));
 }
 
 AstNode ast_create_stmt_address(AstNode label)
@@ -652,6 +707,7 @@ AstNode ast_create_stmt_address(AstNode label)
     AstIdentifier identifier = toAstIdentifier(label);
     if (identifier == null) {
         plat_io_printf_err("Statement Address needs a identifier label.(%s)\n", name_of_last_mmobj(label));
+        return null;
     }
 
     return toAstNode(autorelease_mmobj(allocAstStmtAddressWithLabel(_pool, identifier)));

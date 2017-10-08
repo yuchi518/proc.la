@@ -208,6 +208,101 @@ plat_inline AstSwitchStatement allocAstSwitchStatementWithEvalAndStmt(mgn_memory
     return obj;
 }
 
+/// ===== Statement - If, Else =====
+
+typedef struct AstIfStatement {
+    AstExpression eval;
+    AstStatement true_stmt;
+    AstStatement false_stmt;
+}*AstIfStatement;
+
+plat_inline AstIfStatement initAstIfStatement(AstIfStatement obj, Unpacker unpkr) {
+    return obj;
+}
+
+plat_inline void destroyAstIfStatement(AstIfStatement obj) {
+    release_mmobj(obj->eval);
+    release_mmobj(obj->true_stmt);
+    release_mmobj(obj->false_stmt);
+}
+
+plat_inline void packAstIfStatement(AstIfStatement obj, Packer pkr) {
+
+}
+
+MMSubObject(AST_IF_STATEMNET, AstIfStatement, AstStatement, initAstIfStatement, destroyAstIfStatement, packAstIfStatement);
+
+plat_inline AstIfStatement allocAstIfStatementWithEvalAndStmts(mgn_memory_pool* pool, AstExpression eval, AstStatement true_stmt, AstStatement false_stmt) {
+    AstIfStatement obj = allocAstIfStatement(pool);
+    if (obj) {
+        obj->eval = retain_mmobj(eval);
+        obj->true_stmt = retain_mmobj(true_stmt);
+        obj->false_stmt = retain_mmobj(false_stmt);
+    }
+    return obj;
+}
+
+
+/// ===== Statement - Loop =====
+
+typedef struct AstLoopStatement {
+    AstStatement stmt;
+}*AstLoopStatement;
+
+plat_inline AstLoopStatement initAstLoopStatement(AstLoopStatement obj, Unpacker unpkr) {
+    return obj;
+}
+
+plat_inline void destroyAstLoopStatement(AstLoopStatement obj) {
+    release_mmobj(obj->stmt);
+}
+
+plat_inline void packAstLoopStatement(AstLoopStatement obj, Packer pkr) {
+
+}
+
+MMSubObject(AST_LOOP_STATEMENT, AstLoopStatement, AstStatement, initAstLoopStatement, destroyAstLoopStatement, packAstLoopStatement);
+
+plat_inline AstLoopStatement allocAstLoopStatementWithStmt(mgn_memory_pool* pool, AstStatement stmt) {
+    AstLoopStatement obj = allocAstLoopStatement(pool);
+    if (obj) {
+        obj->stmt = retain_mmobj(stmt);
+    }
+    return obj;
+}
+
+
+/// ===== Statement - Each =====
+
+typedef struct AstEachStatement {
+    AstExpression eval;
+    AstStatement stmt;
+}*AstEachStatement;
+
+plat_inline AstEachStatement initAstEachStatement(AstEachStatement obj, Unpacker unpkr) {
+    return obj;
+}
+
+plat_inline void destroyAstEachStatement(AstEachStatement obj) {
+    release_mmobj(obj->eval);
+    release_mmobj(obj->stmt);
+}
+
+plat_inline void packAstEachStatement(AstEachStatement obj, Packer pkr) {
+
+}
+
+MMSubObject(AST_EACH_STATEMENT, AstEachStatement, AstStatement, initAstEachStatement, destroyAstEachStatement, packAstEachStatement);
+
+plat_inline AstEachStatement allocAstEachStatementWithEvalAndStmt(mgn_memory_pool* pool, AstExpression eval, AstStatement stmt) {
+    AstEachStatement obj = allocAstEachStatement(pool);
+    if (obj) {
+        obj->eval = retain_mmobj(eval);
+        obj->stmt = retain_mmobj(stmt);
+    }
+    return obj;
+}
+
 /// ===== Statement - Address =====
 
 typedef struct AstStmtAddress {
@@ -235,6 +330,7 @@ plat_inline AstStmtAddress allocAstStmtAddressWithLabel(mgn_memory_pool* pool, A
     }
     return obj;
 }
+
 
 
 

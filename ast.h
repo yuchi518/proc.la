@@ -43,6 +43,9 @@ AstNode ast_create_block(AstNode first, AstNode second);
 AstNode ast_close_block(AstNode block);
 AstNode ast_create_case(AstNode check);
 AstNode ast_create_switch(AstNode eval, AstNode stmt);
+AstNode ast_create_ifelse(AstNode eval, AstNode true_stmt, AstNode false_stmt);
+AstNode ast_create_loop(AstNode stmt);
+AstNode ast_create_each(AstNode eval, AstNode stmt);
 AstNode ast_create_stmt_address(AstNode label);
 AstNode ast_create_la_declaration(AstNode input, AstNode body, AstNode output);
 

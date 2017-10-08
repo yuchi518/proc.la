@@ -97,7 +97,20 @@ declare main:la
     [1~10] -> list:int[];
 
     list --> length --> size:int;
-    while (; size != 0
+
+
+    loop {
+        // loop infinitely, call break to interrupt loop.
+        break;
+    }
+
+    each ([1, 2, 3, 4] -> v:int) {
+
+    }
+
+    each ({"key1":value1, "key2":value2} -> (key:string, value:var)) {
+        // key is always string or var type
+    }
 
 } (var);
 

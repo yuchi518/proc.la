@@ -415,22 +415,24 @@ block_item
 	;
 
 selection_statement
-	: IF '(' expression ')' statement
-	| IF '(' expression ')' statement ELSE statement
+	: IF '(' expression ')' statement {
+	    $$ = ast_create_ifelse($3, $5, null);
+	}
+	| IF '(' expression ')' statement ELSE statement {
+	    $$ = ast_create_ifelse($3, $5, $7);
+	}
 	| SWITCH '(' expression ')' '{' cases_block_statement '}' {
 	    $$ = ast_create_switch($3, ast_close_block($6));
 	}
 	;
 
 iteration_statement
-    : LOOP statement
-    | EACH '(' expression ')' statement
-//	: WHILE '(' expression ')' statement
-///	| DO statement WHILE '(' expression ')' ';'
-//	| FOR '(' expression_statement expression_statement ')' statement
-//	| FOR '(' expression_statement expression_statement expression ')' statement
-//	| FOR '(' declaration expression_statement ')' statement
-//	| FOR '(' declaration expression_statement expression ')' statement
+    : LOOP statement {
+        $$ = ast_create_loop($2);
+    }
+    | EACH '(' expression ')' statement {
+        $$ = ast_create_each($3, $5);
+    }
 	;
 
 jump_statement

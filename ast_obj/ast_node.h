@@ -21,11 +21,14 @@ enum {
 
     AST_STATEMENT,
     AST_PACKAGE,
-    AST_STATEMENT_ADDRESS,              // label
     AST_TYPE_LIST_DECLARATION,          // A list of type declarations, ex. A La output
     AST_BLOCK_STATEMENT,                // A block statement, aka "{ .... }", include a la body.
     AST_CASE_STATEMENT,                 // case XXX: statement;
     AST_SWITCH_STATEMENT,
+    AST_IF_STATEMNET,
+    AST_LOOP_STATEMENT,
+    AST_EACH_STATEMENT,
+    AST_STATEMENT_ADDRESS,              // label
     AST_EXTERNAL_DECLARATIONS,
     AST_A_LA,                           // input + body + output
 
