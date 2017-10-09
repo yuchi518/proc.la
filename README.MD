@@ -31,6 +31,9 @@ $ cmake
 * AST Error detection
   * Error line
   * Interrupt flow when error
+* Variable conversion
+* Serialization (Packer/Unpacker)
+* Unicode/UTF-8 support
 
 ## License
 GPLv2

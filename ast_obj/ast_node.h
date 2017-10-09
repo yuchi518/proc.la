@@ -5,10 +5,11 @@
 #ifndef PROC_LA_AST_NODE_H
 #define PROC_LA_AST_NODE_H
 
-#include "mmObj.h"
-#include "mmObj_lib.h"
+#include "mmo.h"
+#include "mmo_ext.h"
+#include "mmo_pack.h"
 
-#include "mmObj_unittest.h"
+#include "mmo_unittest.h"
 
 enum {
     AST_NODE     = 0,

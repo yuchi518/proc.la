@@ -22,7 +22,7 @@ o(377377) -> r:raw;
 
 /// string type
 "abcd" -> s:string;
-"010203" x(010203) "" -> s:string;
+"010203" h(010203) "" -> s:string;
 
 /// container type: array & map
 [1, 2, 3, 4] -> v:int[];

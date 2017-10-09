@@ -93,6 +93,7 @@ AstNode ast_create_combined_type(AstNode base_type, ast_type_combination contain
     if (i>=16)
     {
         plat_io_printf_err("Create combined type - slot is not enough (%08x)\n", combination->combined_type);
+        return null;
     }
 
     return toAstNode(autorelease_mmobj(combination));
