@@ -16,7 +16,10 @@ Many new frameworks are involved in this project:
   * type - int8/16/32/63, uint8/16/32/63, etc.
   * memory management - Support auto-release function. 
 * [dybuf] - 
-* [MMObj] - Memory managed object framework.
+* [MMO] - Memory managed object framework.
+    * Inheritable structure and functions. (mmo.h)
+    * MMObject hierarchy. (mmo_ext.h)
+    * Serialization. (mmo_pack.h)
 * [uthash]
 
 ## Installation
