@@ -22,7 +22,7 @@ add_custom_command(OUTPUT proc.la.l.c
 add_custom_target(RunGenerator DEPENDS proc.la.l.c proc.la.y.c
         COMMENT "flex & bison")
 
-set(SOURCE_FILES main.c platform ast_obj ast.c platform/mmo_unittest.c)
+set(SOURCE_FILES main.c platform ast_obj ast.c platform/mmo_pack.c platform/mmo_unittest.c)
 
 add_executable(proc_la ${SOURCE_FILES})
 add_dependencies(proc_la RunGenerator)
