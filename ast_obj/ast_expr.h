@@ -32,7 +32,7 @@ plat_inline void packAstVarDeclare(AstVarDeclare obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_VAR_DECLARE, AstVarDeclare, AstExpression, initAstVarDeclare, destroyAstVarDeclare, packAstVarDeclare);
+MMSubObject(AstVarDeclare, AstExpression, initAstVarDeclare, destroyAstVarDeclare, packAstVarDeclare);
 
 
 plat_inline AstVarDeclare allocAstVarDeclareWithIdentifier(mgn_memory_pool* pool, AstIdentifier identifier, AstType type) {
@@ -73,7 +73,7 @@ plat_inline void packAstVarInstant(AstVarInstance obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_VAR_INSTANCE, AstVarInstance, AstExpression, initAstVarInstant, destroyAstVarInstant, packAstVarInstant);
+MMSubObject(AstVarInstance, AstExpression, initAstVarInstant, destroyAstVarInstant, packAstVarInstant);
 
 plat_inline AstVarInstance allocAstVarInstantWithDeclareAndInstance(mgn_memory_pool* pool, AstVarDeclare declare, AstVariable instance) {
     if (declare == null) {
@@ -112,7 +112,7 @@ plat_inline void packAstUnaryExpr(AstUnaryOpExpr obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_UNARY_OP, AstUnaryOpExpr, AstExpression, initAstUnaryExpr, destroyAstUnaryExpr, packAstUnaryExpr);
+MMSubObject(AstUnaryOpExpr, AstExpression, initAstUnaryExpr, destroyAstUnaryExpr, packAstUnaryExpr);
 
 plat_inline AstUnaryOpExpr allocAstUnaryOpExprWithOp(mgn_memory_pool* pool, AstExpression expr, ast_unary_op op) {
     AstUnaryOpExpr obj = allocAstUnaryOpExpr(pool);
@@ -144,7 +144,7 @@ plat_inline void packAstBinaryOpExpr(AstBinaryOpExpr obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_BINARY_OP, AstBinaryOpExpr, AstExpression, initAstBinaryOpExpr, destroyAstBinaryOpExpr, packAstBinaryOpExpr);
+MMSubObject(AstBinaryOpExpr, AstExpression, initAstBinaryOpExpr, destroyAstBinaryOpExpr, packAstBinaryOpExpr);
 
 plat_inline AstBinaryOpExpr allocAstBinaryOpExprWithExprsAndOp(mgn_memory_pool* pool, AstExpression expr_a, AstExpression expr_b, ast_binary_op op) {
     AstBinaryOpExpr obj = allocAstBinaryOpExpr(pool);
@@ -197,7 +197,7 @@ plat_inline void packAstTernaryOpExpr(AstTernaryOpExpr obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_TERNARY_OP, AstTernaryOpExpr, AstExpression, initAstTernaryOpExpr, destroyAstTernaryOpExpr, packAstTernaryOpExpr);
+MMSubObject(AstTernaryOpExpr, AstExpression, initAstTernaryOpExpr, destroyAstTernaryOpExpr, packAstTernaryOpExpr);
 
 plat_inline AstTernaryOpExpr allocAstTernaryOpExprWithOp(mgn_memory_pool* pool, AstExpression expr_a, AstExpression expr_b, AstExpression expr_c, ast_ternary_op op) {
     AstTernaryOpExpr obj = allocAstTernaryOpExpr(pool);
@@ -230,7 +230,7 @@ plat_inline void packAstIsExpr(AstIsExpr obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_IS, AstIsExpr, AstExpression, initAstIsExpr, destroyAstIsExpr, packAstIsExpr);
+MMSubObject(AstIsExpr, AstExpression, initAstIsExpr, destroyAstIsExpr, packAstIsExpr);
 
 plat_inline AstIsExpr allocAstIsExprWithExprAndType(mgn_memory_pool* pool, AstExpression expr, AstType type) {
     AstIsExpr obj = allocAstIsExpr(pool);

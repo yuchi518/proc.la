@@ -32,7 +32,7 @@ plat_inline void packAstExternalDeclarations(AstExternalDeclarations obj, Packer
 
 }
 
-MMSubObject(AST_EXTERNAL_DECLARATIONS, AstExternalDeclarations, AstNode, initAstExternalDeclarations, destroyAstExternalDeclarations, packAstExternalDeclarations);
+MMSubObject(AstExternalDeclarations, AstNode, initAstExternalDeclarations, destroyAstExternalDeclarations, packAstExternalDeclarations);
 
 plat_inline void addExternalDeclarationTo(AstExternalDeclarations external_declarations, AstNode node) {
     //plat_io_printf_dbg("ExtDec: %p\n", node);
@@ -75,7 +75,7 @@ plat_inline void packAstAProcLa(AstAProcLa obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_A_PROC_LA, AstAProcLa, AstNode, initAstAProcLa, destroyAstAProcLa, packAstAProcLa);
+MMSubObject(AstAProcLa, AstNode, initAstAProcLa, destroyAstAProcLa, packAstAProcLa);
 
 plat_inline AstAProcLa allocAstAProcLaWithPackageAndExternalDeclarations(mgn_memory_pool* pool, AstPackage package, AstExternalDeclarations external_declarations) {
     AstAProcLa obj = allocAstAProcLa(pool);

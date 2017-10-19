@@ -906,140 +906,125 @@ void iterate_ast(AstNode obj, ast_iterator iterator)
     {
         obj = popFromAstStack(stack);
 
-        switch(oid_of_last_mmobj(obj))
+        uint32 oid = oid_of_last_mmobj(obj);
+        if (oid == oid_of_AstAProcLa())
         {
-            case AST_A_PROC_LA:
-            {
-                scope = ast_impl_create_scope(obj, scope/*last scope*/);
-                pushToAstStack(stack, toAstNode(scope));
-                // put all items
-                AstAProcLa aprocObj = toAstAProcLa(obj);
-                pushToAstStack(stack, toAstNode(aprocObj->external_declarations));
-                pushToAstStack(stack, toAstNode(aprocObj->package));
+            scope = ast_impl_create_scope(obj, scope/*last scope*/);
+            pushToAstStack(stack, toAstNode(scope));
+            // put all items
+            AstAProcLa aprocObj = toAstAProcLa(obj);
+            pushToAstStack(stack, toAstNode(aprocObj->external_declarations));
+            pushToAstStack(stack, toAstNode(aprocObj->package));
 
-                sa = scope_action_created;
-                break;
+            sa = scope_action_created;
+        }
+        else if (oid == oid_of_AstExternalDeclarations())
+        {
+            scope = ast_impl_create_scope(obj, scope/*last scope*/);
+            pushToAstStack(stack, toAstNode(scope));
+            // put all items
+            AstExternalDeclarations externalDeclarations = toAstExternalDeclarations(obj);
+            pushAllToAstStack(stack, externalDeclarations->external_declarations, true);
+
+            sa = scope_action_created;
+        }
+        else if (oid == oid_of_AstALa())
+        {
+            scope = ast_impl_create_scope(obj, scope/*last scope*/);
+            pushToAstStack(stack, toAstNode(scope));
+
+            AstALa variableLa = toAstALa(obj);
+
+            if (variableLa->output) pushToAstStack(stack, toAstNode(variableLa->output));       // AST_TYPE_LIST_DECLARATION
+            if (variableLa->body) pushToAstStack(stack, toAstNode(variableLa->body));           // AST_BLOCK
+            if (variableLa->input) pushToAstStack(stack, toAstNode(variableLa->input));         // AST_VAR_LIST_DECLARATION
+
+            sa = scope_action_created;
+        }
+        else if (oid == oid_of_AstTypeList())
+        {
+            scope = ast_impl_create_scope(obj, scope/*last scope*/);
+            pushToAstStack(stack, toAstNode(scope));
+            // put all items
+            AstTypeList typeList = toAstTypeList(obj);
+            pushAllToAstStack(stack, typeList->list, true);
+
+            sa = scope_action_created;
+        }
+        else if (oid == oid_of_AstContainerExpr())
+        {
+            scope = ast_impl_create_scope(obj, scope/*last scope*/);
+            pushToAstStack(stack, toAstNode(scope));
+            // put all items
+            AstContainerExpr containerExpr = toAstContainerExpr(obj);
+            pushAllToAstStack(stack, containerExpr->list, true);
+
+            sa = scope_action_created;
+        }
+        else if (oid == oid_of_AstUnaryOpExpr())
+        {
+            scope = ast_impl_create_scope(obj, scope/*last scope*/);
+            pushToAstStack(stack, toAstNode(scope));
+            AstUnaryOpExpr unaryOpExpr = toAstUnaryOpExpr(obj);
+            pushToAstStack(stack, toAstNode(unaryOpExpr->expr));
+
+            sa = scope_action_created;
+        }
+        else if (oid == oid_of_AstBinaryOpExpr())
+        {
+            scope = ast_impl_create_scope(obj, scope/*last scope*/);
+            pushToAstStack(stack, toAstNode(scope));
+            AstBinaryOpExpr binaryOpExpr = toAstBinaryOpExpr(obj);
+            pushToAstStack(stack, toAstNode(binaryOpExpr->expr_b));
+            pushToAstStack(stack, toAstNode(binaryOpExpr->expr_a));
+
+            sa = scope_action_created;
+        }
+        else if (oid == oid_of_AstTernaryOpExpr())
+        {
+            scope = ast_impl_create_scope(obj, scope/*last scope*/);
+            pushToAstStack(stack, toAstNode(scope));
+            AstTernaryOpExpr ternaryOpExpr = toAstTernaryOpExpr(obj);
+            pushToAstStack(stack, toAstNode(ternaryOpExpr->expr_c));
+            pushToAstStack(stack, toAstNode(ternaryOpExpr->expr_b));
+            pushToAstStack(stack, toAstNode(ternaryOpExpr->expr_a));
+
+            sa = scope_action_created;
+        }
+        else if (oid == oid_of_AstBlockStmt())
+        {
+            scope = ast_impl_create_scope(obj, scope/*last scope*/);
+            pushToAstStack(stack, toAstNode(scope));
+            // put all items
+            AstBlockStmt laBody = toAstBlockStmt(obj);
+            pushAllToAstStack(stack, laBody->stmts, true);
+
+            sa = scope_action_created;
+        }
+        else if (oid == oid_of_AstVarInstance())
+        {
+            scope = ast_impl_create_scope(obj, scope/*last scope*/);
+            pushToAstStack(stack, toAstNode(scope));
+
+            AstVarInstance varInstance = toAstVarInstance(obj);
+            pushToAstStack(stack, toAstNode(varInstance->inst));
+            pushToAstStack(stack, toAstNode(varInstance->declare));
+
+            sa = scope_action_created;
+        }
+        else if (oid == oid_of_AstScope())
+        {
+            if (scope != toAstScope(obj)) {
+                plat_io_printf_err("Impossible\n");
             }
-            case AST_EXTERNAL_DECLARATIONS:
-            {
-                scope = ast_impl_create_scope(obj, scope/*last scope*/);
-                pushToAstStack(stack, toAstNode(scope));
-                // put all items
-                AstExternalDeclarations externalDeclarations = toAstExternalDeclarations(obj);
-                pushAllToAstStack(stack, externalDeclarations->external_declarations, true);
+            scope = toAstScope(obj);
+            obj = scope->trigger;
 
-                sa = scope_action_created;
-                break;
-            }
-            case AST_A_LA:
-            {
-                scope = ast_impl_create_scope(obj, scope/*last scope*/);
-                pushToAstStack(stack, toAstNode(scope));
-
-                AstALa variableLa = toAstALa(obj);
-
-                if (variableLa->output) pushToAstStack(stack, toAstNode(variableLa->output));       // AST_TYPE_LIST_DECLARATION
-                if (variableLa->body) pushToAstStack(stack, toAstNode(variableLa->body));           // AST_BLOCK
-                if (variableLa->input) pushToAstStack(stack, toAstNode(variableLa->input));         // AST_VAR_LIST_DECLARATION
-
-                sa = scope_action_created;
-                break;
-            }
-            case AST_TYPE_LIST_DECLARATION:
-            {
-                scope = ast_impl_create_scope(obj, scope/*last scope*/);
-                pushToAstStack(stack, toAstNode(scope));
-                // put all items
-                AstTypeList typeList = toAstTypeList(obj);
-                pushAllToAstStack(stack, typeList->list, true);
-
-                sa = scope_action_created;
-                break;
-            }
-            case AST_CONTAINER_EXPR:
-            {
-                scope = ast_impl_create_scope(obj, scope/*last scope*/);
-                pushToAstStack(stack, toAstNode(scope));
-                // put all items
-                AstContainerExpr containerExpr = toAstContainerExpr(obj);
-                pushAllToAstStack(stack, containerExpr->list, true);
-
-                sa = scope_action_created;
-                break;
-            }
-            case AST_UNARY_OP:
-            {
-                scope = ast_impl_create_scope(obj, scope/*last scope*/);
-                pushToAstStack(stack, toAstNode(scope));
-                AstUnaryOpExpr unaryOpExpr = toAstUnaryOpExpr(obj);
-                pushToAstStack(stack, toAstNode(unaryOpExpr->expr));
-
-                sa = scope_action_created;
-                break;
-            }
-            case AST_BINARY_OP:
-            {
-                scope = ast_impl_create_scope(obj, scope/*last scope*/);
-                pushToAstStack(stack, toAstNode(scope));
-                AstBinaryOpExpr binaryOpExpr = toAstBinaryOpExpr(obj);
-                pushToAstStack(stack, toAstNode(binaryOpExpr->expr_b));
-                pushToAstStack(stack, toAstNode(binaryOpExpr->expr_a));
-
-                sa = scope_action_created;
-                break;
-            }
-            case AST_TERNARY_OP:
-            {
-                scope = ast_impl_create_scope(obj, scope/*last scope*/);
-                pushToAstStack(stack, toAstNode(scope));
-                AstTernaryOpExpr ternaryOpExpr = toAstTernaryOpExpr(obj);
-                pushToAstStack(stack, toAstNode(ternaryOpExpr->expr_c));
-                pushToAstStack(stack, toAstNode(ternaryOpExpr->expr_b));
-                pushToAstStack(stack, toAstNode(ternaryOpExpr->expr_a));
-
-                sa = scope_action_created;
-                break;
-            }
-            case AST_BLOCK:
-            {
-                scope = ast_impl_create_scope(obj, scope/*last scope*/);
-                pushToAstStack(stack, toAstNode(scope));
-                // put all items
-                AstBlockStmt laBody = toAstBlockStmt(obj);
-                pushAllToAstStack(stack, laBody->stmts, true);
-
-                sa = scope_action_created;
-                break;
-            }
-            case AST_VAR_INSTANCE:
-            {
-                scope = ast_impl_create_scope(obj, scope/*last scope*/);
-                pushToAstStack(stack, toAstNode(scope));
-
-                AstVarInstance varInstance = toAstVarInstance(obj);
-                pushToAstStack(stack, toAstNode(varInstance->inst));
-                pushToAstStack(stack, toAstNode(varInstance->declare));
-
-                sa = scope_action_created;
-                break;
-            }
-            case AST_SCOPE:
-            {
-                if (scope != toAstScope(obj)) {
-                    plat_io_printf_err("Impossible\n");
-                }
-                scope = toAstScope(obj);
-                obj = scope->trigger;
-
-                sa = scope_action_destroyed;
-                break;
-            }
-            default:
-            {
-                sa = scope_action_using;
-                break;
-            }
-
+            sa = scope_action_destroyed;
+        }
+        else
+        {
+            sa = scope_action_using;
         }
 
         if (sa == scope_action_destroyed)

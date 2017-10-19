@@ -28,7 +28,7 @@ plat_inline void packAstPackage(AstPackage obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_PACKAGE, AstPackage, AstStatement , initAstPackage, destroyAstPackage, packAstPackage);
+MMSubObject(AstPackage, AstStatement , initAstPackage, destroyAstPackage, packAstPackage);
 
 plat_inline AstPackage allocAstPackageWithName(mgn_memory_pool* pool, MMString name) {
     if (name == null) {
@@ -73,7 +73,7 @@ plat_inline void packAstTypeList(AstTypeList obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_TYPE_LIST_DECLARATION, AstTypeList, AstStatement, initAstTypeList, destroyAstTypeList, packAstTypeList);
+MMSubObject(AstTypeList, AstStatement, initAstTypeList, destroyAstTypeList, packAstTypeList);
 
 plat_inline void addTypeToTypeList(AstTypeList list, AstType type) {
     pushMMListItem(list->list, toMMObject(type));
@@ -117,7 +117,7 @@ plat_inline void packAstBlockStmt(AstBlockStmt obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_BLOCK, AstBlockStmt, AstStatement, initAstBlockStmt, destroyAstBlockStmt, packAstBlockStmt);
+MMSubObject(AstBlockStmt, AstStatement, initAstBlockStmt, destroyAstBlockStmt, packAstBlockStmt);
 
 plat_inline void addStmtToBlock(AstBlockStmt block, AstStatement stmt) {
     pushMMListItem(block->stmts, toMMObject(stmt));
@@ -166,7 +166,7 @@ plat_inline void packAstCaseStmt(AstCaseStmt obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_CASE, AstCaseStmt, AstStatement, initAstCaseStmt, destroyAstCaseStmt, packAstCaseStmt);
+MMSubObject(AstCaseStmt, AstStatement, initAstCaseStmt, destroyAstCaseStmt, packAstCaseStmt);
 
 plat_inline AstCaseStmt allocAstCaseStmtWithCheck(mgn_memory_pool* pool, AstExpression check) {
     AstCaseStmt obj = allocAstCaseStmt(pool);
@@ -197,7 +197,7 @@ plat_inline void packAstSwitchStmt(AstSwitchStmt obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_SWITCH, AstSwitchStmt, AstStatement, initAstSwitchStmt, destroyAstSwitchStmt, packAstSwitchStmt);
+MMSubObject(AstSwitchStmt, AstStatement, initAstSwitchStmt, destroyAstSwitchStmt, packAstSwitchStmt);
 
 plat_inline AstSwitchStmt allocAstSwitchStmtWithEvalAndStmt(mgn_memory_pool* pool, AstExpression eval, AstStatement stmt) {
     AstSwitchStmt obj = allocAstSwitchStmt(pool);
@@ -230,7 +230,7 @@ plat_inline void packAstIfStmt(AstIfStmt obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_IF, AstIfStmt, AstStatement, initAstIfStmt, destroyAstIfStmt, packAstIfStmt);
+MMSubObject(AstIfStmt, AstStatement, initAstIfStmt, destroyAstIfStmt, packAstIfStmt);
 
 plat_inline AstIfStmt allocAstIfStmtWithEvalAndStmts(mgn_memory_pool* pool, AstExpression eval, AstStatement true_stmt, AstStatement false_stmt) {
     AstIfStmt obj = allocAstIfStmt(pool);
@@ -261,7 +261,7 @@ plat_inline void packAstLoopStmt(AstLoopStmt obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_LOOP, AstLoopStmt, AstStatement, initAstLoopStmt, destroyAstLoopStmt, packAstLoopStmt);
+MMSubObject(AstLoopStmt, AstStatement, initAstLoopStmt, destroyAstLoopStmt, packAstLoopStmt);
 
 plat_inline AstLoopStmt allocAstLoopStmtWithStmt(mgn_memory_pool* pool, AstStatement stmt) {
     AstLoopStmt obj = allocAstLoopStmt(pool);
@@ -292,7 +292,7 @@ plat_inline void packAstEachStmt(AstEachStmt obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_EACH, AstEachStmt, AstStatement, initAstEachStmt, destroyAstEachStmt, packAstEachStmt);
+MMSubObject(AstEachStmt, AstStatement, initAstEachStmt, destroyAstEachStmt, packAstEachStmt);
 
 plat_inline AstEachStmt allocAstEachStmtWithEvalAndStmt(mgn_memory_pool* pool, AstExpression eval, AstStatement stmt) {
     AstEachStmt obj = allocAstEachStmt(pool);
@@ -323,7 +323,7 @@ plat_inline void packAstJumpStmt(AstJumpStmt obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_JUMP, AstJumpStmt, AstStatement, initAstJumpStmt, destroyAstJumpStmt, packAstJumpStmt);
+MMSubObject(AstJumpStmt, AstStatement, initAstJumpStmt, destroyAstJumpStmt, packAstJumpStmt);
 
 plat_inline AstJumpStmt allocAstJumpStmtWithTypeAndIdentifier(mgn_memory_pool* pool, ast_jump_type type, AstIdentifier identifier) {
     AstJumpStmt obj = allocAstJumpStmt(pool);
@@ -352,7 +352,7 @@ plat_inline void packAstAnchorStmt(AstAnchorStmt obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_ANCHOR, AstAnchorStmt, AstStatement, initAstAnchorStmt, destroyAstAnchorStmt, packAstAnchorStmt);
+MMSubObject(AstAnchorStmt, AstStatement, initAstAnchorStmt, destroyAstAnchorStmt, packAstAnchorStmt);
 
 plat_inline AstAnchorStmt allocAstAnchorStmtWithLabel(mgn_memory_pool* pool, AstIdentifier label) {
     AstAnchorStmt obj = allocAstAnchorStmt(pool);
@@ -380,7 +380,7 @@ plat_inline void packAstSync(AstSyncStmt obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_SYNC, AstSyncStmt, AstStatement, initAstSync, destroyAstSync, packAstSync);
+MMSubObject(AstSyncStmt, AstStatement, initAstSync, destroyAstSync, packAstSync);
 
 plat_inline AstSyncStmt allocAstSyncStmtWithIdentifier(mgn_memory_pool* pool, AstIdentifier identifier) {
     AstSyncStmt obj = allocAstSyncStmt(pool);

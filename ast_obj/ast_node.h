@@ -11,7 +11,7 @@
 
 #include "mmo_unittest.h"
 
-enum {
+/*enum {
     AST_NODE     = 0,
 
     AST_TYPE,
@@ -58,7 +58,7 @@ enum {
     AST_STACK,
     AST_SCOPE,
 
-};
+};*/
 
 typedef enum {
     ast_type_var             = 0,
@@ -233,7 +233,7 @@ plat_inline void packAstNode(AstNode obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_NODE, AstNode, MMObject , initAstNode, destroyAstNode, packAstNode);
+MMSubObject(AstNode, MMObject , initAstNode, destroyAstNode, packAstNode);
 
 /// ===== Statement =====
 
@@ -253,7 +253,7 @@ plat_inline void packAstStatement(AstStatement obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_STATEMENT, AstStatement, AstNode , initAstStatement, destroyAstStatement, packAstStatement);
+MMSubObject(AstStatement, AstNode , initAstStatement, destroyAstStatement, packAstStatement);
 
 plat_inline AstStatement allocAstStatementWith(mgn_memory_pool* pool, ...) {
     AstStatement obj = allocAstStatement(pool);
@@ -280,7 +280,7 @@ plat_inline void packAstExpression(AstExpression obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_EXPRESSION, AstExpression, AstStatement , initAstExpression, destroyAstExpression, packAstExpression);
+MMSubObject(AstExpression, AstStatement , initAstExpression, destroyAstExpression, packAstExpression);
 
 plat_inline AstExpression allocAstExpressionWith(mgn_memory_pool* pool, ...) {
     AstExpression obj = allocAstExpression(pool);
@@ -307,7 +307,7 @@ plat_inline void packAstNone(AstNone obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_NONE, AstNone, AstExpression, initAstNone, destroyAstNone, packAstNone);
+MMSubObject(AstNone, AstExpression, initAstNone, destroyAstNone, packAstNone);
 
 
 /// ===== Out =====
@@ -328,7 +328,7 @@ plat_inline void packAstOut(AstOut obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_OUT, AstOut, AstExpression, initAstOut, destroyAstOut, packAstOut);
+MMSubObject(AstOut, AstExpression, initAstOut, destroyAstOut, packAstOut);
 
 
 /// ===== Variable =====
@@ -358,7 +358,7 @@ plat_inline void packAstVariable(AstVariable obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_VARIABLE, AstVariable, AstExpression, initAstVariable, destroyAstVariable, packAstVariable);
+MMSubObject(AstVariable, AstExpression, initAstVariable, destroyAstVariable, packAstVariable);
 
 plat_inline AstVariable allocVariableWithIntValue(mgn_memory_pool* pool, int32 value)
 {
@@ -526,7 +526,7 @@ plat_inline void packAstIdentifier(AstIdentifier obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_IDENTIFIER, AstIdentifier, AstExpression, initAstIdentifier, destroyAstIdentifier, packAstIdentifier);
+MMSubObject(AstIdentifier, AstExpression, initAstIdentifier, destroyAstIdentifier, packAstIdentifier);
 
 plat_inline AstIdentifier allocAstIdentifierWithName(mgn_memory_pool* pool, MMString name) {
     if (name == null) {

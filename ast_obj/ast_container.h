@@ -36,7 +36,7 @@ plat_inline void packAstContainer(AstContainerExpr obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_CONTAINER_EXPR, AstContainerExpr, AstExpression, initAstContainer, destroyAstContainer, packAstContainer);
+MMSubObject(AstContainerExpr, AstExpression, initAstContainer, destroyAstContainer, packAstContainer);
 
 plat_inline AstContainerExpr allocAstContainerExprWithType(mgn_memory_pool* pool, ast_container_type type) {
     AstContainerExpr containerExpr = allocAstContainerExpr(pool);
@@ -103,7 +103,7 @@ plat_inline void packAstPairExpr(AstPairExpr obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_PAIR_EXPR, AstPairExpr, AstExpression, initAstPairExpr, destroyAstPairExpr, packAstPairExpr);
+MMSubObject(AstPairExpr, AstExpression, initAstPairExpr, destroyAstPairExpr, packAstPairExpr);
 
 plat_inline AstPairExpr allocAstPairExprWithKeyAndValue(mgn_memory_pool* pool, AstExpression key, AstExpression value) {
     AstPairExpr obj = allocAstPairExpr(pool);

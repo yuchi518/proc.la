@@ -31,7 +31,7 @@ plat_inline void packAstCtrl(AstCtrl obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_CTRL, AstCtrl, AstNode , initAstCtrl, destroyAstCtrl, packAstCtrl);
+MMSubObject(AstCtrl, AstNode , initAstCtrl, destroyAstCtrl, packAstCtrl);
 
 
 /// ===== Ctrl - Flow =====
@@ -56,7 +56,7 @@ plat_inline void packAstCtrlFlow(AstCtrlFlow obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_CTRL_FLOW, AstCtrlFlow, AstCtrl , initAstCtrlFlow, destroyAstCtrlFlow, packAstCtrlFlow);
+MMSubObject(AstCtrlFlow, AstCtrl , initAstCtrlFlow, destroyAstCtrlFlow, packAstCtrlFlow);
 
 plat_inline AstCtrlFlow allocAstCtrlFlowWithCtrl(mgn_memory_pool* pool, ast_ctrl_type ctrl) {
     switch (ctrl)

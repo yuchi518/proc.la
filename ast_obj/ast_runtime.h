@@ -27,7 +27,7 @@ plat_inline void packAstStack(AstStack obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_STACK, AstStack, AstNode , initAstStack, destroyAstStack, packAstStack);
+MMSubObject(AstStack, AstNode , initAstStack, destroyAstStack, packAstStack);
 
 plat_inline AstStack allocAstStackWithANode(mgn_memory_pool* pool, AstNode node) {
     AstStack obj = allocAstStack(pool);
@@ -74,7 +74,7 @@ plat_inline void packAstScope(AstScope obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_SCOPE, AstScope, AstNode, initAstScope, destroyAstScope, packAstScope);
+MMSubObject(AstScope, AstNode, initAstScope, destroyAstScope, packAstScope);
 
 plat_inline AstScope allocAstScopeWithTriggerAndLastScope(mgn_memory_pool* pool, AstNode trigger, AstScope last_scope) {
     AstScope obj = allocAstScope(pool);

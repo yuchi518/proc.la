@@ -31,7 +31,7 @@ plat_inline void packAstType(AstType obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_TYPE, AstType, AstNode , initAstType, destroyAstType, packAstType);
+MMSubObject(AstType, AstNode , initAstType, destroyAstType, packAstType);
 
 plat_inline AstType allocAstTypeWithType(mgn_memory_pool* pool, ast_type type)
 {
@@ -87,7 +87,7 @@ plat_inline void packAstTypeCombination(AstTypeCombination obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_TYPE_COMBINATION, AstTypeCombination, AstType , initAstTypeCombination, destroyAstTypeCombination, packAstTypeCombination);
+MMSubObject(AstTypeCombination, AstType , initAstTypeCombination, destroyAstTypeCombination, packAstTypeCombination);
 
 plat_inline AstTypeCombination allocAstTypeCombinationWithCombinedType(mgn_memory_pool* pool, ast_type type, int32 combined_type) {
     AstTypeCombination obj = allocAstTypeCombination(pool);

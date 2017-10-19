@@ -28,7 +28,7 @@ plat_inline void packAstVariableCombination(AstVariableCombination obj, Packer p
 
 }
 
-MMSubObject(AST_VARIABLE_COMBINATION, AstVariableCombination, AstVariable, initAstVariableCombination, destroyAstVariableCombination, packAstVariableCombination);
+MMSubObject(AstVariableCombination, AstVariable, initAstVariableCombination, destroyAstVariableCombination, packAstVariableCombination);
 
 
 /// TODO - implement combination type.
@@ -53,7 +53,7 @@ plat_inline void packAstDomainName(AstDomainName obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_VARIABLE_DOMAIN_NAME, AstDomainName, AstVariable, initAstDomainName, destroyAstDomainName, packAstDomainName);
+MMSubObject(AstDomainName, AstVariable, initAstDomainName, destroyAstDomainName, packAstDomainName);
 
 plat_inline AstDomainName allocAstDomainNameWithName(mgn_memory_pool* pool, MMString name) {
     if (name == null) {
@@ -107,7 +107,7 @@ plat_inline void packAstVariableLa(AstALa obj, Packer pkr) {
 
 }
 
-MMSubObject(AST_A_LA, AstALa, AstVariable, initAstVariableLa, destroyAstVariableLa, packAstVariableLa);
+MMSubObject(AstALa, AstVariable, initAstVariableLa, destroyAstVariableLa, packAstVariableLa);
 
 plat_inline AstALa allocAstALaWithImpl(mgn_memory_pool* pool, AstContainerExpr input, AstBlockStmt body, AstTypeList output) {
     AstALa obj = allocAstALa(pool);

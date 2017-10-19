@@ -8,95 +8,83 @@ bool print_ast(AstNode obj, uint level, scope_action action, AstScope scope)
     sc[scope_action_using] = '|';
     sc[scope_action_destroyed] = '-';
 
-    switch(oid_of_last_mmobj(obj))
+    uint32 oid = oid_of_last_mmobj(obj);
+    if (oid == oid_of_AstDomainName())
     {
-        case AST_VARIABLE_DOMAIN_NAME:
+        plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj), toAstDomainName(obj)->name->value);
+    }
+    else if (oid == oid_of_AstIdentifier())
+    {
+        plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj), toAstIdentifier(obj)->name->value);
+    }
+    else if (oid == oid_of_AstVarDeclare())
+    {
+        AstVarDeclare varDeclare = toAstVarDeclare(obj);
+        plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s:%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
+                           varDeclare->identifier->name->value, ast_type_name(varDeclare->identifier_type->type));
+    }
+    else if (oid == oid_of_AstVariable())
+    {
+        AstVariable variable = toAstVariable(obj);
+        ast_type type = variable->type;
+        switch (type)
         {
-            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj), toAstDomainName(obj)->name->value);
-            break;
-        }
-        case AST_IDENTIFIER:
-        {
-            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj), toAstIdentifier(obj)->name->value);
-            break;
-        }
-        case AST_VAR_DECLARE:
-        {
-            AstVarDeclare varDeclare = toAstVarDeclare(obj);
-            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s:%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
-                               varDeclare->identifier->name->value, ast_type_name(varDeclare->identifier_type->type));
-
-            break;
-        }
-        case AST_VARIABLE:
-        {
-            AstVariable variable = toAstVariable(obj);
-            ast_type type = variable->type;
-            switch (type)
-            {
-                case ast_type_int: {
-                    int32 i = toMMInt(variable->value)->value;
-                    plat_io_printf_std("%*s%c <<%s>> %d(%08x)\n", level<<2, "", sc[action], ast_type_name(type), i, i);
-                    break;
-                }
-                case ast_type_long: {
-                    int64 l = toMMLong(variable->value)->value;
-                    plat_io_printf_std("%*s%c <<%s>> %lld(%16llx)\n", level<<2, "", sc[action], ast_type_name(type), (long long)l, (long long)l);
-                    break;
-                }
-                case ast_type_float: {
-                    plat_io_printf_std("%*s%c <<%s>> %f\n", level<<2, "", sc[action], ast_type_name(type), toMMFloat(variable->value)->value);
-                    break;
-                }
-                case ast_type_double: {
-                    plat_io_printf_std("%*s%c <<%s>> %f\n", level<<2, "", sc[action], ast_type_name(type), toMMDouble(variable->value)->value);
-                    break;
-                }
-                case ast_type_string: {
-                    plat_io_printf_std("%*s%c <<%s>> %s\n", level<<2, "", sc[action], ast_type_name(type), toMMString(variable->value)->value);
-                    break;
-                }
-                case ast_type_number:break;
-                case ast_type_raw:break;
-                case ast_type_proc:break;
-                case ast_type_la:break;
-                case ast_type_var:break;
-                default: {
-                    plat_io_printf_std("%*s%c <<%s>> Not support format.(%d)\n", level<<2, "", sc[action], ast_type_name(type), type);
-                    break;
-                }
+            case ast_type_int: {
+                int32 i = toMMInt(variable->value)->value;
+                plat_io_printf_std("%*s%c <<%s>> %d(%08x)\n", level<<2, "", sc[action], ast_type_name(type), i, i);
+                break;
             }
-            break;
+            case ast_type_long: {
+                int64 l = toMMLong(variable->value)->value;
+                plat_io_printf_std("%*s%c <<%s>> %lld(%16llx)\n", level<<2, "", sc[action], ast_type_name(type), (long long)l, (long long)l);
+                break;
+            }
+            case ast_type_float: {
+                plat_io_printf_std("%*s%c <<%s>> %f\n", level<<2, "", sc[action], ast_type_name(type), toMMFloat(variable->value)->value);
+                break;
+            }
+            case ast_type_double: {
+                plat_io_printf_std("%*s%c <<%s>> %f\n", level<<2, "", sc[action], ast_type_name(type), toMMDouble(variable->value)->value);
+                break;
+            }
+            case ast_type_string: {
+                plat_io_printf_std("%*s%c <<%s>> %s\n", level<<2, "", sc[action], ast_type_name(type), toMMString(variable->value)->value);
+                break;
+            }
+            case ast_type_number:break;
+            case ast_type_raw:break;
+            case ast_type_proc:break;
+            case ast_type_la:break;
+            case ast_type_var:break;
+            default: {
+                plat_io_printf_std("%*s%c <<%s>> Not support format.(%d)\n", level<<2, "", sc[action], ast_type_name(type), type);
+                break;
+            }
         }
-        case AST_TYPE:
-        {
-            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
-                               ast_type_name(toAstType(obj)->type));
-            break;
-        }
-        case AST_UNARY_OP:
-        {
-            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
-                               ast_ast_unary_op_text(toAstUnaryOpExpr(obj)->op));
-            break;
-        }
-        case AST_BINARY_OP:
-        {
-            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
-                               ast_ast_binary_op_text(toAstBinaryOpExpr(obj)->op));
-            break;
-        }
-        case AST_TERNARY_OP:
-        {
-            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
-                               ast_ast_ternary_op_text(toAstTernaryOpExpr(obj)->op));
-            break;
-        }
-        default:
-        {
-            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj));
-            break;
-        }
+    }
+    else if (oid == oid_of_AstType())
+    {
+        plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
+                           ast_type_name(toAstType(obj)->type));
+    }
+    else if (oid == oid_of_AstUnaryOpExpr())
+    {
+        plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
+                           ast_ast_unary_op_text(toAstUnaryOpExpr(obj)->op));
+    }
+    else if (oid == oid_of_AstBinaryOpExpr())
+    {
+        plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
+                           ast_ast_binary_op_text(toAstBinaryOpExpr(obj)->op));
+    }
+    else if (oid == oid_of_AstTernaryOpExpr())
+    {
+        plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
+                           ast_ast_ternary_op_text(toAstTernaryOpExpr(obj)->op));
+    }
+    else
+    {
+        plat_io_printf_std("%*s%c <<%s(%p:%d)>>\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj));
     }
     return true;
 }
