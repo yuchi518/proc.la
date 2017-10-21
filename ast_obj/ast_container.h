@@ -22,9 +22,17 @@ typedef struct AstContainerExpr {
     MMList list;
 }*AstContainerExpr;
 
+plat_inline int compare_for_AstContainerExpr(void *, void *);
 plat_inline AstContainerExpr initAstContainer(AstContainerExpr obj, Unpacker unpkr) {
-    obj->closed = false;
-    obj->list = allocMMList(pool_of_mmobj(obj));
+    set_compare_for_mmobj(obj, compare_for_AstContainerExpr);
+    if (is_unpacker_v1(unpkr)) {
+        obj->type = (ast_container_type)unpack_varint(0, unpkr);
+        obj->closed = unpack_bool(1, unpkr);
+        obj->list = unpack_mmobj(2, unpkr);
+    } else {
+        obj->closed = false;
+        obj->list = allocMMList(pool_of_mmobj(obj));
+    }
     return obj->list?obj:null;
 }
 
@@ -33,7 +41,11 @@ plat_inline void destroyAstContainer(AstContainerExpr obj) {
 }
 
 plat_inline void packAstContainer(AstContainerExpr obj, Packer pkr) {
-
+    if (is_packer_v1(pkr)) {
+        pack_varint(0, obj->type, pkr);
+        pack_bool(1, obj->closed, pkr);
+        pack_mmobj(2, obj->list, pkr);
+    }
 }
 
 MMSubObject(AstContainerExpr, AstExpression, initAstContainer, destroyAstContainer, packAstContainer);
@@ -44,6 +56,14 @@ plat_inline AstContainerExpr allocAstContainerExprWithType(mgn_memory_pool* pool
         containerExpr->type = type;
     }
     return containerExpr;
+}
+
+plat_inline int compare_for_AstContainerExpr(void *this_stru, void *that_stru) {
+    AstContainerExpr a = toAstContainerExpr(this_stru);
+    AstContainerExpr b = toAstContainerExpr(that_stru);
+    if (a->type != b->type) return (int)a->type - (int)b->type;
+    if (a->closed != b->closed) return (a->closed?1:0) - (b->closed?1:0);
+    return compare_mmobjs(a->list, b->list);
 }
 
 plat_inline bool isExprContainerClosed(AstContainerExpr exprList) {
@@ -90,7 +110,13 @@ typedef struct AstPairExpr {
     AstExpression expr_v;
 }*AstPairExpr;
 
+plat_inline int compare_for_AstPairExpr(void *, void *);
 plat_inline AstPairExpr initAstPairExpr(AstPairExpr obj, Unpacker unpkr) {
+    set_compare_for_mmobj(obj, compare_for_AstPairExpr);
+    if (is_unpacker_v1(unpkr)) {
+        obj->expr_k = unpack_mmobj(0, unpkr);
+        obj->expr_v = unpack_mmobj(1, unpkr);
+    }
     return obj;
 }
 
@@ -100,10 +126,21 @@ plat_inline void destroyAstPairExpr(AstPairExpr obj) {
 }
 
 plat_inline void packAstPairExpr(AstPairExpr obj, Packer pkr) {
-
+    if (is_packer_v1(pkr)) {
+        pack_mmobj(0, obj->expr_k, pkr);
+        pack_mmobj(1, obj->expr_v, pkr);
+    }
 }
 
 MMSubObject(AstPairExpr, AstExpression, initAstPairExpr, destroyAstPairExpr, packAstPairExpr);
+
+plat_inline int compare_for_AstPairExpr(void *this_stru, void *that_stru) {
+    AstPairExpr a = toAstPairExpr(this_stru);
+    AstPairExpr b = toAstPairExpr(that_stru);
+    int diff = compare_mmobjs(a->expr_k, b->expr_k);
+    if (diff != 0) return diff;
+    return compare_mmobjs(a->expr_v, b->expr_v);
+}
 
 plat_inline AstPairExpr allocAstPairExprWithKeyAndValue(mgn_memory_pool* pool, AstExpression key, AstExpression value) {
     AstPairExpr obj = allocAstPairExpr(pool);
