@@ -19,7 +19,13 @@ typedef struct AstVarDeclare {
     AstType identifier_type;
 }*AstVarDeclare;
 
+plat_inline int compareForAstVarDeclare(void *, void *);
 plat_inline AstVarDeclare initAstVarDeclare(AstVarDeclare obj, Unpacker unpkr) {
+    set_compare_for_mmobj(obj, compareForAstVarDeclare);
+    if (is_unpacker_v1(unpkr)) {
+        obj->identifier = toAstIdentifier(unpack_mmobj_retained(0, unpkr));
+        obj->identifier_type = toAstType(unpack_mmobj_retained(1, unpkr));
+    }
     return obj;
 }
 
@@ -29,11 +35,21 @@ plat_inline void destroyAstVarDeclare(AstVarDeclare obj) {
 }
 
 plat_inline void packAstVarDeclare(AstVarDeclare obj, Packer pkr) {
-
+    if (is_packer_v1(pkr)) {
+        pack_mmobj(0, obj->identifier, pkr);
+        pack_mmobj(1, obj->identifier_type, pkr);
+    }
 }
 
 MMSubObject(AstVarDeclare, AstExpression, initAstVarDeclare, destroyAstVarDeclare, packAstVarDeclare);
 
+plat_inline int compareForAstVarDeclare(void* this_stru, void* that_stru) {
+    AstVarDeclare varDeclare1 = toAstVarDeclare(this_stru);
+    AstVarDeclare varDeclare2 = toAstVarDeclare(that_stru);
+    int diff = compare_mmobjs(varDeclare1->identifier, varDeclare2->identifier);
+    if (diff) return diff;
+    return compare_mmobjs(varDeclare1->identifier_type, varDeclare2->identifier_type);
+}
 
 plat_inline AstVarDeclare allocAstVarDeclareWithIdentifier(mgn_memory_pool* pool, AstIdentifier identifier, AstType type) {
     if (identifier == null) {
@@ -60,7 +76,13 @@ typedef struct AstVarInstance {
     AstVariable inst;
 }*AstVarInstance;
 
+plat_inline int compareForAstVarInstance(void *, void *);
 plat_inline AstVarInstance initAstVarInstant(AstVarInstance obj, Unpacker unpkr) {
+    set_compare_for_mmobj(obj, compareForAstVarInstance);
+    if (is_unpacker_v1(unpkr)) {
+        obj->declare = toAstVarDeclare(unpack_mmobj_retained(0, unpkr));
+        obj->inst = toAstVariable(unpack_mmobj_retained(1, unpkr));
+    }
     return obj;
 }
 
@@ -70,10 +92,21 @@ plat_inline void destroyAstVarInstant(AstVarInstance obj) {
 }
 
 plat_inline void packAstVarInstant(AstVarInstance obj, Packer pkr) {
-
+    if (is_packer_v1(pkr)) {
+        pack_mmobj(0, obj->declare, pkr);
+        pack_mmobj(1, obj->inst, pkr);
+    }
 }
 
 MMSubObject(AstVarInstance, AstExpression, initAstVarInstant, destroyAstVarInstant, packAstVarInstant);
+
+plat_inline int compareForAstVarInstance(void* this_stru, void* that_stru) {
+    AstVarInstance varInstance1 = toAstVarInstance(this_stru);
+    AstVarInstance varInstance2 = toAstVarInstance(that_stru);
+    int diff = compare_mmobjs(varInstance1->declare, varInstance2->declare);
+    if (diff) return diff;
+    return compare_mmobjs(varInstance1->inst, varInstance2->inst);
+}
 
 plat_inline AstVarInstance allocAstVarInstantWithDeclareAndInstance(mgn_memory_pool* pool, AstVarDeclare declare, AstVariable instance) {
     if (declare == null) {
@@ -100,7 +133,13 @@ typedef struct AstUnaryOpExpr {
     ast_unary_op op;
 }*AstUnaryOpExpr;
 
+plat_inline int compareForAstUnaryOpExpr(void*, void*);
 plat_inline AstUnaryOpExpr initAstUnaryExpr(AstUnaryOpExpr obj, Unpacker unpkr) {
+    set_compare_for_mmobj(obj, compareForAstUnaryOpExpr);
+    if (is_unpacker_v1(unpkr)) {
+        obj->expr = toAstExpression(unpack_mmobj_retained(0, unpkr));
+        obj->op = (ast_unary_op)unpack_varint(1, unpkr);
+    }
     return obj;
 }
 
@@ -109,10 +148,20 @@ plat_inline void destroyAstUnaryExpr(AstUnaryOpExpr obj) {
 }
 
 plat_inline void packAstUnaryExpr(AstUnaryOpExpr obj, Packer pkr) {
-
+    if (is_packer_v1(pkr)) {
+        pack_mmobj(0, obj->expr, pkr);
+        pack_varint(1, obj->op, pkr);
+    }
 }
 
 MMSubObject(AstUnaryOpExpr, AstExpression, initAstUnaryExpr, destroyAstUnaryExpr, packAstUnaryExpr);
+
+plat_inline int compareForAstUnaryOpExpr(void* this_stru, void* that_stru) {
+    AstUnaryOpExpr unaryOpExpr1 = toAstUnaryOpExpr(this_stru);
+    AstUnaryOpExpr unaryOpExpr2 = toAstUnaryOpExpr(that_stru);
+    return FIRST_Of_2RESULTS((int)unaryOpExpr1->op - (int)unaryOpExpr2->op,
+                             compare_mmobjs(unaryOpExpr1->expr, unaryOpExpr2->expr));
+}
 
 plat_inline AstUnaryOpExpr allocAstUnaryOpExprWithOp(mgn_memory_pool* pool, AstExpression expr, ast_unary_op op) {
     AstUnaryOpExpr obj = allocAstUnaryOpExpr(pool);
@@ -131,7 +180,14 @@ typedef struct AstBinaryOpExpr {
     ast_binary_op op;
 }*AstBinaryOpExpr;
 
+plat_inline int compareForAstBinaryOpExpr(void*, void*);
 plat_inline AstBinaryOpExpr initAstBinaryOpExpr(AstBinaryOpExpr obj, Unpacker unpkr) {
+    set_compare_for_mmobj(obj, compareForAstBinaryOpExpr);
+    if (is_unpacker_v1(unpkr)) {
+        obj->expr_a = toAstExpression(unpack_mmobj_retained(0, unpkr));
+        obj->expr_b = toAstExpression(unpack_mmobj_retained(1, unpkr));
+        obj->op = (ast_binary_op)unpack_varint(2, unpkr);
+    }
     return obj;
 }
 
@@ -141,10 +197,22 @@ plat_inline void destroyAstBinaryOpExpr(AstBinaryOpExpr obj) {
 }
 
 plat_inline void packAstBinaryOpExpr(AstBinaryOpExpr obj, Packer pkr) {
-
+    if (is_packer_v1(pkr)) {
+        pack_mmobj(0, obj->expr_a, pkr);
+        pack_mmobj(1, obj->expr_b, pkr);
+        pack_varint(2, obj->op, pkr);
+    }
 }
 
 MMSubObject(AstBinaryOpExpr, AstExpression, initAstBinaryOpExpr, destroyAstBinaryOpExpr, packAstBinaryOpExpr);
+
+plat_inline int compareForAstBinaryOpExpr(void* this_stru, void* that_stru) {
+    AstBinaryOpExpr binaryOpExpr1 = toAstBinaryOpExpr(this_stru);
+    AstBinaryOpExpr binaryOpExpr2 = toAstBinaryOpExpr(that_stru);
+    return FIRST_Of_3RESULTS((int)binaryOpExpr1->op - (int)binaryOpExpr2->op,
+                             compare_mmobjs(binaryOpExpr1->expr_a, binaryOpExpr2->expr_a),
+                             compare_mmobjs(binaryOpExpr1->expr_b, binaryOpExpr2->expr_b));
+}
 
 plat_inline AstBinaryOpExpr allocAstBinaryOpExprWithExprsAndOp(mgn_memory_pool* pool, AstExpression expr_a, AstExpression expr_b, ast_binary_op op) {
     AstBinaryOpExpr obj = allocAstBinaryOpExpr(pool);
@@ -183,7 +251,15 @@ typedef struct AstTernaryOpExpr {
     ast_ternary_op op;
 }*AstTernaryOpExpr;
 
+plat_inline int compareForAstTernaryOpExpr(void*, void*);
 plat_inline AstTernaryOpExpr initAstTernaryOpExpr(AstTernaryOpExpr obj, Unpacker unpkr) {
+    set_compare_for_mmobj(obj, compareForAstTernaryOpExpr);
+    if (is_unpacker_v1(unpkr)) {
+        obj->expr_a = toAstExpression(unpack_mmobj_retained(0, unpkr));
+        obj->expr_b = toAstExpression(unpack_mmobj_retained(1, unpkr));
+        obj->expr_c = toAstExpression(unpack_mmobj_retained(2, unpkr));
+        obj->op = (ast_ternary_op)unpack_varint(3, unpkr);
+    }
     return obj;
 }
 
@@ -194,10 +270,24 @@ plat_inline void destroyAstTernaryOpExpr(AstTernaryOpExpr obj) {
 }
 
 plat_inline void packAstTernaryOpExpr(AstTernaryOpExpr obj, Packer pkr) {
-
+    if (is_packer_v1(pkr)) {
+        pack_mmobj(0, obj->expr_a, pkr);
+        pack_mmobj(1, obj->expr_b, pkr);
+        pack_mmobj(2, obj->expr_c, pkr);
+        pack_varint(3, obj->op, pkr);
+    }
 }
 
 MMSubObject(AstTernaryOpExpr, AstExpression, initAstTernaryOpExpr, destroyAstTernaryOpExpr, packAstTernaryOpExpr);
+
+plat_inline int compareForAstTernaryOpExpr(void* this_stru, void* that_stru) {
+    AstTernaryOpExpr ternaryOpExpr1 = toAstTernaryOpExpr(this_stru);
+    AstTernaryOpExpr ternaryOpExpr2 = toAstTernaryOpExpr(that_stru);
+    return FIRST_Of_4RESULTS((int)ternaryOpExpr1->op - (int)ternaryOpExpr2->op,
+                             compare_mmobjs(ternaryOpExpr1->expr_a, ternaryOpExpr2->expr_a),
+                             compare_mmobjs(ternaryOpExpr1->expr_b, ternaryOpExpr2->expr_b),
+                             compare_mmobjs(ternaryOpExpr1->expr_c, ternaryOpExpr2->expr_c));
+}
 
 plat_inline AstTernaryOpExpr allocAstTernaryOpExprWithOp(mgn_memory_pool* pool, AstExpression expr_a, AstExpression expr_b, AstExpression expr_c, ast_ternary_op op) {
     AstTernaryOpExpr obj = allocAstTernaryOpExpr(pool);
@@ -217,7 +307,13 @@ typedef struct AstIsExpr {
     AstType type;
 }*AstIsExpr;
 
+plat_inline int compareForAstIsExpr(void*, void*);
 plat_inline AstIsExpr initAstIsExpr(AstIsExpr obj, Unpacker unpkr) {
+    set_compare_for_mmobj(obj, compareForAstIsExpr);
+    if (is_unpacker_v1(unpkr)) {
+        obj->expr = toAstExpression(unpack_mmobj_retained(0, unpkr));
+        obj->type = toAstType(unpack_mmobj_retained(1, unpkr));
+    }
     return obj;
 }
 
@@ -227,11 +323,20 @@ plat_inline void destroyAstIsExpr(AstIsExpr obj) {
 }
 
 plat_inline void packAstIsExpr(AstIsExpr obj, Packer pkr) {
-
+    if (is_packer_v1(pkr)) {
+        pack_mmobj(0, obj->expr, pkr);
+        pack_mmobj(1, obj->type, pkr);
+    }
 }
 
 MMSubObject(AstIsExpr, AstExpression, initAstIsExpr, destroyAstIsExpr, packAstIsExpr);
 
+plat_inline int compareForAstIsExpr(void* this_stru, void* that_stru) {
+    AstIsExpr isExpr1 = toAstIsExpr(this_stru);
+    AstIsExpr isExpr2 = toAstIsExpr(that_stru);
+    return FIRST_Of_2RESULTS(compare_mmobjs(isExpr1->type, isExpr2->type),
+                             compare_mmobjs(isExpr1->expr, isExpr2->expr));
+}
 plat_inline AstIsExpr allocAstIsExprWithExprAndType(mgn_memory_pool* pool, AstExpression expr, AstType type) {
     AstIsExpr obj = allocAstIsExpr(pool);
     if (obj) {

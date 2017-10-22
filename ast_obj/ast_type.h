@@ -18,20 +18,34 @@ typedef struct AstType {
     ast_type type;
 }*AstType;
 
+plat_inline int compareForAstType(void*, void*);
 plat_inline AstType initAstType(AstType obj, Unpacker unpkr) {
-    obj->type = ast_type_var;
+    set_compare_for_mmobj(obj, compareForAstType);
+    if (is_unpacker_v1(unpkr)) {
+        obj->type = (ast_type)unpack_varint(0, unpkr);
+    } else {
+        obj->type = ast_type_var;
+    }
     return obj;
 }
 
-plat_inline void destroyAstType(AstType obj) {
+/*plat_inline void destroyAstType(AstType obj) {
 
-}
+}*/
 
 plat_inline void packAstType(AstType obj, Packer pkr) {
-
+    if (is_packer_v1(pkr)) {
+        pack_varint(0, obj->type, pkr);
+    }
 }
 
-MMSubObject(AstType, AstNode , initAstType, destroyAstType, packAstType);
+MMSubObject(AstType, AstNode , initAstType, null/*destroyAstType*/, packAstType);
+
+plat_inline int compareForAstType(void* this_stru, void* that_stru) {
+    AstType type1 = toAstType(this_stru);
+    AstType type2 = toAstType(that_stru);
+    return (int)type1->type - (int)type2->type;
+}
 
 plat_inline AstType allocAstTypeWithType(mgn_memory_pool* pool, ast_type type)
 {
@@ -74,20 +88,37 @@ typedef struct AstTypeCombination {
     int32 combined_type;
 }*AstTypeCombination;
 
+plat_inline int compareForAstTypeCombination(void*, void*);
 plat_inline AstTypeCombination initAstTypeCombination(AstTypeCombination obj, Unpacker unpkr) {
-    toAstType(obj)->type = ast_type_var;        // base type
+    set_compare_for_mmobj(obj, compareForAstTypeCombination);
+    if (is_unpacker_v1(unpkr)) {
+        obj->combined_type = (int32)unpack_varint(0, unpkr);
+    } else {
+        toAstType(obj)->type = ast_type_var;        // base type
+    }
     return obj;
 }
 
-plat_inline void destroyAstTypeCombination(AstTypeCombination obj) {
+/*plat_inline void destroyAstTypeCombination(AstTypeCombination obj) {
 
-}
+}*/
 
 plat_inline void packAstTypeCombination(AstTypeCombination obj, Packer pkr) {
-
+    if (is_packer_v1(pkr)) {
+        pack_varint(0, obj->combined_type, pkr);
+    }
 }
 
-MMSubObject(AstTypeCombination, AstType , initAstTypeCombination, destroyAstTypeCombination, packAstTypeCombination);
+MMSubObject(AstTypeCombination, AstType , initAstTypeCombination, null/*destroyAstTypeCombination*/, packAstTypeCombination);
+
+plat_inline int compareForAstTypeCombination(void* this_stru, void* that_stru) {
+    AstTypeCombination typeCombination1 = toAstTypeCombination(this_stru);
+    AstTypeCombination typeCombination2 = toAstTypeCombination(that_stru);
+    AstType type1 = toAstType(typeCombination1);
+    AstType type2 = toAstType(typeCombination2);
+    return FIRST_Of_2RESULTS((int)type1->type - (int)type2->type,
+                             (int)typeCombination1->combined_type - (int)typeCombination2->combined_type);
+}
 
 plat_inline AstTypeCombination allocAstTypeCombinationWithCombinedType(mgn_memory_pool* pool, ast_type type, int32 combined_type) {
     AstTypeCombination obj = allocAstTypeCombination(pool);

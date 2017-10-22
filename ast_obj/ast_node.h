@@ -337,13 +337,13 @@ typedef struct AstVariable {
     MMObject value;
 }*AstVariable;
 
-plat_inline int compare_for_AstVariable(void *, void *);
+plat_inline int compareForAstVariable(void *, void *);
 plat_inline AstVariable initAstVariable(AstVariable obj, Unpacker unpkr) {
-    set_compare_for_mmobj(obj, compare_for_AstVariable);
+    set_compare_for_mmobj(obj, compareForAstVariable);
     if (is_unpacker_v1(unpkr)) {
         obj->type = (ast_type) unpack_varint(0, unpkr);
         obj->is_const = unpack_bool(1, unpkr);
-        obj->value = unpack_mmobj(2, unpkr);
+        obj->value = toMMObject(unpack_mmobj_retained(2, unpkr));
     } else {
         obj->type = ast_type_var;
         obj->is_const = false;
@@ -365,7 +365,7 @@ plat_inline void packAstVariable(AstVariable obj, Packer pkr) {
 
 MMSubObject(AstVariable, AstExpression, initAstVariable, destroyAstVariable, packAstVariable);
 
-plat_inline int compare_for_AstVariable(void *this_stru, void *that_stru) {
+plat_inline int compareForAstVariable(void* this_stru, void* that_stru) {
     AstVariable this_v = toAstVariable(this_stru);
     AstVariable that_v = toAstVariable(that_stru);
     if (this_v->type != that_v->type) return (int) this_v->type - (int) that_v->type;
@@ -516,11 +516,11 @@ typedef struct AstIdentifier {
     MMString name;
 }*AstIdentifier;
 
-plat_inline int compare_for_AstIdentifier(void *, void *);
+plat_inline int compareForAstIdentifier(void *, void *);
 plat_inline AstIdentifier initAstIdentifier(AstIdentifier obj, Unpacker unpkr) {
-    set_compare_for_mmobj(obj, compare_for_AstIdentifier);
+    set_compare_for_mmobj(obj, compareForAstIdentifier);
     if (is_unpacker_v1(unpkr)) {
-        obj->name = unpack_mmobj(0, unpkr);
+        obj->name = toMMString(unpack_mmobj_retained(0, unpkr));
     }
     return obj;
 }
@@ -537,7 +537,7 @@ plat_inline void packAstIdentifier(AstIdentifier obj, Packer pkr) {
 
 MMSubObject(AstIdentifier, AstExpression, initAstIdentifier, destroyAstIdentifier, packAstIdentifier);
 
-plat_inline int compare_for_AstIdentifier(void *this_stru, void *that_stru) {
+plat_inline int compareForAstIdentifier(void* this_stru, void* that_stru) {
     AstIdentifier this_i = toAstIdentifier(this_stru);
     AstIdentifier that_i = toAstIdentifier(that_stru);
     return compare_mmobjs(this_i->name, that_i->name);
