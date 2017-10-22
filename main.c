@@ -114,8 +114,32 @@ int load_file_and_create_ast(const char* file_name) {
             mgn_mem_release_unused(&pool);
             plat_io_printf_dbg("=== Tree ===\n");
             iterate_ast(ast, print_ast);
+            plat_io_printf_dbg("=== Pack ===\n");
+
+            MMPacker packer = allocMMPacker(&pool);
+            pack_mmobj(0, ast, packer);
+            uint len;
+            uint8 *data = dyb_get_data_before_current_position(packer->dyb, &len);
+            PRINTF_HEXMEM_TO_TARGET(fprintf, stdout, data, len, 256);
+
+            plat_io_printf_dbg("=== UnPack ===\n");
+            MMUnpacker unpacker = allocMMUnpackerWithData(&pool, data, len);
+            register_all_ast_to_unpacker(unpacker);
+            AstNode cloned_ast = toAstNode(unpack_mmobj(0, unpacker));      // autorelease
+
+            plat_io_printf_dbg("=== Cloned Tree ===\n");
+            iterate_ast(cloned_ast, print_ast);
+
+            if (are_equal_mmobjs(ast, cloned_ast)) {
+                plat_io_printf_dbg("Original ast tree and cloned ast tree are equal!!\n");
+            } else {
+                plat_io_printf_err("Original ast tree is not equal to cloned ast tree!!\n");
+            }
+
             plat_io_printf_dbg("=== Release ===\n");
             release_mmobj(ast);
+            release_mmobj(unpacker);
+            release_mmobj(packer);
             mgn_mem_release_unused(&pool);
 
             if (mgn_mem_count_of_mem(&pool) > 0) {

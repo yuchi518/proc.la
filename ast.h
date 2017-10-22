@@ -8,6 +8,43 @@
 #include "ast_la.h"
 #include "ast_runtime.h"
 
+plat_inline void register_all_ast_to_unpacker(Unpacker unpkr) {
+    register_all_mmo_ext_to_unpacker(unpkr);
+    registerAstALaToUnpacker(unpkr);
+    registerAstAnchorStmtToUnpacker(unpkr);
+    registerAstAProcLaToUnpacker(unpkr);
+    registerAstBinaryOpExprToUnpacker(unpkr);
+    registerAstBlockStmtToUnpacker(unpkr);
+    registerAstCaseStmtToUnpacker(unpkr);
+    registerAstContainerExprToUnpacker(unpkr);
+    registerAstDomainNameToUnpacker(unpkr);
+    registerAstEachStmtToUnpacker(unpkr);
+    registerAstExpressionToUnpacker(unpkr);
+    registerAstExternalDeclarationsToUnpacker(unpkr);
+    registerAstIdentifierToUnpacker(unpkr);
+    registerAstIfStmtToUnpacker(unpkr);
+    registerAstIsExprToUnpacker(unpkr);
+    registerAstJumpStmtToUnpacker(unpkr);
+    registerAstLoopStmtToUnpacker(unpkr);
+    registerAstNoneToUnpacker(unpkr);
+    registerAstOutToUnpacker(unpkr);
+    registerAstPackageToUnpacker(unpkr);
+    registerAstPackageToUnpacker(unpkr);
+    registerAstScopeToUnpacker(unpkr);
+    registerAstStackToUnpacker(unpkr);
+    registerAstSwitchStmtToUnpacker(unpkr);
+    registerAstSyncStmtToUnpacker(unpkr);
+    registerAstTernaryOpExprToUnpacker(unpkr);
+    registerAstTypeListToUnpacker(unpkr);
+    registerAstTypeCombinationToUnpacker(unpkr);
+    registerAstTypeToUnpacker(unpkr);
+    registerAstUnaryOpExprToUnpacker(unpkr);
+    registerAstVarDeclareToUnpacker(unpkr);
+    registerAstVariableCombinationToUnpacker(unpkr);
+    registerAstVariableToUnpacker(unpkr);
+    registerAstVarInstanceToUnpacker(unpkr);
+}
+
 AstNode ast_create_none(void);
 AstNode ast_create_out(void);
 AstNode ast_create_type(ast_type type);
