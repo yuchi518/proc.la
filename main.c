@@ -13,6 +13,10 @@ bool print_ast(AstNode obj, uint level, scope_action action, AstScope scope)
     {
         plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj), toAstDomainName(obj)->name->value);
     }
+    else if (oid == oid_of_AstPackage())
+    {
+        plat_io_printf_std("%*s%c <<%s>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), toAstPackage(obj)->name->value);
+    }
     else if (oid == oid_of_AstIdentifier())
     {
         plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj), toAstIdentifier(obj)->name->value);
@@ -103,13 +107,19 @@ int load_file_and_create_ast(const char* file_name) {
         //printf("=====Source =====\n");
         //printf("%s\n", content);
         //printf("=================\n");
-        //fflush(stdout);
+        //plat_io_flush_std();
         res = create_ast(&pool, content, content_size, &ast);
         free(content);
-        fflush(stdout);
+        plat_io_flush_std();
 
         if (res == 0 && ast != null)
         {
+            if (!verify_and_optimize_ast(ast)) {
+                plat_io_printf_err("Verification or optimization fail.\n");
+                //mgn_mem_release_all(&pool);
+                //return -1;
+            }
+
             retain_mmobj(ast);
             mgn_mem_release_unused(&pool);
             plat_io_printf_dbg("=== Tree ===\n");

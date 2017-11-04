@@ -73,6 +73,7 @@ plat_inline AstNode popFromAstStack(AstStack stack) {
 typedef struct AstScope {
     AstNode trigger;
     struct AstScope* last_scope;
+    MMMap variables;
 }*AstScope;
 
 plat_inline AstScope initAstScope(AstScope obj, Unpacker unpkr);
@@ -80,12 +81,14 @@ plat_inline AstScope initAstScope(AstScope obj, Unpacker unpkr);
 plat_inline void destroyAstScope(AstScope obj) {
     release_mmobj(obj->trigger);
     release_mmobj(obj->last_scope);
+    release_mmobj(obj->variables);
 }
 
 plat_inline void packAstScope(AstScope obj, Packer pkr) {
     if (is_packer_v1(pkr)) {
         pack_mmobj(0, obj->trigger, pkr);
         pack_mmobj(1, obj->last_scope, pkr);
+        pack_mmobj(2, obj->variables, pkr);
     }
 }
 
@@ -97,6 +100,9 @@ plat_inline AstScope initAstScope(AstScope obj, Unpacker unpkr) {
     if (is_unpacker_v1(unpkr)) {
         obj->trigger = toAstNode(unpack_mmobj_retained(0, unpkr));
         obj->last_scope = toAstScope(unpack_mmobj_retained(1, unpkr));
+        obj->variables = toMMMap(unpack_mmobj_retained(2, unpkr));
+    } else {
+        obj->variables = allocMMMap(pool_of_mmobj(obj));
     }
     return obj;
 }
@@ -115,6 +121,10 @@ plat_inline AstScope allocAstScopeWithTriggerAndLastScope(mgn_memory_pool* pool,
         obj->last_scope = retain_mmobj(last_scope);
     }
     return obj;
+}
+
+plat_inline void pushVarInstanceIntoScope(AstScope scope, AstVarInstance varInstance) {
+    addMMMapItem(scope->variables, toMMPrimary(varInstance->declare->identifier->name), toMMObject(varInstance));
 }
 
 #endif //PROC_LA_AST_RUNTIME_H

@@ -74,6 +74,8 @@ plat_inline AstNode getExternalDeclarationAt(AstExternalDeclarations list, uint 
 typedef struct AstAProcLa {
     AstPackage package;
     AstExternalDeclarations external_declarations;
+    //
+    MMMap la_instances;  // MMString vs. AstVarInstance
 }*AstAProcLa;
 
 plat_inline int compareForAstAProcLa(void*, void*);
@@ -82,6 +84,7 @@ plat_inline AstAProcLa initAstAProcLa(AstAProcLa obj, Unpacker unpkr) {
     if (is_unpacker_v1(unpkr)) {
         obj->package = toAstPackage(unpack_mmobj_retained(0, unpkr));
         obj->external_declarations = toAstExternalDeclarations(unpack_mmobj_retained(1, unpkr));
+        obj->la_instances = toMMMap(unpack_mmobj_retained(2, unpkr));
     }
     return obj;
 }
@@ -89,12 +92,14 @@ plat_inline AstAProcLa initAstAProcLa(AstAProcLa obj, Unpacker unpkr) {
 plat_inline void destroyAstAProcLa(AstAProcLa obj) {
     release_mmobj(obj->package);
     release_mmobj(obj->external_declarations);
+    release_mmobj(obj->la_instances);
 }
 
 plat_inline void packAstAProcLa(AstAProcLa obj, Packer pkr) {
     if (is_packer_v1(pkr)) {
         pack_mmobj(0, obj->package, pkr);
         pack_mmobj(1, obj->external_declarations, pkr);
+        pack_mmobj(2, obj->la_instances, pkr);
     }
 }
 
@@ -116,5 +121,29 @@ plat_inline AstAProcLa allocAstAProcLaWithPackageAndExternalDeclarations(mgn_mem
     return obj;
 }
 
+plat_inline void optimizeAstAProcLa(AstAProcLa aProcLa) {
+    release_mmobj(aProcLa->la_instances);
+    if (aProcLa->external_declarations) {
+        MMList list = aProcLa->external_declarations->external_declarations;
+        if (list) {
+            aProcLa->la_instances = allocMMMap(pool_of_mmobj(aProcLa));
+            uint cnt = sizeOfMMList(list);
+            uint i;
+            for (i=0; i<cnt; i++) {
+                AstNode node = toAstNode(getMMListItem(list, i));
+                AstVarInstance varInstance = toAstVarInstance(node);
+                if (varInstance) {
+                    AstVarDeclare varDeclare = varInstance->declare;
+                    if (varDeclare->identifier_type->type == ast_type_proc) {
+                        addMMMapItem(aProcLa->la_instances, toMMPrimary(varDeclare->identifier->name), toMMObject(varInstance));
+                    }
+                }
+            }
+
+            return;
+        }
+    }
+    aProcLa->la_instances = null;
+}
 
 #endif //PROC_LA_AST_LA_H

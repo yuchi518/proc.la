@@ -78,7 +78,7 @@ struct src_stack
 "sync"                                                  { return SYNC; }
 
 ({LETTER}{ASCII}*)("."{LETTER}{ASCII}*)+                { yylval = ast_create_domain(yytext); return DOMAIN_NAME; }
-(@{LETTER}{ASCII}*)("."{LETTER}{ASCII}*)*               { yylval = ast_create_package(yytext); return PACKAGE_NAME; }
+(@{LETTER}{ASCII}*)("."{LETTER}{ASCII}*)*               { yylval = ast_create_package(yytext+1); return PACKAGE_NAME; }
 
 {LETTER}{ASCII}*					                    { yylval = ast_create_identifier(yytext); return IDENTIFIER/*check_type()*/; }
 

@@ -4,7 +4,6 @@
 
 #include "ast.h"
 #include "proc.la.l.c"
-#include "dybuf.h"
 
 static struct src_stack *_curbs = null;
 static mgn_memory_pool* _pool = null;
@@ -845,6 +844,23 @@ AstNode ast_create_la_declaration(AstNode input, AstNode body, AstNode output)
         }
     }
 
+    if (body == null) {
+        // is possible?
+        plat_io_printf_err("La declaration need a body.(null)\n");
+        return null;
+    } else {
+        if (toAstBlockStmt(body) == null) {
+            if (isAstNone(body)) {
+                AstBlockStmt blockStmt = autorelease_mmobj(allocAstBlockStmt(_pool));
+                closeBlock(blockStmt);
+                body = toAstNode(blockStmt);
+            } else {
+                plat_io_printf_err("La declaration need a block statement as body.(%s)\n", name_of_last_mmobj(body));
+                return null;
+            }
+        }
+    }
+
     return toAstNode(autorelease_mmobj(allocAstALaWithImpl(_pool, toAstContainerExpr(input), toAstBlockStmt(body), toAstTypeList(output))));
 }
 
@@ -898,7 +914,7 @@ void iterate_ast(AstNode obj, ast_iterator iterator)
     AstScope scope = null;
 
     AstStack stack = allocAstStackWithANode(_pool, obj);
-    fflush(stdout);
+    plat_io_flush_std();
     uint level = 0;
     scope_action sa;
 
@@ -1057,5 +1073,95 @@ void iterate_ast(AstNode obj, ast_iterator iterator)
 
 }
 
+/// ============================== AST syntax and semantic check, optimize =============
 
 
+bool verify_and_optimize_ast(AstNode obj)
+{
+    AstScope scope = null;
+
+    AstStack stack = allocAstStackWithANode(_pool, obj);
+    plat_io_flush_std();
+    //uint level = 0;
+    //scope_action sa;
+    AstAProcLa aProcLa = null;
+
+    while (!isEmptyAstStack(stack)) {
+        obj = popFromAstStack(stack);
+
+        uint32 oid = oid_of_last_mmobj(obj);
+        if (oid == oid_of_AstAProcLa()) {
+            if (aProcLa) {
+                plat_io_printf_err("Multiple aProcLa, impossible.\n");
+                return false;
+            }
+            aProcLa = toAstAProcLa(obj);
+            optimizeAstAProcLa(aProcLa);
+
+            scope = ast_impl_create_scope(obj, scope/*last scope*/);
+            pushToAstStack(stack, toAstNode(scope));
+            // put all items
+
+            if (aProcLa->external_declarations && aProcLa->external_declarations->external_declarations) {
+                pushAllToAstStack(stack, aProcLa->external_declarations->external_declarations, true);
+            } else {
+                plat_io_printf_std("Warning!! Empty external declarations.\n");
+            }
+            //sa = scope_action_created;
+        } else if (oid == oid_of_AstVarInstance()) {
+            AstVarInstance varInstance = toAstVarInstance(obj);
+            AstVarDeclare varDeclare = varInstance->declare;
+            ast_type type = varDeclare->identifier_type->type;
+
+            if (type == ast_type_proc) {
+                plat_io_printf_err("No supported type: ast_type_proc\n");
+                return false;
+            }
+
+            pushVarInstanceIntoScope(scope, varInstance);       // push all variables into scopes for reference
+
+            if (type == ast_type_la) {
+                //varInstance->inst
+                AstVariable variable = varInstance->inst;
+
+                if (variable->type != ast_type_la) {
+                    plat_io_printf_err("The variable instance is not a la.(%s)\n", ast_type_name(varInstance->inst->type));
+                    return false;
+                }
+
+                if (isAstALa(variable)) {
+                    // a la
+                    pushToAstStack(stack, toAstNode(variable));
+                } else if (isAstDomainName(variable)) {
+                    // domain name
+                } else {
+                    plat_io_printf_err("What is this?(%s: %s)\n", varInstance->declare->identifier->name->value, name_of_last_mmobj(variable));
+                    return false;
+                }
+            } else {
+                if (varInstance->inst->type != type) {
+                    plat_io_printf_err("Unsupported type conversion.(%s --> %s)\n", ast_type_name(varInstance->inst->type), ast_type_name(type));
+                    return false;
+                }
+            }
+        } else if (oid == oid_of_AstALa()) {
+            AstALa aLa = toAstALa(obj);
+            // la optimization
+
+        } else if (oid == oid_of_AstScope()) {
+            if (scope != toAstScope(obj)) {
+                plat_io_printf_err("Impossible\n");
+            }
+            scope = toAstScope(obj);
+            obj = scope->trigger;
+
+            //sa = scope_action_destroyed;
+        } else {
+            plat_io_printf_std("No optimize - %s\n", name_of_last_mmobj(obj));
+        }
+    }
+
+    release_mmobj(stack);
+
+    return true;
+}

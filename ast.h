@@ -100,6 +100,7 @@ typedef enum {
 } scope_action;
 typedef bool (*ast_iterator)(AstNode obj, uint level, scope_action action, AstScope scope);
 void iterate_ast(AstNode obj, ast_iterator iterator);
+bool verify_and_optimize_ast(AstNode obj);
 
 #endif //PROC_LA_AST_C_H
 

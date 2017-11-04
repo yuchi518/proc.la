@@ -1165,7 +1165,7 @@ YY_RULE_SETUP
 case 33:
 YY_RULE_SETUP
 #line 81 "proc.la.l"
-{ yylval = ast_create_package(yytext); return PACKAGE_NAME; }
+{ yylval = ast_create_package(yytext+1); return PACKAGE_NAME; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
