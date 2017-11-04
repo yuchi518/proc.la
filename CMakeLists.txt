@@ -7,7 +7,7 @@ include_directories(platform dybuf ast_obj)
 
 add_custom_command(OUTPUT proc.la.y.c
         PRE_BUILD
-        COMMAND bison -r all -g -o proc.la.y.c proc.la.y
+        COMMAND bison #[[-r all -g]] -o proc.la.y.c proc.la.y
         DEPENDS proc.la.y
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         COMMENT "bison generate proc.la.y.c" )
