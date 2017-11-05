@@ -7,6 +7,28 @@
 
 #include "ast_node.h"
 
+/// ===== NONE =====
+
+typedef struct AstErrorRecovery {
+
+}*AstErrorRecovery;
+
+plat_inline AstErrorRecovery initAstErrorRecovery(AstErrorRecovery obj, Unpacker unpkr) {
+    (void) unpkr;
+    set_single_instance_comparison_for_mmobj(obj);
+    return obj;
+}
+
+/*plat_inline void destroyAstErrorRecovery(AstErrorRecovery obj) {
+
+}*/
+
+plat_inline void packAstErrorRecovery(AstErrorRecovery obj, Packer pkr) {
+
+}
+
+MMSubObject(AstErrorRecovery, AstExpression, initAstErrorRecovery, null/*destroyAstErrorRecovery*/, packAstErrorRecovery);
+
 /// ===== Stack =====
 
 typedef struct AstStack {

@@ -19,6 +19,7 @@ plat_inline void register_all_ast_to_unpacker(Unpacker unpkr) {
     registerAstContainerExprToUnpacker(unpkr);
     registerAstDomainNameToUnpacker(unpkr);
     registerAstEachStmtToUnpacker(unpkr);
+    registerAstErrorRecoveryToUnpacker(unpkr);
     registerAstExpressionToUnpacker(unpkr);
     registerAstExternalDeclarationsToUnpacker(unpkr);
     registerAstIdentifierToUnpacker(unpkr);
@@ -89,6 +90,8 @@ AstNode ast_create_la_declaration(AstNode input, AstNode body, AstNode output);
 
 AstNode ast_create_external_declarations(AstNode first, AstNode second);
 AstNode ast_create_a_proc_la(AstNode package, AstNode external_declarations);
+
+AstNode ast_create_error_recovery(void);
 
 /// =================== ast management =================
 int create_ast(mgn_memory_pool* pool, char* source_code, uint source_code_size, AstNode* ast);

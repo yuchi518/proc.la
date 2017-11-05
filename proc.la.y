@@ -98,6 +98,9 @@ list_expression
     : '[' list_item_list ']' {
         $$ = ast_close_container($2);
     }
+    | '[' error ']' {
+        $$ = ast_create_error_recovery();
+    }
     | '[' ']' {
         $$ = ast_create_none();
     }
@@ -122,6 +125,9 @@ map_expression
     : '{' map_item_list '}' {
         $$ = ast_close_container($2);
     }
+    | '{' error '}' {
+        $$ = ast_create_error_recovery();
+    }
     //| '{' '}'  // This is a empty block.
     | MAP {
         $$ = ast_create_none();
@@ -140,6 +146,9 @@ map_item_list
 tuple_expression
     : '(' tuple_item_list ')' {
         $$ = ast_close_container($2);
+    }
+    | '(' error ')' {
+        $$ = ast_create_error_recovery();
     }
     | '(' ')' {
         $$ = ast_create_none();
@@ -388,6 +397,9 @@ statement
 	| SYNC IDENTIFIER ';' {
 	    $$ = ast_create_sync($2);
 	}
+	| error ';' {
+	    $$ = ast_create_error_recovery();
+	}
 	;
 
 labeled_statement
@@ -440,11 +452,20 @@ selection_statement
 	: IF '(' expression ')' statement {
 	    $$ = ast_create_ifelse($3, $5, null);
 	}
+	| IF '(' error ')' statement {
+	    $$ = ast_create_error_recovery();
+	}
 	| IF '(' expression ')' statement ELSE statement {
 	    $$ = ast_create_ifelse($3, $5, $7);
 	}
+	| IF '(' error ')' statement ELSE statement {
+        $$ = ast_create_error_recovery();
+    }
 	| SWITCH '(' expression ')' '{' cases_block_statement '}' {
 	    $$ = ast_create_switch($3, ast_close_block($6));
+	}
+	| SWITCH '(' error ')' '{' cases_block_statement '}' {
+	    $$ = ast_create_error_recovery();
 	}
 	;
 
@@ -478,6 +499,9 @@ la_input_declaration
 la_output_declaration
     : '(' type_list_declaration ')' {
         $$ = $2;
+    }
+    | '(' error ')' {
+        $$ = ast_create_error_recovery();
     }
     | '(' ')' {
         // create an empty list

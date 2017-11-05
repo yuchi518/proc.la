@@ -100,6 +100,14 @@ bool print_ast(AstNode obj, uint level, scope_action action, AstScope scope)
         plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
                            ast_ast_ternary_op_text(toAstTernaryOpExpr(obj)->op));
     }
+    else if (oid == oid_of_AstErrorRecovery())
+    {
+        plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
+                           "\t\t!!!!! Error here !!!!!");
+        plat_io_flush_std();
+        //plat_io_printf_err("\t\t!!!!! Error here !!!!!\n");
+        //plat_io_flush_err();
+    }
     else
     {
         plat_io_printf_std("%*s%c <<%s(%p:%d)>>\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj));

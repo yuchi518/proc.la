@@ -35,6 +35,7 @@ $ cmake
   * Error line
   * Interrupt flow when error
   * Fix crash if syntax error
+* Support escape characters
 * Variable conversion
 * Serialization (Packer/Unpacker)
 * Unicode/UTF-8 support

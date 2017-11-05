@@ -197,6 +197,13 @@ AstNode ast_create_const_f(char* value)
 AstNode ast_create_const_s(char* value)
 {
     if (verbose) plat_io_printf_dbg("Create string - %s\n", value);
+    uint len = plat_cstr_length(value);
+    if (len>=2 && value[0]=='\"' && value[len-1]=='\"') {
+        char* new_value = plat_mem_allocate(len);
+        plat_mem_copy(new_value, value+1, len-2);
+        new_value[len-2]='\0';
+        value = new_value;
+    }
 
     return toAstNode(autorelease_mmobj(allocVariableWithCString(_pool, value)));
 }
@@ -872,6 +879,11 @@ AstScope ast_impl_create_scope(AstNode trigger, AstScope last_scope)
     return scope;
 }
 
+AstNode ast_create_error_recovery(void)
+{
+    return toAstNode(autorelease_mmobj(allocAstErrorRecovery(_pool)));
+}
+
 
 /// ============================= AST implementation =======================================================
 
@@ -1179,6 +1191,10 @@ bool verify_and_optimize_ast(AstNode obj)
 
             //sa = scope_action_destroyed;
             scope = scope->last_scope;
+        } else if (oid == oid_of_AstErrorRecovery()) {
+            plat_io_flush_std();
+            plat_io_printf_err("Error in AST, fix it first.\n");
+            return false;
         } else {
             plat_io_printf_std("No optimize - %s\n", name_of_last_mmobj(obj));
         }
@@ -1188,3 +1204,4 @@ bool verify_and_optimize_ast(AstNode obj)
 
     return true;
 }
+
