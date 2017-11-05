@@ -27,7 +27,7 @@ o(377377) -> r:raw;
 /// container type: array & map
 [1, 2, 3, 4] -> v:int[];
 [[1,3,4],[2,3,4],[5,6,7]] -> matrix:int[][];
-{"key1":[1,2,3], "key2":[2,3,4"]} -> map:int[]{};
+{"key1":[1,2,3], "key2":[2,3,4]} -> map:int[]{};
 map{"key1"}
 
 

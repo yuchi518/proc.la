@@ -129,7 +129,24 @@ plat_inline AstTypeCombination allocAstTypeCombinationWithCombinedType(mgn_memor
     return obj;
 }
 
+plat_inline int appendCombinationType(AstTypeCombination typeCombination, ast_type_combination combination) {
+    int i=0;
+    for (i=0;i<16;i+=2)
+    {
+        if ((typeCombination->combined_type & (0x03<<i)) == 0)
+        {
+            // empty slot
+            typeCombination->combined_type |= (0x03 & combination) << i;
+            break;
+        }
+    }
+    return i;
+}
 
+plat_inline ast_type_combination getCombinationType(AstTypeCombination typeCombination, uint index) {
+    if (index >= 16) return (ast_type_combination)0;
+    return (ast_type_combination)((typeCombination->combined_type >> index) & 0x03);
+}
 
 
 #endif //PROC_LA_AST_TYPE_H

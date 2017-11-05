@@ -92,6 +92,17 @@ plat_inline const char* ast_type_name(ast_type type) {
     }
 }
 
+plat_inline const char* ast_type_combination_name(ast_type_combination type) {
+    switch(type) {
+        case ast_type_list: return "[]";
+        case ast_type_map: return "{}";
+        default: return "Unknown";
+    }
+}
+
+/**
+ * For container expr objs
+ */
 typedef enum {
     ast_container_type_list     = 1,
     ast_container_type_map      = 2,
@@ -290,13 +301,13 @@ plat_inline AstNone initAstNone(AstNone obj, Unpacker unpkr) {
 
 /*plat_inline void destroyAstNone(AstNone obj) {
 
-}
+}*/
 
 plat_inline void packAstNone(AstNone obj, Packer pkr) {
 
-}*/
+}
 
-MMSubObject(AstNone, AstExpression, initAstNone, null/*destroyAstNone*/, null/*packAstNone*/);
+MMSubObject(AstNone, AstExpression, initAstNone, null/*destroyAstNone*/, packAstNone);
 
 
 /// ===== Out =====

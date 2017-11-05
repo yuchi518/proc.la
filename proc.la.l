@@ -115,6 +115,7 @@ struct src_stack
 "=="					                                { return EQ_OP; }
 "!="					                                { return NE_OP; }
 ";"					                                    { return ';'; }
+"{}"                                                    { return MAP; }
 "{"				                                        { return '{'; }
 "}"				                                        { return '}'; }
 ","					                                    { return ','; }
@@ -127,6 +128,7 @@ struct src_stack
 "="					                                    { return '='; }
 "("					                                    { return '('; }
 ")"					                                    { return ')'; }
+"[]"                                                    { return LIST; }
 ("["|"<:")				                                { return '['; }
 ("]"|":>")				                                { return ']'; }
 "."					                                    { return '.'; }

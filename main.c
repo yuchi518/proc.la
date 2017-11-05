@@ -24,8 +24,22 @@ bool print_ast(AstNode obj, uint level, scope_action action, AstScope scope)
     else if (oid == oid_of_AstVarDeclare())
     {
         AstVarDeclare varDeclare = toAstVarDeclare(obj);
-        plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s:%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
-                           varDeclare->identifier->name->value, ast_type_name(varDeclare->identifier_type->type));
+        AstTypeCombination typeCombination = toAstTypeCombination(varDeclare->identifier_type);
+        if (typeCombination) {
+            char str[64] = "\0";
+            char* p = str;
+            uint i;
+            for (i=0; i<16; i++) {
+                ast_type_combination tc = getCombinationType(typeCombination, i);
+                if (tc) p += sprintf(p, "%s", ast_type_combination_name(tc));
+                else break;
+            }
+            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s:%s%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
+                               varDeclare->identifier->name->value, ast_type_name(varDeclare->identifier_type->type), str);
+        } else {
+            plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s:%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
+                               varDeclare->identifier->name->value, ast_type_name(varDeclare->identifier_type->type));
+        }
     }
     else if (oid == oid_of_AstVariable())
     {

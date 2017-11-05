@@ -9,7 +9,7 @@
 %token          IDENTIFIER
 %token          I_CONSTANT F_CONSTANT STRING_LITERAL N_CONSTANT
 
-%token	        INT LONG FLOAT DOUBLE NUMBER STRING RAW VAR PROC LA
+%token	        INT LONG FLOAT DOUBLE NUMBER STRING RAW VAR PROC LA LIST MAP
 
 %token          APPLY_TO PIPE_1_TO_1 PIPE_REDUCE PIPE_EXPAND PIPE_INJECT
 
@@ -43,16 +43,16 @@ basic_var_type_specifier
 	;
 
 combined_var_type_specifier
-    : basic_var_type_specifier "[]" {
+    : basic_var_type_specifier LIST {
         $$ = ast_create_combined_type($1, ast_type_list);
     }
-    | basic_var_type_specifier "{}" {
+    | basic_var_type_specifier MAP {
         $$ = ast_create_combined_type($1, ast_type_map);
     }
-    | combined_var_type_specifier "[]" {
+    | combined_var_type_specifier LIST {
         $$ = ast_create_combined_type($1, ast_type_list);
     }
-    | combined_var_type_specifier "{}" {
+    | combined_var_type_specifier MAP {
         $$ = ast_create_combined_type($1, ast_type_map);
     }
     ;
@@ -101,6 +101,9 @@ list_expression
     | '[' ']' {
         $$ = ast_create_none();
     }
+    | LIST {
+        $$ = ast_create_none();
+    }
     ;
 
 list_item_list
@@ -120,6 +123,9 @@ map_expression
         $$ = ast_close_container($2);
     }
     //| '{' '}'  // This is a empty block.
+    | MAP {
+        $$ = ast_create_none();
+    }
     ;
 
 map_item_list

@@ -110,8 +110,9 @@ plat_inline AstScope initAstScope(AstScope obj, Unpacker unpkr) {
 plat_inline int compareForAstScope(void* this_stru, void* that_stru) {
     AstScope scope1 = toAstScope(this_stru);
     AstScope scope2 = toAstScope(that_stru);
-    return FIRST_Of_2RESULTS(compare_mmobjs(scope1->trigger, scope2->trigger),
-                             compare_mmobjs(scope1->last_scope, scope2->last_scope));
+    return FIRST_Of_3RESULTS(compare_mmobjs(scope1->trigger, scope2->trigger),
+                             compare_mmobjs(scope1->last_scope, scope2->last_scope),
+                             compare_mmobjs(scope1->variables, scope2->variables));
 }
 
 plat_inline AstScope allocAstScopeWithTriggerAndLastScope(mgn_memory_pool* pool, AstNode trigger, AstScope last_scope) {
@@ -125,6 +126,10 @@ plat_inline AstScope allocAstScopeWithTriggerAndLastScope(mgn_memory_pool* pool,
 
 plat_inline void pushVarInstanceIntoScope(AstScope scope, AstVarInstance varInstance) {
     addMMMapItem(scope->variables, toMMPrimary(varInstance->declare->identifier->name), toMMObject(varInstance));
+}
+
+plat_inline void pushVarDeclareIntoScope(AstScope scope, AstVarDeclare varDeclare) {
+    addMMMapItem(scope->variables, toMMPrimary(varDeclare->identifier->name), toMMObject(varDeclare));
 }
 
 #endif //PROC_LA_AST_RUNTIME_H

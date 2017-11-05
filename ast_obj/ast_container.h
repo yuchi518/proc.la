@@ -66,40 +66,40 @@ plat_inline int compareForAstContainerExpr(void* this_stru, void* that_stru) {
                              compare_mmobjs(a->list, b->list));
 }
 
-plat_inline bool isExprContainerClosed(AstContainerExpr exprList) {
+plat_inline bool isContainerExprClosed(AstContainerExpr exprList) {
     return exprList->closed;
 }
 
 // If closed, it can't add more expressions.
-plat_inline void closeExprContainer(AstContainerExpr containerExpr) {
+plat_inline void closeContainerExpr(AstContainerExpr containerExpr) {
     containerExpr->closed = true;
 }
 
-plat_inline void addExprToExprContainer(AstContainerExpr containerExpr, AstExpression expr) {
+plat_inline void addExprToContainerExpr(AstContainerExpr containerExpr, AstExpression expr) {
     pushMMListItem(containerExpr->list, toMMObject(expr));
 }
 
-plat_inline void insertExprToExprContainerAt(AstContainerExpr containerExpr, AstExpression expr, uint idx) {
+plat_inline void insertExprToContainerExprAt(AstContainerExpr containerExpr, AstExpression expr, uint idx) {
     insertMMListItem(containerExpr->list, toMMObject(expr), idx);
 }
 
-plat_inline void concatExprContainer(AstContainerExpr containerExpr1, AstContainerExpr containerExpr2) {
+plat_inline void concatContainerExpr(AstContainerExpr containerExpr1, AstContainerExpr containerExpr2) {
     concatMMList(containerExpr1->list, containerExpr2->list);
 }
 
-plat_inline uint sizeOfExprContainer(AstContainerExpr containerExpr) {
+plat_inline uint sizeOfContainerExpr(AstContainerExpr containerExpr) {
     return sizeOfMMList(containerExpr->list);
 }
 
-plat_inline AstExpression getExprFromExprContainerAt(AstContainerExpr containerExpr, uint idx) {
+plat_inline AstExpression getExprFromContainerExprAt(AstContainerExpr containerExpr, uint idx) {
     return toAstExpression(getMMListItem(containerExpr->list, idx));
 }
 
-plat_inline ast_container_type getExprContainerType(AstContainerExpr containerExpr) {
+plat_inline ast_container_type getContainerExprType(AstContainerExpr containerExpr) {
     return containerExpr->type;
 }
 
-/*plat_inline void setExprContainerType(AstContainerExpr containerExpr, ast_container_type type) {
+/*plat_inline void setContainerExprType(AstContainerExpr containerExpr, ast_container_type type) {
     containerExpr->type = type;
 }*/
 

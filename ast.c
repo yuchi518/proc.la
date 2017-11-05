@@ -3,7 +3,7 @@
 //
 
 #include "ast.h"
-#include "proc.la.l.c"
+#include "autogen/proc.la.l.c"
 
 static struct src_stack *_curbs = null;
 static mgn_memory_pool* _pool = null;
@@ -78,18 +78,7 @@ AstNode ast_create_combined_type(AstNode base_type, ast_type_combination contain
         combination = allocAstTypeCombinationWithCombinedType(_pool, base->type, 0);
     }
 
-    int i=0;
-    for (i=0;i<16;i+=2)
-    {
-        if ((combination->combined_type & (0x03<<i)) == 0)
-        {
-            // empty slot
-            combination->combined_type |= (0x03 & container_typ) << i;
-            break;
-        }
-    }
-
-    if (i>=16)
+    if (appendCombinationType(combination, container_typ) >= 16)
     {
         plat_io_printf_err("Create combined type - slot is not enough (%08x)\n", combination->combined_type);
         return null;
@@ -448,26 +437,26 @@ AstNode ast_create_container(AstNode expr_a, AstNode expr_b, ast_container_type 
     AstContainerExpr containerExprA = toAstContainerExpr(expr_a);
     AstContainerExpr containerExprB = toAstContainerExpr(expr_b);
 
-    if (containerExprA && isExprContainerClosed(containerExprA)) {
+    if (containerExprA && isContainerExprClosed(containerExprA)) {
         containerExprA = null;      // it is just an expression, not a container.
     }
 
-    if (containerExprB && isExprContainerClosed(containerExprB)) {
+    if (containerExprB && isContainerExprClosed(containerExprB)) {
         containerExprB = null;      // it is just an expression, not a container.
     }
 
     if (containerExprA && containerExprB) {
-        concatExprContainer(containerExprA, containerExprB);
+        concatContainerExpr(containerExprA, containerExprB);
         return (expr_a);
     } else if (containerExprA) {
         if (expr_b) {
-            addExprToExprContainer(containerExprA, toAstExpression(expr_b));
+            addExprToContainerExpr(containerExprA, toAstExpression(expr_b));
         }
         return (expr_a);
     }
     else if (containerExprB) {
         if (expr_a) {
-            insertExprToExprContainerAt(containerExprB, toAstExpression(expr_a), 0);
+            insertExprToContainerExprAt(containerExprB, toAstExpression(expr_a), 0);
         }
         return (expr_b);
     }
@@ -475,11 +464,11 @@ AstNode ast_create_container(AstNode expr_a, AstNode expr_b, ast_container_type 
         containerExprA = allocAstContainerExprWithType(_pool, type);
 
         if (expr_a) {
-            addExprToExprContainer(containerExprA, toAstExpression(expr_a));
+            addExprToContainerExpr(containerExprA, toAstExpression(expr_a));
         }
 
         if (expr_b) {
-            addExprToExprContainer(containerExprA, toAstExpression(expr_b));
+            addExprToContainerExpr(containerExprA, toAstExpression(expr_b));
         }
 
         return toAstNode(autorelease_mmobj(containerExprA));
@@ -493,7 +482,7 @@ AstNode ast_close_container(AstNode expr)
         plat_io_printf_err("Is this a container?(%s)\n", name_of_last_mmobj(expr));
         return null;
     }
-    closeExprContainer(containerExpr);
+    closeContainerExpr(containerExpr);
     return expr;
 }
 
@@ -1028,6 +1017,17 @@ void iterate_ast(AstNode obj, ast_iterator iterator)
 
             sa = scope_action_created;
         }
+        else if (oid == oid_of_AstPairExpr())
+        {
+            scope = ast_impl_create_scope(obj, scope/*last scope*/);
+            pushToAstStack(stack, toAstNode(scope));
+
+            AstPairExpr pairExpr = toAstPairExpr(obj);
+            pushToAstStack(stack, toAstNode(pairExpr->expr_v));
+            pushToAstStack(stack, toAstNode(pairExpr->expr_k));
+
+            sa = scope_action_created;
+        }
         else if (oid == oid_of_AstScope())
         {
             if (scope != toAstScope(obj)) {
@@ -1148,6 +1148,28 @@ bool verify_and_optimize_ast(AstNode obj)
             AstALa aLa = toAstALa(obj);
             // la optimization
 
+            scope = ast_impl_create_scope(obj, scope/*last scope*/);
+            pushToAstStack(stack, toAstNode(scope));
+
+            //if (aLa->output) pushToAstStack(stack, toAstNode(aLa->output));       // AST_TYPE_LIST_DECLARATION
+            //if (aLa->body) pushToAstStack(stack, toAstNode(aLa->body));           // AST_BLOCK
+            //if (aLa->input) pushToAstStack(stack, toAstNode(aLa->input));         // AST_VAR_LIST_DECLARATION
+            AstContainerExpr containerExpr = aLa->input;
+            uint cnt = sizeOfContainerExpr(containerExpr);
+            uint i;
+            for (i=0; i<cnt; i++) {
+                AstExpression expr = getExprFromContainerExprAt(containerExpr, i);
+                if (isAstVarDeclare(expr)) {
+                    pushVarDeclareIntoScope(scope, toAstVarDeclare(expr));       // push all variables into scopes for reference
+                } else {
+                    plat_io_printf_err("A la needs variable declare as input parameter.(%s)\n", name_of_last_mmobj(expr));
+                    return false;
+                }
+            }
+
+            AstBlockStmt blockStmt = aLa->body;
+            pushAllToAstStack(stack, blockStmt->stmts, true);
+
         } else if (oid == oid_of_AstScope()) {
             if (scope != toAstScope(obj)) {
                 plat_io_printf_err("Impossible\n");
@@ -1156,6 +1178,7 @@ bool verify_and_optimize_ast(AstNode obj)
             obj = scope->trigger;
 
             //sa = scope_action_destroyed;
+            scope = scope->last_scope;
         } else {
             plat_io_printf_std("No optimize - %s\n", name_of_last_mmobj(obj));
         }

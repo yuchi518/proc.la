@@ -108,8 +108,9 @@ MMSubObject(AstAProcLa, AstNode, initAstAProcLa, destroyAstAProcLa, packAstAProc
 plat_inline int compareForAstAProcLa(void* this_stru, void* that_stru) {
     AstAProcLa aProcLa1 = toAstAProcLa(this_stru);
     AstAProcLa aProcLa2 = toAstAProcLa(that_stru);
-    return FIRST_Of_2RESULTS(compare_mmobjs(aProcLa1->package, aProcLa2->package),
-                             compare_mmobjs(aProcLa1->external_declarations, aProcLa2->external_declarations));
+    return FIRST_Of_3RESULTS(compare_mmobjs(aProcLa1->package, aProcLa2->package),
+                             compare_mmobjs(aProcLa1->external_declarations, aProcLa2->external_declarations),
+                             compare_mmobjs(aProcLa1->la_instances, aProcLa2->la_instances));
 }
 
 plat_inline AstAProcLa allocAstAProcLaWithPackageAndExternalDeclarations(mgn_memory_pool* pool, AstPackage package, AstExternalDeclarations external_declarations) {

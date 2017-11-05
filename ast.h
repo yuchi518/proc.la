@@ -29,7 +29,7 @@ plat_inline void register_all_ast_to_unpacker(Unpacker unpkr) {
     registerAstNoneToUnpacker(unpkr);
     registerAstOutToUnpacker(unpkr);
     registerAstPackageToUnpacker(unpkr);
-    registerAstPackageToUnpacker(unpkr);
+    registerAstPairExprToUnpacker(unpkr);
     registerAstScopeToUnpacker(unpkr);
     registerAstStackToUnpacker(unpkr);
     registerAstSwitchStmtToUnpacker(unpkr);
