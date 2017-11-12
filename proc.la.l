@@ -86,6 +86,7 @@ struct src_stack
 ([oO]\()({WS}*{OCT_1st}{OCT}{OCT}{WS}*)+\)                        { yylval = ast_create_const_i(yytext); return I_CONSTANT; }
 ([hH]\()({WS}*{HEX}{HEX}{WS}*)+\)                                 { yylval = ast_create_const_i(yytext); return I_CONSTANT; }
 {DIG_NZ}{DIG}*				                            { yylval = ast_create_const_i(yytext); return I_CONSTANT; }
+"0"                                                     { yylval = ast_create_const_i(yytext); return I_CONSTANT; }
 "'"([^'\\\n]|{ESCAPE})+"'"		                        { yylval = ast_create_const_i(yytext); return I_CONSTANT; }
 
 {DIG}+{EXP_D}				                            { yylval = ast_create_const_f(yytext); return F_CONSTANT; }

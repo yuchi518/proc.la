@@ -228,7 +228,8 @@ typedef enum {
 
 /// ===== Abstract Tree node =====
 typedef struct AstNode {
-
+    // == build ==
+    // TODO: Record line number in source code for build error.
 }*AstNode;
 
 plat_inline AstNode initAstNode(AstNode obj, Unpacker unpkr) {
@@ -248,27 +249,56 @@ MMSubObject(AstNode, MMObject, initAstNode, destroyAstNode, packAstNode);
 /// ===== Statement =====
 
 typedef struct AstStatement {
-
+    // == runtime ==
+    // TODO: Add parent node for each statement
+    // TODO: Set context if need.
+    AstNode parent_node;
+    AstNode context;        // In most case, it should be a AstContext.
 }*AstStatement;
 
+plat_inline int compareForAstStatement(void*, void*);
 plat_inline AstStatement initAstStatement(AstStatement obj, Unpacker unpkr) {
+    set_compare_for_mmobj(obj, compareForAstStatement);
+    if (is_unpacker_v1(unpkr)) {
+        obj->parent_node = toAstNode(unpack_mmobj(0, unpkr));           // Don't retain, else loop-retain
+        obj->context = toAstNode(unpack_mmobj_retained(1, unpkr));
+    }
     return obj;
 }
 
 plat_inline void destroyAstStatement(AstStatement obj) {
-
+    //release_mmobj(obj->parent_node);              // Don't retain, else loop-retain
+    obj->parent_node = null;
+    release_mmobj(obj->context);
 }
 
 plat_inline void packAstStatement(AstStatement obj, Packer pkr) {
-
+    if (is_packer_v1(pkr)) {
+        pack_mmobj(0, obj->parent_node, pkr);
+        pack_mmobj(1, obj->context, pkr);
+    }
 }
 
 MMSubObject(AstStatement, AstNode, initAstStatement, destroyAstStatement, packAstStatement);
+
+plat_inline int compareForAstStatement(void* this_stru, void* that_stru) {
+    AstStatement statement1 = toAstStatement(this_stru);
+    AstStatement statement2 = toAstStatement(that_stru);
+    return FIRST_Of_2RESULTS(compare_mmobjs(statement1->parent_node, statement2->parent_node),
+                             compare_mmobjs(statement1->context, statement2->parent_node));
+}
+
+plat_inline void set_ast_parent_node(void* node, void* parent) {
+    AstStatement statement = toAstStatement(node);
+    release_mmobj(statement->parent_node);
+    statement->parent_node = toAstNode(parent);       // Don't retain, else loop-retain
+}
 
 
 /// ===== Expression =====
 
 typedef struct AstExpression {
+    // === runtime ===
 
 }*AstExpression;
 

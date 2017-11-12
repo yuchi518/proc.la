@@ -100,6 +100,7 @@ bool print_ast(AstNode obj, uint level, scope_action action, AstScope scope)
         plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
                            ast_ast_ternary_op_text(toAstTernaryOpExpr(obj)->op));
     }
+    // TODO: Implement each, loop statement
     else if (oid == oid_of_AstErrorRecovery())
     {
         plat_io_printf_std("%*s%c <<%s(%p:%d)>>\t%s\n", level<<2, "", sc[action], name_of_last_mmobj(obj), obj, retain_count_of_mmobj(obj),
@@ -152,7 +153,7 @@ int load_file_and_create_ast(const char* file_name) {
             pack_mmobj(0, ast, packer);
             uint len;
             uint8 *data = dyb_get_data_before_current_position(packer->dyb, &len);
-            PRINTF_HEXMEM_TO_TARGET(fprintf, stdout, data, len, 256);
+            //PRINTF_HEXMEM_TO_TARGET(fprintf, stdout, data, len, 256);
 
             plat_io_printf_dbg("=== UnPack ===\n");
             MMUnpacker unpacker = allocMMUnpackerWithData(&pool, data, len);
@@ -165,6 +166,7 @@ int load_file_and_create_ast(const char* file_name) {
             if (are_equal_mmobjs(ast, cloned_ast)) {
                 plat_io_printf_dbg("Original ast tree and cloned ast tree are equal!!\n");
             } else {
+                plat_io_flush_std();
                 plat_io_printf_err("Original ast tree is not equal to cloned ast tree!!\n");
             }
 

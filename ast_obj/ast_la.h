@@ -74,8 +74,10 @@ plat_inline AstNode getExternalDeclarationAt(AstExternalDeclarations list, uint 
 typedef struct AstAProcLa {
     AstPackage package;
     AstExternalDeclarations external_declarations;
-    //
-    MMMap la_instances;  // MMString vs. AstVarInstance
+    // == runtime ==
+    // TODO: implement la instance list
+    // domain.name.la vs. AstVarInstance
+    MMMap la_instances;  // MMString (la name + input parameters number) vs. AstVarInstance
 }*AstAProcLa;
 
 plat_inline int compareForAstAProcLa(void*, void*);
@@ -136,6 +138,7 @@ plat_inline void optimizeAstAProcLa(AstAProcLa aProcLa) {
                 if (varInstance) {
                     AstVarDeclare varDeclare = varInstance->declare;
                     if (varDeclare->identifier_type->type == ast_type_proc) {
+                        // TODO: Add number of input parameters as partial of name
                         addMMMapItem(aProcLa->la_instances, toMMPrimary(varDeclare->identifier->name), toMMObject(varInstance));
                     }
                 }

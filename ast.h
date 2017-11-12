@@ -102,6 +102,7 @@ typedef enum {
     scope_action_destroyed  = 0,
 } scope_action;
 typedef bool (*ast_iterator)(AstNode obj, uint level, scope_action action, AstScope scope);
+typedef bool (*ast_iterator_ex)(AstNode obj, AstContext context);
 void iterate_ast(AstNode obj, ast_iterator iterator);
 bool verify_and_optimize_ast(AstNode obj);
 

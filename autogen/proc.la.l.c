@@ -371,8 +371,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 97
-#define YY_END_OF_BUFFER 98
+#define YY_NUM_RULES 98
+#define YY_END_OF_BUFFER 99
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -382,25 +382,25 @@ struct yy_trans_info
 	};
 static const flex_int16_t yy_accept[237] =
     {   0,
-        0,    0,   98,   96,   95,   95,   83,   96,   89,   82,
-       96,   76,   77,   87,   86,   68,   85,   81,   88,   96,
-       38,   69,   64,   90,   75,   91,   94,   96,   34,   34,
-       34,   34,   79,   80,   92,   34,   34,   34,   34,   34,
+        0,    0,   99,   97,   96,   96,   84,   97,   90,   83,
+       97,   77,   78,   88,   87,   69,   86,   82,   89,   39,
+       38,   70,   65,   91,   76,   92,   95,   97,   34,   34,
+       34,   34,   80,   81,   93,   34,   34,   34,   34,   34,
        34,   34,   34,   34,   34,   34,   34,   34,   34,   34,
-       34,   66,   93,   67,   84,   95,   63,    0,   43,    0,
-       50,   58,   51,    0,    0,    0,   48,   56,   46,    0,
-       57,   47,   70,   41,    1,    2,   49,   42,    0,    0,
-       38,   80,   79,   55,   60,    0,   62,   61,   54,   33,
-        0,   34,    0,    0,    0,   78,   52,   34,   34,   34,
+       34,   67,   94,   68,   85,   96,   64,    0,   44,    0,
+       51,   59,   52,    0,    0,    0,   49,   57,   47,    0,
+       58,   48,   71,   42,    1,    2,   50,   43,    0,    0,
+       38,   81,   80,   56,   61,    0,   63,   62,   55,   33,
+        0,   34,    0,    0,    0,   79,   53,   34,   34,   34,
 
        34,   34,    8,   34,   34,   34,   34,   34,   12,   34,
        29,   26,   34,   34,   34,   34,   34,   34,   34,   34,
-       34,   34,   34,   65,   53,   59,   43,    0,   39,   74,
-       73,   71,    0,    2,    0,    0,   40,   45,   72,   44,
+       34,   34,   34,   66,   54,   60,   44,    0,   40,   75,
+       74,   72,    0,    2,    0,    0,   41,   46,   73,   45,
         0,   33,   32,    0,    0,    0,    0,    0,    0,   34,
        34,   34,   34,   34,   34,   34,   34,   34,   34,   10,
        34,   17,   34,   34,   34,   21,   28,   34,   23,   34,
-       34,   34,   24,   34,    0,   41,    0,   42,   33,   32,
+       34,   34,   24,   34,    0,   42,    0,   43,   33,   32,
         0,    0,    0,    3,   34,    5,   34,   34,   34,   34,
        16,    9,   34,   11,   18,   15,   27,   25,   34,   34,
 
@@ -666,13 +666,13 @@ static const flex_int16_t yy_chk[651] =
     } ;
 
 /* Table of booleans, true if rule could match eol. */
-static const flex_int32_t yy_rule_can_match_eol[98] =
+static const flex_int32_t yy_rule_can_match_eol[99] =
     {   0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 
-    0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,     };
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,     };
 
 static yy_state_type yy_last_accepting_state;
 static char *yy_last_accepting_cpos;
@@ -1202,8 +1202,8 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 91 "proc.la.l"
-{ yylval = ast_create_const_f(yytext); return F_CONSTANT; }
+#line 90 "proc.la.l"
+{ yylval = ast_create_const_i(yytext); return I_CONSTANT; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
@@ -1216,283 +1216,288 @@ YY_RULE_SETUP
 { yylval = ast_create_const_f(yytext); return F_CONSTANT; }
 	YY_BREAK
 case 43:
-/* rule 43 can match eol */
 YY_RULE_SETUP
-#line 95 "proc.la.l"
-{ yylval = ast_create_const_s(yytext); return STRING_LITERAL; }
+#line 94 "proc.la.l"
+{ yylval = ast_create_const_f(yytext); return F_CONSTANT; }
 	YY_BREAK
 case 44:
+/* rule 44 can match eol */
 YY_RULE_SETUP
-#line 97 "proc.la.l"
-{ return RIGHT_ASSIGN; }
+#line 96 "proc.la.l"
+{ yylval = ast_create_const_s(yytext); return STRING_LITERAL; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
 #line 98 "proc.la.l"
-{ return LEFT_ASSIGN; }
+{ return RIGHT_ASSIGN; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
 #line 99 "proc.la.l"
-{ return ADD_ASSIGN; }
+{ return LEFT_ASSIGN; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
 #line 100 "proc.la.l"
-{ return SUB_ASSIGN; }
+{ return ADD_ASSIGN; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
 #line 101 "proc.la.l"
-{ return MUL_ASSIGN; }
+{ return SUB_ASSIGN; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
 #line 102 "proc.la.l"
-{ return DIV_ASSIGN; }
+{ return MUL_ASSIGN; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
 #line 103 "proc.la.l"
-{ return MOD_ASSIGN; }
+{ return DIV_ASSIGN; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
 #line 104 "proc.la.l"
-{ return AND_ASSIGN; }
+{ return MOD_ASSIGN; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
 #line 105 "proc.la.l"
-{ return XOR_ASSIGN; }
+{ return AND_ASSIGN; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
 #line 106 "proc.la.l"
-{ return OR_ASSIGN; }
+{ return XOR_ASSIGN; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
 #line 107 "proc.la.l"
-{ return RIGHT_OP; }
+{ return OR_ASSIGN; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
 #line 108 "proc.la.l"
-{ return LEFT_OP; }
+{ return RIGHT_OP; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
 #line 109 "proc.la.l"
-{ return INC_OP; }
+{ return LEFT_OP; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
 #line 110 "proc.la.l"
-{ return DEC_OP; }
+{ return INC_OP; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
 #line 111 "proc.la.l"
-{ return AND_OP; }
+{ return DEC_OP; }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
 #line 112 "proc.la.l"
-{ return OR_OP; }
+{ return AND_OP; }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
 #line 113 "proc.la.l"
-{ return LE_OP; }
+{ return OR_OP; }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
 #line 114 "proc.la.l"
-{ return GE_OP; }
+{ return LE_OP; }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
 #line 115 "proc.la.l"
-{ return EQ_OP; }
+{ return GE_OP; }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
 #line 116 "proc.la.l"
-{ return NE_OP; }
+{ return EQ_OP; }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
 #line 117 "proc.la.l"
-{ return ';'; }
+{ return NE_OP; }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
 #line 118 "proc.la.l"
-{ return MAP; }
+{ return ';'; }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
 #line 119 "proc.la.l"
-{ return '{'; }
+{ return MAP; }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
 #line 120 "proc.la.l"
-{ return '}'; }
+{ return '{'; }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
 #line 121 "proc.la.l"
-{ return ','; }
+{ return '}'; }
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
 #line 122 "proc.la.l"
-{ return ':'; }
+{ return ','; }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
 #line 123 "proc.la.l"
-{ return APPLY_TO; }
+{ return ':'; }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
 #line 124 "proc.la.l"
-{ return PIPE_1_TO_1; }
+{ return APPLY_TO; }
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
 #line 125 "proc.la.l"
-{ return PIPE_REDUCE; }
+{ return PIPE_1_TO_1; }
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
 #line 126 "proc.la.l"
-{ return PIPE_EXPAND; }
+{ return PIPE_REDUCE; }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
 #line 127 "proc.la.l"
-{ return PIPE_INJECT; }
+{ return PIPE_EXPAND; }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
 #line 128 "proc.la.l"
-{ return '='; }
+{ return PIPE_INJECT; }
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
 #line 129 "proc.la.l"
-{ return '('; }
+{ return '='; }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
 #line 130 "proc.la.l"
-{ return ')'; }
+{ return '('; }
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
 #line 131 "proc.la.l"
-{ return LIST; }
+{ return ')'; }
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
 #line 132 "proc.la.l"
-{ return '['; }
+{ return LIST; }
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
 #line 133 "proc.la.l"
-{ return ']'; }
+{ return '['; }
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
 #line 134 "proc.la.l"
-{ return '.'; }
+{ return ']'; }
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
 #line 135 "proc.la.l"
-{ return '&'; }
+{ return '.'; }
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
 #line 136 "proc.la.l"
-{ return '!'; }
+{ return '&'; }
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
 #line 137 "proc.la.l"
-{ return '~'; }
+{ return '!'; }
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
 #line 138 "proc.la.l"
-{ return '-'; }
+{ return '~'; }
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
 #line 139 "proc.la.l"
-{ return '+'; }
+{ return '-'; }
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
 #line 140 "proc.la.l"
-{ return '*'; }
+{ return '+'; }
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
 #line 141 "proc.la.l"
-{ return '/'; }
+{ return '*'; }
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
 #line 142 "proc.la.l"
-{ return '%'; }
+{ return '/'; }
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
 #line 143 "proc.la.l"
-{ return '<'; }
+{ return '%'; }
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
 #line 144 "proc.la.l"
-{ return '>'; }
+{ return '<'; }
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
 #line 145 "proc.la.l"
-{ return '^'; }
+{ return '>'; }
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
 #line 146 "proc.la.l"
-{ return '|'; }
+{ return '^'; }
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
 #line 147 "proc.la.l"
-{ return '?'; }
+{ return '|'; }
 	YY_BREAK
 case 95:
-/* rule 95 can match eol */
 YY_RULE_SETUP
-#line 149 "proc.la.l"
-{ /* whitespace separates tokens */ }
+#line 148 "proc.la.l"
+{ return '?'; }
 	YY_BREAK
 case 96:
+/* rule 96 can match eol */
 YY_RULE_SETUP
 #line 150 "proc.la.l"
-{ fprintf(stderr, "Bad character: %c\n", *yytext); /* discard bad characters */ }
+{ /* whitespace separates tokens */ }
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
-#line 152 "proc.la.l"
+#line 151 "proc.la.l"
+{ fprintf(stderr, "Bad character: %c\n", *yytext); /* discard bad characters */ }
+	YY_BREAK
+case 98:
+YY_RULE_SETUP
+#line 153 "proc.la.l"
 ECHO;
 	YY_BREAK
-#line 1495 "/Volumes/Develop/projects/proc.la/autogen/proc.la.l.c"
+#line 1500 "/Volumes/Develop/projects/proc.la/autogen/proc.la.l.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2509,7 +2514,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 152 "proc.la.l"
+#line 153 "proc.la.l"
 
 
 int yywrap(void)        /* called at end of input */

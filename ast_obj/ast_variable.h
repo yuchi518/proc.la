@@ -122,6 +122,8 @@ typedef struct AstALa {
     AstContainerExpr input;
     AstBlockStmt body;
     AstTypeList output;
+    // == runtime ==
+    // TODO: create anchor list
 }*AstALa;
 
 plat_inline int compareForAstALa(void*, void*);

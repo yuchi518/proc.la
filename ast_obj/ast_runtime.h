@@ -154,6 +154,54 @@ plat_inline void pushVarDeclareIntoScope(AstScope scope, AstVarDeclare varDeclar
     addMMMapItem(scope->variables, toMMPrimary(varDeclare->identifier->name), toMMObject(varDeclare));
 }
 
+
+/// ===== Context =====
+
+typedef struct AstContext {
+    AstStack stack;
+    AstScope scope;
+}*AstContext;
+
+plat_inline int compareForAstContext(void*, void*);
+plat_inline AstContext initAstContext(AstContext obj, Unpacker unpkr) {
+    set_compare_for_mmobj(obj, compareForAstContext);
+    if (is_unpacker_v1(unpkr)) {
+        obj->stack = toAstStack(unpack_mmobj_retained(0, unpkr));
+        obj->scope = toAstScope(unpack_mmobj_retained(1, unpkr));
+    }
+    return obj;
+}
+
+plat_inline void destroyAstContext(AstContext obj) {
+    release_mmobj(obj->stack);
+    release_mmobj(obj->scope);
+}
+
+plat_inline void packAstContext(AstContext obj, Packer pkr) {
+    if (is_packer_v1(pkr)) {
+        pack_mmobj(0, obj->stack, pkr);
+        pack_mmobj(1, obj->scope, pkr);
+    }
+}
+
+MMSubObject(AstContext, AstNode, initAstContext, destroyAstContext, packAstContext);
+
+plat_inline int compareForAstContext(void* this_stru, void* that_stru) {
+    AstContext context1 = toAstContext(this_stru);
+    AstContext context2 = toAstContext(that_stru);
+    return FIRST_Of_2RESULTS(compare_mmobjs(context1->stack, context2->stack),
+                             compare_mmobjs(context1->scope, context2->scope));
+}
+
+plat_inline AstContext allocAstContextWith(mgn_memory_pool* pool, ...) {
+    AstContext obj = allocAstContext(pool);
+    if (obj) {
+    }
+    return obj;
+}
+
+
+
 #endif //PROC_LA_AST_RUNTIME_H
 
 

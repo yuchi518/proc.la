@@ -1103,6 +1103,10 @@ bool verify_and_optimize_ast(AstNode obj)
 
         uint32 oid = oid_of_last_mmobj(obj);
         if (oid == oid_of_AstAProcLa()) {
+            /**
+             *  A Proc La verification/optimization
+             *  @brief Create proc/la list
+             */
             if (aProcLa) {
                 plat_io_printf_err("Multiple aProcLa, impossible.\n");
                 return false;
@@ -1121,6 +1125,10 @@ bool verify_and_optimize_ast(AstNode obj)
             }
             //sa = scope_action_created;
         } else if (oid == oid_of_AstVarInstance()) {
+            /**
+             *  Var Instance verification/optimization
+             *  @brief Make sure it is supported type.
+             */
             AstVarInstance varInstance = toAstVarInstance(obj);
             AstVarDeclare varDeclare = varInstance->declare;
             ast_type type = varDeclare->identifier_type->type;
@@ -1156,9 +1164,18 @@ bool verify_and_optimize_ast(AstNode obj)
                     return false;
                 }
             }
+        } else if (oid == oid_of_AstUnaryOpExpr()) {
+            /**
+             * Unary Op verification/optimization
+             */
+            AstUnaryOpExpr unaryOpExpr = toAstUnaryOpExpr(obj);
+
         } else if (oid == oid_of_AstALa()) {
+            /**
+             *  La verification/optimization
+             *  @brief Make sure all input arguments are Var Declare.
+             */
             AstALa aLa = toAstALa(obj);
-            // la optimization
 
             scope = ast_impl_create_scope(obj, scope/*last scope*/);
             pushToAstStack(stack, toAstNode(scope));
@@ -1180,6 +1197,8 @@ bool verify_and_optimize_ast(AstNode obj)
             }
 
             AstBlockStmt blockStmt = aLa->body;
+            set_ast_parent_node(blockStmt, obj);
+            // TODO: set parent node for each statement of blockStmt->stmts
             pushAllToAstStack(stack, blockStmt->stmts, true);
 
         } else if (oid == oid_of_AstScope()) {
@@ -1192,6 +1211,9 @@ bool verify_and_optimize_ast(AstNode obj)
             //sa = scope_action_destroyed;
             scope = scope->last_scope;
         } else if (oid == oid_of_AstErrorRecovery()) {
+            /**
+             *  @brief Check existing errors.
+             */
             plat_io_flush_std();
             plat_io_printf_err("Error in AST, fix it first.\n");
             return false;
@@ -1205,3 +1227,21 @@ bool verify_and_optimize_ast(AstNode obj)
     return true;
 }
 
+void iterate_ast_ex(AstNode node, ast_iterator_ex previous, ast_iterator_ex executor)
+{
+    AstScope scope = null;
+
+    AstStack stack = allocAstStackWithANode(_pool, node);
+    plat_io_flush_std();
+    //uint level = 0;
+    //scope_action sa;
+    AstAProcLa aProcLa = null;
+
+    while (!isEmptyAstStack(stack)) {
+        node = popFromAstStack(stack);
+        uint32 oid = oid_of_last_mmobj(node);
+        // TODO: implement new iterate function for executing code
+    }
+
+    release_mmobj(stack);
+}
