@@ -1112,7 +1112,7 @@ bool verify_and_optimize_ast(AstNode obj)
                 return false;
             }
             aProcLa = toAstAProcLa(obj);
-            optimizeAstAProcLa(aProcLa);
+            optimize_node(aProcLa, null);
 
             scope = ast_impl_create_scope(obj, scope/*last scope*/);
             pushToAstStack(stack, toAstNode(scope));

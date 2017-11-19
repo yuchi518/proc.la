@@ -5,7 +5,7 @@
 #ifndef PROC_LA_AST_RUNTIME_H
 #define PROC_LA_AST_RUNTIME_H
 
-#include "ast_node.h"
+#include "ast_expr.h"
 
 /// ===== NONE =====
 
@@ -94,7 +94,16 @@ plat_inline AstNode popFromAstStack(AstStack stack) {
 
 typedef struct AstScope {
     AstNode trigger;
-    struct AstScope* last_scope;
+    struct AstScope* last_scope;        // weak reference, don't retain
+    /**
+     *  Constants
+     *  1. domain.name.la vs. la instance
+     *     MMString (la name + ':' + input parameters number) vs. AstVarInstance
+     *  2. identifier vs. constant/literal
+     *     MMString (identifier) vs. AstVarInstance
+     */
+    MMMap constants;
+    // runtime variable, clean when the node is out of stack
     MMMap variables;
 }*AstScope;
 
@@ -102,7 +111,8 @@ plat_inline AstScope initAstScope(AstScope obj, Unpacker unpkr);
 
 plat_inline void destroyAstScope(AstScope obj) {
     release_mmobj(obj->trigger);
-    release_mmobj(obj->last_scope);
+    obj->last_scope = null;
+    release_mmobj(obj->constants);
     release_mmobj(obj->variables);
 }
 
@@ -110,7 +120,8 @@ plat_inline void packAstScope(AstScope obj, Packer pkr) {
     if (is_packer_v1(pkr)) {
         pack_mmobj(0, obj->trigger, pkr);
         pack_mmobj(1, obj->last_scope, pkr);
-        pack_mmobj(2, obj->variables, pkr);
+        pack_mmobj(2, obj->constants, pkr);
+        pack_mmobj(3, obj->variables, pkr);
     }
 }
 
@@ -121,9 +132,11 @@ plat_inline AstScope initAstScope(AstScope obj, Unpacker unpkr) {
     set_compare_for_mmobj(obj, compareForAstScope);
     if (is_unpacker_v1(unpkr)) {
         obj->trigger = toAstNode(unpack_mmobj_retained(0, unpkr));
-        obj->last_scope = toAstScope(unpack_mmobj_retained(1, unpkr));
-        obj->variables = toMMMap(unpack_mmobj_retained(2, unpkr));
+        obj->last_scope = toAstScope(unpack_mmobj(1, unpkr));           // weak reference
+        obj->constants = toMMMap(unpack_mmobj_retained(2, unpkr));
+        obj->variables = toMMMap(unpack_mmobj_retained(3, unpkr));
     } else {
+        obj->constants = allocMMMap(pool_of_mmobj(obj));
         obj->variables = allocMMMap(pool_of_mmobj(obj));
     }
     return obj;
@@ -132,8 +145,9 @@ plat_inline AstScope initAstScope(AstScope obj, Unpacker unpkr) {
 plat_inline int compareForAstScope(void* this_stru, void* that_stru) {
     AstScope scope1 = toAstScope(this_stru);
     AstScope scope2 = toAstScope(that_stru);
-    return FIRST_Of_3RESULTS(compare_mmobjs(scope1->trigger, scope2->trigger),
+    return FIRST_Of_4RESULTS(compare_mmobjs(scope1->trigger, scope2->trigger),
                              compare_mmobjs(scope1->last_scope, scope2->last_scope),
+                             compare_mmobjs(scope1->constants, scope2->constants),
                              compare_mmobjs(scope1->variables, scope2->variables));
 }
 
@@ -141,7 +155,7 @@ plat_inline AstScope allocAstScopeWithTriggerAndLastScope(mgn_memory_pool* pool,
     AstScope obj = allocAstScope(pool);
     if (obj) {
         obj->trigger = retain_mmobj(trigger);
-        obj->last_scope = retain_mmobj(last_scope);
+        obj->last_scope = last_scope;               // weak reference, don't retain
     }
     return obj;
 }
@@ -193,9 +207,11 @@ plat_inline int compareForAstContext(void* this_stru, void* that_stru) {
                              compare_mmobjs(context1->scope, context2->scope));
 }
 
-plat_inline AstContext allocAstContextWith(mgn_memory_pool* pool, ...) {
+plat_inline AstContext allocAstContextWithStackAndScope(mgn_memory_pool* pool, AstStack stack, AstScope scope) {
     AstContext obj = allocAstContext(pool);
     if (obj) {
+        obj->stack = retain_mmobj(stack);
+        obj->scope = retain_mmobj(scope);
     }
     return obj;
 }

@@ -17,6 +17,7 @@ plat_inline void register_all_ast_to_unpacker(Unpacker unpkr) {
     registerAstBlockStmtToUnpacker(unpkr);
     registerAstCaseStmtToUnpacker(unpkr);
     registerAstContainerExprToUnpacker(unpkr);
+    registerAstContextToUnpacker(unpkr);
     registerAstDomainNameToUnpacker(unpkr);
     registerAstEachStmtToUnpacker(unpkr);
     registerAstErrorRecoveryToUnpacker(unpkr);

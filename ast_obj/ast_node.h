@@ -225,6 +225,18 @@ typedef enum {
     ast_jump_type_continue,
 } ast_jump_type;
 
+struct AstContext;
+
+/// Inheritable interfaces
+/**
+ *
+ * @param stru
+ * @return
+ */
+struct AstNode;
+struct AstErrorRecovery;
+struct AstContext;
+typedef struct AstErrorRecovery* (*optimize_node_t)(void* stru, struct AstContext* context);
 
 /// ===== Abstract Tree node =====
 typedef struct AstNode {
@@ -246,13 +258,24 @@ plat_inline void packAstNode(AstNode obj, Packer pkr) {
 
 MMSubObject(AstNode, MMObject, initAstNode, destroyAstNode, packAstNode);
 
+plat_inline void __set_optimization(void* stru, optimize_node_t optimize) {
+    if (stru == null) return;
+    set_function_for_mmobj(stru, optimize_node_t, optimize);
+}
+#define set_optimization(stru, optimize) __set_optimization(stru, optimize)
+plat_inline struct AstErrorRecovery* __optimize_node(void* stru, struct AstContext* context)
+{
+    return call_f(stru, optimize_node_t, context);
+}
+#define optimize_node(stru, context) __optimize_node(stru, context);
+
 /// ===== Statement =====
 
 typedef struct AstStatement {
     // == runtime ==
     // TODO: Add parent node for each statement
     // TODO: Set context if need.
-    AstNode parent_node;
+    AstNode parent_node;    // week reference, no retain
     AstNode context;        // In most case, it should be a AstContext.
 }*AstStatement;
 
@@ -290,10 +313,22 @@ plat_inline int compareForAstStatement(void* this_stru, void* that_stru) {
 
 plat_inline void set_ast_parent_node(void* node, void* parent) {
     AstStatement statement = toAstStatement(node);
-    release_mmobj(statement->parent_node);
     statement->parent_node = toAstNode(parent);       // Don't retain, else loop-retain
 }
 
+plat_inline void clean_ast_parent_node(void* node) {
+    set_ast_parent_node(node, null);
+}
+
+plat_inline void set_ast_context(void* node, void* context) {
+    AstStatement statement = toAstStatement(node);
+    release_mmobj(statement->context);
+    statement->context = retain_mmobj(toAstNode(context));
+}
+
+plat_inline void clean_ast_context(void* node) {
+    set_ast_context(node, null);
+}
 
 /// ===== Expression =====
 

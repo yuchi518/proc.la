@@ -74,19 +74,16 @@ plat_inline AstNode getExternalDeclarationAt(AstExternalDeclarations list, uint 
 typedef struct AstAProcLa {
     AstPackage package;
     AstExternalDeclarations external_declarations;
-    // == runtime ==
-    // TODO: implement la instance list
-    // domain.name.la vs. AstVarInstance
-    MMMap la_instances;  // MMString (la name + input parameters number) vs. AstVarInstance
 }*AstAProcLa;
 
 plat_inline int compareForAstAProcLa(void*, void*);
+struct AstErrorRecovery* optimizeAstAProcLa(void* stru, struct AstContext* context);
 plat_inline AstAProcLa initAstAProcLa(AstAProcLa obj, Unpacker unpkr) {
     set_compare_for_mmobj(obj, compareForAstAProcLa);
+    set_optimization(obj, optimizeAstAProcLa);
     if (is_unpacker_v1(unpkr)) {
         obj->package = toAstPackage(unpack_mmobj_retained(0, unpkr));
         obj->external_declarations = toAstExternalDeclarations(unpack_mmobj_retained(1, unpkr));
-        obj->la_instances = toMMMap(unpack_mmobj_retained(2, unpkr));
     }
     return obj;
 }
@@ -94,14 +91,12 @@ plat_inline AstAProcLa initAstAProcLa(AstAProcLa obj, Unpacker unpkr) {
 plat_inline void destroyAstAProcLa(AstAProcLa obj) {
     release_mmobj(obj->package);
     release_mmobj(obj->external_declarations);
-    release_mmobj(obj->la_instances);
 }
 
 plat_inline void packAstAProcLa(AstAProcLa obj, Packer pkr) {
     if (is_packer_v1(pkr)) {
         pack_mmobj(0, obj->package, pkr);
         pack_mmobj(1, obj->external_declarations, pkr);
-        pack_mmobj(2, obj->la_instances, pkr);
     }
 }
 
@@ -110,9 +105,8 @@ MMSubObject(AstAProcLa, AstNode, initAstAProcLa, destroyAstAProcLa, packAstAProc
 plat_inline int compareForAstAProcLa(void* this_stru, void* that_stru) {
     AstAProcLa aProcLa1 = toAstAProcLa(this_stru);
     AstAProcLa aProcLa2 = toAstAProcLa(that_stru);
-    return FIRST_Of_3RESULTS(compare_mmobjs(aProcLa1->package, aProcLa2->package),
-                             compare_mmobjs(aProcLa1->external_declarations, aProcLa2->external_declarations),
-                             compare_mmobjs(aProcLa1->la_instances, aProcLa2->la_instances));
+    return FIRST_Of_2RESULTS(compare_mmobjs(aProcLa1->package, aProcLa2->package),
+                             compare_mmobjs(aProcLa1->external_declarations, aProcLa2->external_declarations));
 }
 
 plat_inline AstAProcLa allocAstAProcLaWithPackageAndExternalDeclarations(mgn_memory_pool* pool, AstPackage package, AstExternalDeclarations external_declarations) {
@@ -124,30 +118,5 @@ plat_inline AstAProcLa allocAstAProcLaWithPackageAndExternalDeclarations(mgn_mem
     return obj;
 }
 
-plat_inline void optimizeAstAProcLa(AstAProcLa aProcLa) {
-    release_mmobj(aProcLa->la_instances);
-    if (aProcLa->external_declarations) {
-        MMList list = aProcLa->external_declarations->external_declarations;
-        if (list) {
-            aProcLa->la_instances = allocMMMap(pool_of_mmobj(aProcLa));
-            uint cnt = sizeOfMMList(list);
-            uint i;
-            for (i=0; i<cnt; i++) {
-                AstNode node = toAstNode(getMMListItem(list, i));
-                AstVarInstance varInstance = toAstVarInstance(node);
-                if (varInstance) {
-                    AstVarDeclare varDeclare = varInstance->declare;
-                    if (varDeclare->identifier_type->type == ast_type_proc) {
-                        // TODO: Add number of input parameters as partial of name
-                        addMMMapItem(aProcLa->la_instances, toMMPrimary(varDeclare->identifier->name), toMMObject(varInstance));
-                    }
-                }
-            }
-
-            return;
-        }
-    }
-    aProcLa->la_instances = null;
-}
 
 #endif //PROC_LA_AST_LA_H
