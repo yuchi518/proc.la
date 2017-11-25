@@ -102,10 +102,10 @@ plat_inline void packAstAProcLa(AstAProcLa obj, Packer pkr) {
     }
 }
 
-MMSubObject(AstAProcLa, AstNode, initAstAProcLa, destroyAstAProcLa, packAstAProcLa);
+MMSubObject(AstAProcLa, AstStatement, initAstAProcLa, destroyAstAProcLa, packAstAProcLa);
 
 plat_inline int compareForAstAProcLa(void* this_stru, void* that_stru) {
-    int r = compareForAstNode(this_stru, that_stru);
+    int r = compareForAstStatement(this_stru, that_stru);
     if (r) return r;
     AstAProcLa aProcLa1 = toAstAProcLa(this_stru);
     AstAProcLa aProcLa2 = toAstAProcLa(that_stru);
