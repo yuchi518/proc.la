@@ -43,6 +43,8 @@ plat_inline void packAstExternalDeclarations(AstExternalDeclarations obj, Packer
 MMSubObject(AstExternalDeclarations, AstNode, initAstExternalDeclarations, destroyAstExternalDeclarations, packAstExternalDeclarations);
 
 plat_inline int compareForAstExternalDeclarations(void* this_stru, void* that_stru) {
+    int r = compareForAstNode(this_stru, that_stru);
+    if (r) return r;
     AstExternalDeclarations externalDeclarations1 = toAstExternalDeclarations(this_stru);
     AstExternalDeclarations externalDeclarations2 = toAstExternalDeclarations(that_stru);
     return compare_mmobjs(externalDeclarations1->external_declarations, externalDeclarations2->external_declarations);
@@ -77,7 +79,7 @@ typedef struct AstAProcLa {
 }*AstAProcLa;
 
 plat_inline int compareForAstAProcLa(void*, void*);
-struct AstErrorRecovery* optimizeAstAProcLa(void* stru, struct AstContext* context);
+struct AstErrorRecovery* optimizeAstAProcLa(AstNode node, struct AstContext* context);
 plat_inline AstAProcLa initAstAProcLa(AstAProcLa obj, Unpacker unpkr) {
     set_compare_for_mmobj(obj, compareForAstAProcLa);
     set_optimization(obj, optimizeAstAProcLa);
@@ -103,6 +105,8 @@ plat_inline void packAstAProcLa(AstAProcLa obj, Packer pkr) {
 MMSubObject(AstAProcLa, AstNode, initAstAProcLa, destroyAstAProcLa, packAstAProcLa);
 
 plat_inline int compareForAstAProcLa(void* this_stru, void* that_stru) {
+    int r = compareForAstNode(this_stru, that_stru);
+    if (r) return r;
     AstAProcLa aProcLa1 = toAstAProcLa(this_stru);
     AstAProcLa aProcLa2 = toAstAProcLa(that_stru);
     return FIRST_Of_2RESULTS(compare_mmobjs(aProcLa1->package, aProcLa2->package),
@@ -112,7 +116,11 @@ plat_inline int compareForAstAProcLa(void* this_stru, void* that_stru) {
 plat_inline AstAProcLa allocAstAProcLaWithPackageAndExternalDeclarations(mgn_memory_pool* pool, AstPackage package, AstExternalDeclarations external_declarations) {
     AstAProcLa obj = allocAstAProcLa(pool);
     if (obj) {
-        obj->package = retain_mmobj(package);
+        if (package) {
+            obj->package = retain_mmobj(package);
+        } else {
+            obj->package = allocAstPackageWithCStringName(pool, "");
+        }
         obj->external_declarations = retain_mmobj(external_declarations);
     }
     return obj;

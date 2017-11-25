@@ -42,6 +42,8 @@ plat_inline void packAstType(AstType obj, Packer pkr) {
 MMSubObject(AstType, AstNode , initAstType, null/*destroyAstType*/, packAstType);
 
 plat_inline int compareForAstType(void* this_stru, void* that_stru) {
+    int r = compareForAstNode(this_stru, that_stru);
+    if (r) return r;
     AstType type1 = toAstType(this_stru);
     AstType type2 = toAstType(that_stru);
     return (int)type1->type - (int)type2->type;
@@ -112,6 +114,8 @@ plat_inline void packAstTypeCombination(AstTypeCombination obj, Packer pkr) {
 MMSubObject(AstTypeCombination, AstType , initAstTypeCombination, null/*destroyAstTypeCombination*/, packAstTypeCombination);
 
 plat_inline int compareForAstTypeCombination(void* this_stru, void* that_stru) {
+    int r = compareForAstType(this_stru, that_stru);
+    if (r) return r;
     AstTypeCombination typeCombination1 = toAstTypeCombination(this_stru);
     AstTypeCombination typeCombination2 = toAstTypeCombination(that_stru);
     AstType type1 = toAstType(typeCombination1);

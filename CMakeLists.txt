@@ -24,7 +24,7 @@ add_custom_command(OUTPUT ${AUTO_GEN_DIR}/proc.la.l.c
 add_custom_target(RunGenerator DEPENDS ${AUTO_GEN_DIR}/proc.la.l.c ${AUTO_GEN_DIR}/proc.la.y.c
         COMMENT "flex & bison")
 
-set(SOURCE_FILES main.c platform ast_obj/ast_optimization.c ast.c platform/mmo_pack.c platform/mmo_unittest.c)
+set(SOURCE_FILES main.c platform ast_obj ast_obj/ast_optimization.c ast.c platform/mmo_pack.c platform/mmo_unittest.c)
 
 add_executable(proc_la ${SOURCE_FILES})
 add_dependencies(proc_la RunGenerator)

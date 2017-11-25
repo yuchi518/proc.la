@@ -822,7 +822,10 @@ AstNode ast_create_la_declaration(AstNode input, AstNode body, AstNode output)
         input = ast_close_container(ast_create_container(var_obj, null, ast_container_type_tuple));
     }
     else {
-        if (toAstContainerExpr(input) == null) {
+        if (isAstNone(input)) {
+            // We prefer using an empty container expression instead of a none object.
+            input = toAstNode(autorelease_mmobj(allocEmptyAstContainerExprWithType(_pool, ast_container_type_tuple)));
+        } else if (toAstContainerExpr(input) == null) {
             plat_io_printf_err("La declaration needs an expr container as input.(%s)\n", name_of_last_mmobj(input));
             return null;
         }
@@ -834,7 +837,10 @@ AstNode ast_create_la_declaration(AstNode input, AstNode body, AstNode output)
         output = ast_create_type_list(type_obj, null);
     }
     else {
-        if (toAstTypeList(output) == null) {
+        if (isAstNone(output)) {
+            // We prefer using an empty type list instead of a none object
+            output = toAstNode(autorelease_mmobj(allocEmptyAstTypeList(_pool)));
+        } else if (toAstTypeList(output) == null) {
             plat_io_printf_err("La declaration needs a type list as output.(%s)\n", name_of_last_mmobj(output));
             return null;
         }
@@ -1090,6 +1096,18 @@ void iterate_ast(AstNode obj, ast_iterator iterator)
 
 bool verify_and_optimize_ast(AstNode obj)
 {
+#if 1
+    if (isAstAProcLa(obj)) {
+        AstAProcLa aProcLa = toAstAProcLa(obj);
+        AstErrorRecovery errorRecovery = optimize_node(aProcLa, null);
+        if (errorRecovery) {
+            plat_io_printf_err("Error %d: %s\n", errorRecovery->code, errorRecovery->message->value);
+        } else {
+            return true;
+        }
+    }
+    return false;
+#else
     AstScope scope = null;
 
     AstStack stack = allocAstStackWithANode(_pool, obj);
@@ -1225,6 +1243,7 @@ bool verify_and_optimize_ast(AstNode obj)
     release_mmobj(stack);
 
     return true;
+#endif
 }
 
 void iterate_ast_ex(AstNode node, ast_iterator_ex previous, ast_iterator_ex executor)

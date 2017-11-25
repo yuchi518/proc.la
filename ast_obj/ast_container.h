@@ -58,7 +58,18 @@ plat_inline AstContainerExpr allocAstContainerExprWithType(mgn_memory_pool* pool
     return containerExpr;
 }
 
+plat_inline AstContainerExpr allocEmptyAstContainerExprWithType(mgn_memory_pool* pool, ast_container_type type) {
+    AstContainerExpr containerExpr = allocAstContainerExpr(pool);
+    if (containerExpr) {
+        containerExpr->type = type;
+        containerExpr->closed = true;
+    }
+    return containerExpr;
+}
+
 plat_inline int compareForAstContainerExpr(void* this_stru, void* that_stru) {
+    int r = compareForAstStatement(this_stru, that_stru);
+    if (r) return r;
     AstContainerExpr a = toAstContainerExpr(this_stru);
     AstContainerExpr b = toAstContainerExpr(that_stru);
     return FIRST_Of_3RESULTS((int)a->type - (int)b->type,
@@ -135,6 +146,8 @@ plat_inline void packAstPairExpr(AstPairExpr obj, Packer pkr) {
 MMSubObject(AstPairExpr, AstExpression, initAstPairExpr, destroyAstPairExpr, packAstPairExpr);
 
 plat_inline int compareForAstPairExpr(void* this_stru, void* that_stru) {
+    int r = compareForAstStatement(this_stru, that_stru);
+    if (r) return r;
     AstPairExpr a = toAstPairExpr(this_stru);
     AstPairExpr b = toAstPairExpr(that_stru);
     return FIRST_Of_2RESULTS(compare_mmobjs(a->expr_k, b->expr_k),

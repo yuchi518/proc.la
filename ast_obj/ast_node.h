@@ -236,27 +236,49 @@ struct AstContext;
 struct AstNode;
 struct AstErrorRecovery;
 struct AstContext;
-typedef struct AstErrorRecovery* (*optimize_node_t)(void* stru, struct AstContext* context);
+typedef struct AstErrorRecovery* (*optimize_node_t)(struct AstNode* node, struct AstContext* context);
 
 /// ===== Abstract Tree node =====
 typedef struct AstNode {
     // == build ==
     // TODO: Record line number in source code for build error.
+    // == runtime ==
+    // TODO: Set context if need.
+    struct AstNode* context;        // In most case, it should be a AstContext.
+
 }*AstNode;
 
+plat_inline int compareForAstNode(void*, void*);
+plat_inline AstNode initAstNode(AstNode obj, Unpacker unpkr);
+plat_inline void destroyAstNode(AstNode obj);
+plat_inline void packAstNode(AstNode obj, Packer pkr);
+
+MMSubObject(AstNode, MMObject, initAstNode, destroyAstNode, packAstNode);
+
+plat_inline int compareForAstNode(void* this_stru, void* that_stru);
 plat_inline AstNode initAstNode(AstNode obj, Unpacker unpkr) {
+    set_compare_for_mmobj(obj, compareForAstNode);
+    if (is_unpacker_v1(unpkr)) {
+        obj->context = toAstNode(unpack_mmobj_retained(0, unpkr));
+    }
     return obj;
 }
 
 plat_inline void destroyAstNode(AstNode obj) {
-
+    release_mmobj(obj->context);
 }
 
 plat_inline void packAstNode(AstNode obj, Packer pkr) {
-
+    if (is_packer_v1(pkr)) {
+        pack_mmobj(0, obj->context, pkr);
+    }
 }
 
-MMSubObject(AstNode, MMObject, initAstNode, destroyAstNode, packAstNode);
+plat_inline int compareForAstNode(void* this_stru, void* that_stru) {
+    AstNode node1 = toAstNode(this_stru);
+    AstNode node2 = toAstNode(that_stru);
+    return compare_mmobjs(node1->context, node2->context);
+}
 
 plat_inline void __set_optimization(void* stru, optimize_node_t optimize) {
     if (stru == null) return;
@@ -265,18 +287,27 @@ plat_inline void __set_optimization(void* stru, optimize_node_t optimize) {
 #define set_optimization(stru, optimize) __set_optimization(stru, optimize)
 plat_inline struct AstErrorRecovery* __optimize_node(void* stru, struct AstContext* context)
 {
-    return call_f(stru, optimize_node_t, context);
+    return call_f(toAstNode(stru), optimize_node_t, context);
 }
 #define optimize_node(stru, context) __optimize_node(stru, context);
+
+
+plat_inline void set_ast_context(void* node, void* context) {
+    AstNode astNode = toAstNode(node);
+    release_mmobj(astNode->context);
+    astNode->context = retain_mmobj(toAstNode(context));
+}
+
+plat_inline void clean_ast_context(void* node) {
+    set_ast_context(node, null);
+}
 
 /// ===== Statement =====
 
 typedef struct AstStatement {
     // == runtime ==
     // TODO: Add parent node for each statement
-    // TODO: Set context if need.
     AstNode parent_node;    // week reference, no retain
-    AstNode context;        // In most case, it should be a AstContext.
 }*AstStatement;
 
 plat_inline int compareForAstStatement(void*, void*);
@@ -284,7 +315,6 @@ plat_inline AstStatement initAstStatement(AstStatement obj, Unpacker unpkr) {
     set_compare_for_mmobj(obj, compareForAstStatement);
     if (is_unpacker_v1(unpkr)) {
         obj->parent_node = toAstNode(unpack_mmobj(0, unpkr));           // Don't retain, else loop-retain
-        obj->context = toAstNode(unpack_mmobj_retained(1, unpkr));
     }
     return obj;
 }
@@ -292,23 +322,22 @@ plat_inline AstStatement initAstStatement(AstStatement obj, Unpacker unpkr) {
 plat_inline void destroyAstStatement(AstStatement obj) {
     //release_mmobj(obj->parent_node);              // Don't retain, else loop-retain
     obj->parent_node = null;
-    release_mmobj(obj->context);
 }
 
 plat_inline void packAstStatement(AstStatement obj, Packer pkr) {
     if (is_packer_v1(pkr)) {
         pack_mmobj(0, obj->parent_node, pkr);
-        pack_mmobj(1, obj->context, pkr);
     }
 }
 
 MMSubObject(AstStatement, AstNode, initAstStatement, destroyAstStatement, packAstStatement);
 
 plat_inline int compareForAstStatement(void* this_stru, void* that_stru) {
+    int r = compareForAstNode(this_stru, that_stru);
+    if (r) return r;
     AstStatement statement1 = toAstStatement(this_stru);
     AstStatement statement2 = toAstStatement(that_stru);
-    return FIRST_Of_2RESULTS(compare_mmobjs(statement1->parent_node, statement2->parent_node),
-                             compare_mmobjs(statement1->context, statement2->parent_node));
+    return compare_mmobjs(statement1->parent_node, statement2->parent_node);
 }
 
 plat_inline void set_ast_parent_node(void* node, void* parent) {
@@ -318,16 +347,6 @@ plat_inline void set_ast_parent_node(void* node, void* parent) {
 
 plat_inline void clean_ast_parent_node(void* node) {
     set_ast_parent_node(node, null);
-}
-
-plat_inline void set_ast_context(void* node, void* context) {
-    AstStatement statement = toAstStatement(node);
-    release_mmobj(statement->context);
-    statement->context = retain_mmobj(toAstNode(context));
-}
-
-plat_inline void clean_ast_context(void* node) {
-    set_ast_context(node, null);
 }
 
 /// ===== Expression =====
@@ -440,6 +459,8 @@ plat_inline void packAstVariable(AstVariable obj, Packer pkr) {
 MMSubObject(AstVariable, AstExpression, initAstVariable, destroyAstVariable, packAstVariable);
 
 plat_inline int compareForAstVariable(void* this_stru, void* that_stru) {
+    int r = compareForAstStatement(this_stru, that_stru);
+    if (r) return r;
     AstVariable this_v = toAstVariable(this_stru);
     AstVariable that_v = toAstVariable(that_stru);
     if (this_v->type != that_v->type) return (int) this_v->type - (int) that_v->type;
@@ -612,6 +633,8 @@ plat_inline void packAstIdentifier(AstIdentifier obj, Packer pkr) {
 MMSubObject(AstIdentifier, AstExpression, initAstIdentifier, destroyAstIdentifier, packAstIdentifier);
 
 plat_inline int compareForAstIdentifier(void* this_stru, void* that_stru) {
+    int r = compareForAstStatement(this_stru, that_stru);
+    if (r) return r;
     AstIdentifier this_i = toAstIdentifier(this_stru);
     AstIdentifier that_i = toAstIdentifier(that_stru);
     return compare_mmobjs(this_i->name, that_i->name);

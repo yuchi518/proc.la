@@ -37,12 +37,13 @@ plat_inline void packAstVariableCombination(AstVariableCombination obj, Packer p
 MMSubObject(AstVariableCombination, AstVariable, initAstVariableCombination, destroyAstVariableCombination, packAstVariableCombination);
 
 plat_inline int compareForAstVariableCombination(void* this_stru, void* that_stru) {
+    int r = compareForAstVariable(this_stru, that_stru);
+    if (r) return r;
     AstVariableCombination variableCombination1 = toAstVariableCombination(this_stru);
     AstVariableCombination variableCombination2 = toAstVariableCombination(that_stru);
     AstVariable variable1 = toAstVariable(variableCombination1);
     AstVariable variable2 = toAstVariable(variableCombination2);
-    return FIRST_Of_2RESULTS(compareForAstVariable(variable1, variable2),
-                             variableCombination1->combined_type - variableCombination2->combined_type);
+    return variableCombination1->combined_type - variableCombination2->combined_type;
 }
 
 /// TODO - implement combination type.
@@ -78,12 +79,13 @@ plat_inline void packAstDomainName(AstDomainName obj, Packer pkr) {
 MMSubObject(AstDomainName, AstVariable, initAstDomainName, destroyAstDomainName, packAstDomainName);
 
 plat_inline int compareForAstDomainName(void* this_stru, void* that_stru) {
+    int r = compareForAstVariable(this_stru, that_stru);
+    if (r) return r;
     AstDomainName domainName1 = toAstDomainName(this_stru);
     AstDomainName domainName2 = toAstDomainName(that_stru);
     AstVariable variable1 = toAstVariable(domainName1);
     AstVariable variable2 = toAstVariable(domainName2);
-    return FIRST_Of_2RESULTS(compareForAstVariable(variable1, variable2),
-                             compare_mmobjs(domainName1->name, domainName2->name));
+    return compare_mmobjs(domainName1->name, domainName2->name);
 
 }
 
@@ -156,12 +158,13 @@ plat_inline void packAstVariableLa(AstALa obj, Packer pkr) {
 MMSubObject(AstALa, AstVariable, initAstVariableLa, destroyAstVariableLa, packAstVariableLa);
 
 plat_inline int compareForAstALa(void* this_stru, void* that_stru) {
+    int r = compareForAstVariable(this_stru, that_stru);
+    if (r) return r;
     AstALa aLa1 = toAstALa(this_stru);
     AstALa aLa2 = toAstALa(that_stru);
     AstVariable variable1 = toAstVariable(aLa1);
     AstVariable variable2 = toAstVariable(aLa2);
-    return FIRST_Of_4RESULTS(compareForAstVariable(variable1, variable2),
-                             compare_mmobjs(aLa1->input, aLa2->input),
+    return FIRST_Of_3RESULTS(compare_mmobjs(aLa1->input, aLa2->input),
                              compare_mmobjs(aLa1->output, aLa2->output),
                              compare_mmobjs(aLa1->body, aLa2->body));
 }

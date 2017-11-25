@@ -38,6 +38,8 @@ plat_inline void packAstPackage(AstPackage obj, Packer pkr) {
 MMSubObject(AstPackage, AstStatement, initAstPackage, destroyAstPackage, packAstPackage);
 
 plat_inline int compareForAstPackage(void* this_stru, void* that_stru) {
+    int r = compareForAstStatement(this_stru, that_stru);
+    if (r) return r;
     AstPackage package1 = toAstPackage(this_stru);
     AstPackage package2 = toAstPackage(that_stru);
     return compare_mmobjs(package1->name, package2->name);
@@ -96,7 +98,17 @@ plat_inline void packAstTypeList(AstTypeList obj, Packer pkr) {
 
 MMSubObject(AstTypeList, AstStatement, initAstTypeList, destroyAstTypeList, packAstTypeList);
 
+plat_inline AstTypeList allocEmptyAstTypeList(mgn_memory_pool* pool) {
+    AstTypeList typeList = allocAstTypeList(pool);
+    if (typeList) {
+
+    }
+    return typeList;
+}
+
 plat_inline int compareForAstTypeList(void* this_stru, void* that_stru) {
+    int r = compareForAstStatement(this_stru, that_stru);
+    if (r) return r;
     AstTypeList typeList1 = toAstTypeList(this_stru);
     AstTypeList typeList2 = toAstTypeList(that_stru);
     return compare_mmobjs(typeList1->list, typeList2->list);
@@ -157,6 +169,8 @@ plat_inline void packAstBlockStmt(AstBlockStmt obj, Packer pkr) {
 MMSubObject(AstBlockStmt, AstStatement, initAstBlockStmt, destroyAstBlockStmt, packAstBlockStmt);
 
 plat_inline int compareForAstBlockStmt(void* this_stru, void* that_stru) {
+    int r = compareForAstStatement(this_stru, that_stru);
+    if (r) return r;
     AstBlockStmt blockStmt1 = toAstBlockStmt(this_stru);
     AstBlockStmt blockStmt2 = toAstBlockStmt(that_stru);
     return FIRST_Of_2RESULTS((blockStmt1->closed?1:0) - (blockStmt2->closed?1:0),
@@ -220,6 +234,8 @@ plat_inline void packAstCaseStmt(AstCaseStmt obj, Packer pkr) {
 MMSubObject(AstCaseStmt, AstStatement, initAstCaseStmt, destroyAstCaseStmt, packAstCaseStmt);
 
 plat_inline int compareForAstCaseStmt(void* this_stru, void* that_stru) {
+    int r = compareForAstStatement(this_stru, that_stru);
+    if (r) return r;
     AstCaseStmt caseStmt1 = toAstCaseStmt(this_stru);
     AstCaseStmt caseStmt2 = toAstCaseStmt(that_stru);
     return compare_mmobjs(caseStmt1->check, caseStmt2->check);
@@ -266,6 +282,8 @@ plat_inline void packAstSwitchStmt(AstSwitchStmt obj, Packer pkr) {
 MMSubObject(AstSwitchStmt, AstStatement, initAstSwitchStmt, destroyAstSwitchStmt, packAstSwitchStmt);
 
 plat_inline int compareForAstSwitchStmt(void* this_stru, void* that_stru) {
+    int r = compareForAstStatement(this_stru, that_stru);
+    if (r) return r;
     AstSwitchStmt switchStmt1 = toAstSwitchStmt(this_stru);
     AstSwitchStmt switchStmt2 = toAstSwitchStmt(that_stru);
     return FIRST_Of_2RESULTS(compare_mmobjs(switchStmt1->eval, switchStmt2->eval),
@@ -317,6 +335,8 @@ plat_inline void packAstIfStmt(AstIfStmt obj, Packer pkr) {
 MMSubObject(AstIfStmt, AstStatement, initAstIfStmt, destroyAstIfStmt, packAstIfStmt);
 
 plat_inline int compareForAstIfStmt(void* this_stru, void* that_stru) {
+    int r = compareForAstStatement(this_stru, that_stru);
+    if (r) return r;
     AstIfStmt ifStmt1 = toAstIfStmt(this_stru);
     AstIfStmt ifStmt2 = toAstIfStmt(that_stru);
     return FIRST_Of_3RESULTS(compare_mmobjs(ifStmt1->eval, ifStmt2->eval),
@@ -363,6 +383,8 @@ plat_inline void packAstLoopStmt(AstLoopStmt obj, Packer pkr) {
 MMSubObject(AstLoopStmt, AstStatement, initAstLoopStmt, destroyAstLoopStmt, packAstLoopStmt);
 
 plat_inline int compareForAstLoopStmt(void* this_stru, void* that_stru) {
+    int r = compareForAstStatement(this_stru, that_stru);
+    if (r) return r;
     AstLoopStmt loopStmt1 = toAstLoopStmt(this_stru);
     AstLoopStmt loopStmt2 = toAstLoopStmt(that_stru);
     return compare_mmobjs(loopStmt1->stmt, loopStmt2->stmt);
@@ -409,6 +431,8 @@ plat_inline void packAstEachStmt(AstEachStmt obj, Packer pkr) {
 MMSubObject(AstEachStmt, AstStatement, initAstEachStmt, destroyAstEachStmt, packAstEachStmt);
 
 plat_inline int compareForAstEachStmt(void* this_stru, void* that_stru) {
+    int r = compareForAstStatement(this_stru, that_stru);
+    if (r) return r;
     AstEachStmt eachStmt1 = toAstEachStmt(this_stru);
     AstEachStmt eachStmt2 = toAstEachStmt(that_stru);
     return FIRST_Of_2RESULTS(compare_mmobjs(eachStmt1->eval, eachStmt2->eval),
@@ -456,6 +480,8 @@ plat_inline void packAstJumpStmt(AstJumpStmt obj, Packer pkr) {
 MMSubObject(AstJumpStmt, AstStatement, initAstJumpStmt, destroyAstJumpStmt, packAstJumpStmt);
 
 plat_inline int compareForAstJumpStmt(void* this_stru, void* that_stru) {
+    int r = compareForAstStatement(this_stru, that_stru);
+    if (r) return r;
     AstJumpStmt jumpStmt1 = toAstJumpStmt(this_stru);
     AstJumpStmt jumpStmt2 = toAstJumpStmt(that_stru);
     return FIRST_Of_2RESULTS((int)jumpStmt1->type - (int)jumpStmt2->type,
@@ -499,6 +525,8 @@ plat_inline void packAstAnchorStmt(AstAnchorStmt obj, Packer pkr) {
 MMSubObject(AstAnchorStmt, AstStatement, initAstAnchorStmt, destroyAstAnchorStmt, packAstAnchorStmt);
 
 plat_inline int compareForAstAnchorStmt(void* this_stru, void* that_stru) {
+    int r = compareForAstStatement(this_stru, that_stru);
+    if (r) return r;
     AstAnchorStmt anchorStmt1 = toAstAnchorStmt(this_stru);
     AstAnchorStmt anchorStmt2 = toAstAnchorStmt(that_stru);
     return compare_mmobjs(anchorStmt1->label, anchorStmt2->label);
@@ -540,6 +568,8 @@ plat_inline void packAstSync(AstSyncStmt obj, Packer pkr) {
 MMSubObject(AstSyncStmt, AstStatement, initAstSync, destroyAstSync, packAstSync);
 
 plat_inline int compareForAstSyncStmt(void* this_stru, void* that_stru) {
+    int r = compareForAstStatement(this_stru, that_stru);
+    if (r) return r;
     AstSyncStmt syncStmt1 = toAstSyncStmt(this_stru);
     AstSyncStmt syncStmt2 = toAstSyncStmt(that_stru);
     return compare_mmobjs(syncStmt1->identifier, syncStmt2->identifier);

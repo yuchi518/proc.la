@@ -35,3 +35,7 @@ declare main:la
 // no input/output la
 declare test:la {
 };
+
+declare test2:la
+() {
+} ();
