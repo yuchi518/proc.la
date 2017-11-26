@@ -6,6 +6,8 @@
     int yylex();
 %}
 
+%locations
+
 %token          IDENTIFIER
 %token          I_CONSTANT F_CONSTANT STRING_LITERAL N_CONSTANT
 
@@ -99,7 +101,7 @@ list_expression
         $$ = ast_close_container($2);
     }
     | '[' error ']' {
-        $$ = ast_create_error_recovery();
+        $$ = ast_create_error_recovery_ex("list", @1.first_line, @1.first_column, @3.last_line, @3.last_column);
     }
     | '[' ']' {
         $$ = ast_create_none();
@@ -126,7 +128,7 @@ map_expression
         $$ = ast_close_container($2);
     }
     | '{' error '}' {
-        $$ = ast_create_error_recovery();
+        $$ = ast_create_error_recovery_ex("map", @1.first_line, @1.first_column, @3.last_line, @3.last_column);
     }
     //| '{' '}'  // This is a empty block.
     | MAP {
@@ -148,7 +150,7 @@ tuple_expression
         $$ = ast_close_container($2);
     }
     | '(' error ')' {
-        $$ = ast_create_error_recovery();
+        $$ = ast_create_error_recovery_ex("tuple", @1.first_line, @1.first_column, @3.last_line, @3.last_column);
     }
     | '(' ')' {
         $$ = ast_create_none();
@@ -398,7 +400,7 @@ statement
 	    $$ = ast_create_sync($2);
 	}
 	| error ';' {
-	    $$ = ast_create_error_recovery();
+	    $$ = ast_create_error_recovery_ex("statement", @1.first_line, @1.first_column, @1.last_line, @1.last_column);
 	}
 	;
 
@@ -442,6 +444,9 @@ block_item_list
 	| block_item_list block_item {
 	    $$ = ast_create_block($1, $2);
 	}
+	//| error {
+	//    $$ = ast_create_error_recovery_ex("block_item", @1.first_line, @1.first_column, @1.last_line, @1.last_column);
+	//}
 	;
 
 block_item
@@ -453,19 +458,19 @@ selection_statement
 	    $$ = ast_create_ifelse($3, $5, null);
 	}
 	| IF '(' error ')' statement {
-	    $$ = ast_create_error_recovery();
+	    $$ = ast_create_error_recovery_ex("selection", @2.first_line, @2.first_column, @4.last_line, @4.last_column);
 	}
 	| IF '(' expression ')' statement ELSE statement {
 	    $$ = ast_create_ifelse($3, $5, $7);
 	}
 	| IF '(' error ')' statement ELSE statement {
-        $$ = ast_create_error_recovery();
+        $$ = ast_create_error_recovery_ex("selection", @2.first_line, @2.first_column, @4.last_line, @4.last_column);
     }
 	| SWITCH '(' expression ')' '{' cases_block_statement '}' {
 	    $$ = ast_create_switch($3, ast_close_block($6));
 	}
 	| SWITCH '(' error ')' '{' cases_block_statement '}' {
-	    $$ = ast_create_error_recovery();
+	    $$ = ast_create_error_recovery_ex("selection", @2.first_line, @2.first_column, @4.last_line, @4.last_column);
 	}
 	;
 
@@ -501,7 +506,7 @@ la_output_declaration
         $$ = $2;
     }
     | '(' error ')' {
-        $$ = ast_create_error_recovery();
+        $$ = ast_create_error_recovery_ex("output", @1.first_line, @1.first_column, @3.last_line, @3.last_column);
     }
     | '(' ')' {
         // create an empty list

@@ -120,7 +120,7 @@ int load_file_and_create_ast(const char* file_name) {
     char* content;
     uint content_size;
     int res;
-    AstNode ast;
+    AstNode ast = null;
     mgn_memory_pool pool = null;
 
     res = plat_io_get_resource(file_name, (void**)&content, &content_size);

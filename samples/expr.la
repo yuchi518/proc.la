@@ -30,6 +30,7 @@ declare main:la
     }
     each ([1,2,3]) {
     }
+    //{aaa}
 } (var);
 
 // no input/output la

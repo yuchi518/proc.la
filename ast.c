@@ -9,6 +9,8 @@ static struct src_stack *_curbs = null;
 static mgn_memory_pool* _pool = null;
 AstNode* _ast = null;
 static const bool verbose = false;
+static char* _content;
+static uint _content_size;
 
 int create_ast(mgn_memory_pool* pool, char* content, uint content_size, AstNode* ast)
 {
@@ -20,7 +22,10 @@ int create_ast(mgn_memory_pool* pool, char* content, uint content_size, AstNode*
     }
 
     _ast = ast;
-
+    _content = content;
+    _content_size = content_size;
+    yycolumn = 0;
+    //yylloc.first_column = 0; yylloc.last_column = 0;
     /*bs->src_buffer = plat_mem_allocate(size);
     if(!bs->src_buffer)
     {
@@ -890,6 +895,17 @@ AstNode ast_create_error_recovery(void)
     return toAstNode(autorelease_mmobj(allocAstErrorRecovery(_pool)));
 }
 
+AstNode ast_create_error_recovery_ex(const char* msg, int first_line, int first_column, int last_line, int last_column)
+{
+
+    plat_io_printf_err("Parse(%s) in %d.%d ~ %d.%d\n", msg, first_line, first_column, last_line, last_column);
+    if (first_column < _content_size && last_column < _content_size) {
+        int i;
+        for (i=first_column; i<=last_column; i++) fprintf(stderr, "%c", _content[i]);
+        fprintf(stderr, "\n");
+    }
+    return toAstNode(error_recovery(_pool, 0, mmstring(_pool, "Parse in %d.%d ~ %d.%d", first_line, first_column, last_line, last_column), null));
+}
 
 /// ============================= AST implementation =======================================================
 

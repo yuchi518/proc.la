@@ -93,6 +93,7 @@ AstNode ast_create_external_declarations(AstNode first, AstNode second);
 AstNode ast_create_a_proc_la(AstNode package, AstNode external_declarations);
 
 AstNode ast_create_error_recovery(void);
+AstNode ast_create_error_recovery_ex(const char* msg, int first_line, int first_column, int last_line, int last_column);
 
 /// =================== ast management =================
 int create_ast(mgn_memory_pool* pool, char* source_code, uint source_code_size, AstNode* ast);

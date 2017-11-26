@@ -12,7 +12,7 @@
 typedef struct AstErrorRecovery {
     uint code;              // error code
     MMString message;       // error message
-    AstNode node;  // replaced node
+    AstNode node;           // replaced node
 }*AstErrorRecovery;
 
 plat_inline int compareForAstErrorRecovery(void*, void*);

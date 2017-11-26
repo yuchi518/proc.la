@@ -37,6 +37,13 @@ struct src_stack
     //unsigned int src_size;
 };
 
+/* handle locations */
+int yycolumn = 0;
+
+#define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno; \
+    yylloc.first_column = yycolumn; yylloc.last_column = yycolumn+yyleng-1; \
+    yycolumn += yyleng;
+
 %}
 
 
@@ -148,6 +155,7 @@ struct src_stack
 "?"					                                    { return '?'; }
 
 {WS}+					                                { /* whitespace separates tokens */ }
+\n                                                      { yycolumn = 1; }
 .					                                    { fprintf(stderr, "Bad character: %c\n", *yytext); /* discard bad characters */ }
 
 %%
