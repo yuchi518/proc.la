@@ -325,10 +325,10 @@ plat_inline void packAstStatement(AstStatement obj, Packer pkr) {
 MMSubObject(AstStatement, AstNode, initAstStatement, destroyAstStatement, packAstStatement);
 
 plat_inline int compareForAstStatement(void* this_stru, void* that_stru) {
-    int r = compareForAstNode(this_stru, that_stru);
-    if (r) return r;
     AstStatement statement1 = toAstStatement(this_stru);
     AstStatement statement2 = toAstStatement(that_stru);
+    int r = compare_parent(statement1, statement2);
+    if (r) return r;
     return FIRST_Of_2RESULTS(compare_mmobjs(statement1->parent_node, statement2->parent_node),
                              compare_mmobjs(statement1->context, statement2->context));
 }
@@ -462,10 +462,10 @@ plat_inline void packAstVariable(AstVariable obj, Packer pkr) {
 MMSubObject(AstVariable, AstExpression, initAstVariable, destroyAstVariable, packAstVariable);
 
 plat_inline int compareForAstVariable(void* this_stru, void* that_stru) {
-    int r = compareForAstStatement(this_stru, that_stru);
-    if (r) return r;
     AstVariable this_v = toAstVariable(this_stru);
     AstVariable that_v = toAstVariable(that_stru);
+    int r = compare_parent(this_v, that_v);
+    if (r) return r;
     if (this_v->type != that_v->type) return (int) this_v->type - (int) that_v->type;
     if (this_v->is_const != that_v->is_const) return (this_v->is_const ? 1 : 0) - (that_v->is_const ? 1 : 0);
     return compare_mmobjs(this_v->value, that_v->value);
@@ -636,10 +636,10 @@ plat_inline void packAstIdentifier(AstIdentifier obj, Packer pkr) {
 MMSubObject(AstIdentifier, AstExpression, initAstIdentifier, destroyAstIdentifier, packAstIdentifier);
 
 plat_inline int compareForAstIdentifier(void* this_stru, void* that_stru) {
-    int r = compareForAstStatement(this_stru, that_stru);
-    if (r) return r;
     AstIdentifier this_i = toAstIdentifier(this_stru);
     AstIdentifier that_i = toAstIdentifier(that_stru);
+    int r = compare_parent(this_i, that_i);
+    if (r) return r;
     return compare_mmobjs(this_i->name, that_i->name);
 }
 

@@ -44,10 +44,10 @@ plat_inline void packAstVarDeclare(AstVarDeclare obj, Packer pkr) {
 MMSubObject(AstVarDeclare, AstExpression, initAstVarDeclare, destroyAstVarDeclare, packAstVarDeclare);
 
 plat_inline int compareForAstVarDeclare(void* this_stru, void* that_stru) {
-    int r = compareForAstStatement(this_stru, that_stru);
-    if (r) return r;
     AstVarDeclare varDeclare1 = toAstVarDeclare(this_stru);
     AstVarDeclare varDeclare2 = toAstVarDeclare(that_stru);
+    int r = compare_parent(varDeclare1, varDeclare2);
+    if (r) return r;
     int diff = compare_mmobjs(varDeclare1->identifier, varDeclare2->identifier);
     if (diff) return diff;
     return compare_mmobjs(varDeclare1->identifier_type, varDeclare2->identifier_type);
@@ -103,10 +103,10 @@ plat_inline void packAstVarInstant(AstVarInstance obj, Packer pkr) {
 MMSubObject(AstVarInstance, AstExpression, initAstVarInstant, destroyAstVarInstant, packAstVarInstant);
 
 plat_inline int compareForAstVarInstance(void* this_stru, void* that_stru) {
-    int r = compareForAstStatement(this_stru, that_stru);
-    if (r) return r;
     AstVarInstance varInstance1 = toAstVarInstance(this_stru);
     AstVarInstance varInstance2 = toAstVarInstance(that_stru);
+    int r = compare_parent(varInstance1, varInstance2);
+    if (r) return r;
     int diff = compare_mmobjs(varInstance1->declare, varInstance2->declare);
     if (diff) return diff;
     return compare_mmobjs(varInstance1->inst, varInstance2->inst);
@@ -161,10 +161,10 @@ plat_inline void packAstUnaryExpr(AstUnaryOpExpr obj, Packer pkr) {
 MMSubObject(AstUnaryOpExpr, AstExpression, initAstUnaryExpr, destroyAstUnaryExpr, packAstUnaryExpr);
 
 plat_inline int compareForAstUnaryOpExpr(void* this_stru, void* that_stru) {
-    int r = compareForAstStatement(this_stru, that_stru);
-    if (r) return r;
     AstUnaryOpExpr unaryOpExpr1 = toAstUnaryOpExpr(this_stru);
     AstUnaryOpExpr unaryOpExpr2 = toAstUnaryOpExpr(that_stru);
+    int r = compare_parent(unaryOpExpr1, unaryOpExpr2);
+    if (r) return r;
     return FIRST_Of_2RESULTS((int)unaryOpExpr1->op - (int)unaryOpExpr2->op,
                              compare_mmobjs(unaryOpExpr1->expr, unaryOpExpr2->expr));
 }
@@ -213,10 +213,10 @@ plat_inline void packAstBinaryOpExpr(AstBinaryOpExpr obj, Packer pkr) {
 MMSubObject(AstBinaryOpExpr, AstExpression, initAstBinaryOpExpr, destroyAstBinaryOpExpr, packAstBinaryOpExpr);
 
 plat_inline int compareForAstBinaryOpExpr(void* this_stru, void* that_stru) {
-    int r = compareForAstStatement(this_stru, that_stru);
-    if (r) return r;
     AstBinaryOpExpr binaryOpExpr1 = toAstBinaryOpExpr(this_stru);
     AstBinaryOpExpr binaryOpExpr2 = toAstBinaryOpExpr(that_stru);
+    int r = compare_parent(binaryOpExpr1, binaryOpExpr2);
+    if (r) return r;
     return FIRST_Of_3RESULTS((int)binaryOpExpr1->op - (int)binaryOpExpr2->op,
                              compare_mmobjs(binaryOpExpr1->expr_a, binaryOpExpr2->expr_a),
                              compare_mmobjs(binaryOpExpr1->expr_b, binaryOpExpr2->expr_b));
@@ -289,10 +289,10 @@ plat_inline void packAstTernaryOpExpr(AstTernaryOpExpr obj, Packer pkr) {
 MMSubObject(AstTernaryOpExpr, AstExpression, initAstTernaryOpExpr, destroyAstTernaryOpExpr, packAstTernaryOpExpr);
 
 plat_inline int compareForAstTernaryOpExpr(void* this_stru, void* that_stru) {
-    int r = compareForAstStatement(this_stru, that_stru);
-    if (r) return r;
     AstTernaryOpExpr ternaryOpExpr1 = toAstTernaryOpExpr(this_stru);
     AstTernaryOpExpr ternaryOpExpr2 = toAstTernaryOpExpr(that_stru);
+    int r = compare_parent(ternaryOpExpr1, ternaryOpExpr2);
+    if (r) return r;
     return FIRST_Of_4RESULTS((int)ternaryOpExpr1->op - (int)ternaryOpExpr2->op,
                              compare_mmobjs(ternaryOpExpr1->expr_a, ternaryOpExpr2->expr_a),
                              compare_mmobjs(ternaryOpExpr1->expr_b, ternaryOpExpr2->expr_b),
@@ -342,10 +342,10 @@ plat_inline void packAstIsExpr(AstIsExpr obj, Packer pkr) {
 MMSubObject(AstIsExpr, AstExpression, initAstIsExpr, destroyAstIsExpr, packAstIsExpr);
 
 plat_inline int compareForAstIsExpr(void* this_stru, void* that_stru) {
-    int r = compareForAstStatement(this_stru, that_stru);
-    if (r) return r;
     AstIsExpr isExpr1 = toAstIsExpr(this_stru);
     AstIsExpr isExpr2 = toAstIsExpr(that_stru);
+    int r = compare_parent(isExpr1, isExpr2);
+    if (r) return r;
     return FIRST_Of_2RESULTS(compare_mmobjs(isExpr1->type, isExpr2->type),
                              compare_mmobjs(isExpr1->expr, isExpr2->expr));
 }

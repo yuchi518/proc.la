@@ -95,10 +95,10 @@ plat_inline void packAstStack(AstStack obj, Packer pkr) {
 MMSubObject(AstStack, AstNode , initAstStack, destroyAstStack, packAstStack);
 
 plat_inline int compareForAstStack(void* this_stru, void* that_stru) {
-    int r = compareForAstNode(this_stru, that_stru);
-    if (r) return r;
     AstStack stack1 = toAstStack(this_stru);
     AstStack stack2 = toAstStack(that_stru);
+    int r = compare_parent(stack1, stack2);
+    if (r) return r;
     return compare_mmobjs(stack1->nodes, stack2->nodes);
 }
 
@@ -187,10 +187,10 @@ plat_inline AstScope initAstScope(AstScope obj, Unpacker unpkr) {
 }
 
 plat_inline int compareForAstScope(void* this_stru, void* that_stru) {
-    int r = compareForAstNode(this_stru, that_stru);
-    if (r) return r;
     AstScope scope1 = toAstScope(this_stru);
     AstScope scope2 = toAstScope(that_stru);
+    int r = compare_parent(scope1, scope2);
+    if (r) return r;
     return FIRST_Of_5RESULTS(compare_mmobjs(scope1->trigger, scope2->trigger),
                              compare_mmobjs(scope1->last_scope, scope2->last_scope),
                              compare_mmobjs(scope1->package, scope2->package),
@@ -258,10 +258,10 @@ plat_inline void packAstContext(AstContext obj, Packer pkr) {
 MMSubObject(AstContext, AstNode, initAstContext, destroyAstContext, packAstContext);
 
 plat_inline int compareForAstContext(void* this_stru, void* that_stru) {
-    int r = compareForAstNode(this_stru, that_stru);
-    if (r) return r;
     AstContext context1 = toAstContext(this_stru);
     AstContext context2 = toAstContext(that_stru);
+    int r = compare_parent(context1, context2);
+    if (r) return r;
     return FIRST_Of_2RESULTS(compare_mmobjs(context1->stack, context2->stack),
                              compare_mmobjs(context1->scope, context2->scope));
 }

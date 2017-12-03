@@ -43,10 +43,10 @@ plat_inline void packAstExternalDeclarations(AstExternalDeclarations obj, Packer
 MMSubObject(AstExternalDeclarations, AstNode, initAstExternalDeclarations, destroyAstExternalDeclarations, packAstExternalDeclarations);
 
 plat_inline int compareForAstExternalDeclarations(void* this_stru, void* that_stru) {
-    int r = compareForAstNode(this_stru, that_stru);
-    if (r) return r;
     AstExternalDeclarations externalDeclarations1 = toAstExternalDeclarations(this_stru);
     AstExternalDeclarations externalDeclarations2 = toAstExternalDeclarations(that_stru);
+    int r = compare_parent(externalDeclarations1, externalDeclarations2);
+    if (r) return r;
     return compare_mmobjs(externalDeclarations1->external_declarations, externalDeclarations2->external_declarations);
 }
 
@@ -105,10 +105,10 @@ plat_inline void packAstAProcLa(AstAProcLa obj, Packer pkr) {
 MMSubObject(AstAProcLa, AstStatement, initAstAProcLa, destroyAstAProcLa, packAstAProcLa);
 
 plat_inline int compareForAstAProcLa(void* this_stru, void* that_stru) {
-    int r = compareForAstStatement(this_stru, that_stru);
-    if (r) return r;
     AstAProcLa aProcLa1 = toAstAProcLa(this_stru);
     AstAProcLa aProcLa2 = toAstAProcLa(that_stru);
+    int r = compare_parent(aProcLa1, aProcLa2);
+    if (r) return r;
     return FIRST_Of_2RESULTS(compare_mmobjs(aProcLa1->package, aProcLa2->package),
                              compare_mmobjs(aProcLa1->external_declarations, aProcLa2->external_declarations));
 }

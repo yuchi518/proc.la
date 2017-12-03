@@ -37,10 +37,10 @@ plat_inline void packAstVariableCombination(AstVariableCombination obj, Packer p
 MMSubObject(AstVariableCombination, AstVariable, initAstVariableCombination, destroyAstVariableCombination, packAstVariableCombination);
 
 plat_inline int compareForAstVariableCombination(void* this_stru, void* that_stru) {
-    int r = compareForAstVariable(this_stru, that_stru);
-    if (r) return r;
     AstVariableCombination variableCombination1 = toAstVariableCombination(this_stru);
     AstVariableCombination variableCombination2 = toAstVariableCombination(that_stru);
+    int r = compare_parent(variableCombination1, variableCombination2);
+    if (r) return r;
     AstVariable variable1 = toAstVariable(variableCombination1);
     AstVariable variable2 = toAstVariable(variableCombination2);
     return variableCombination1->combined_type - variableCombination2->combined_type;
@@ -79,10 +79,10 @@ plat_inline void packAstDomainName(AstDomainName obj, Packer pkr) {
 MMSubObject(AstDomainName, AstVariable, initAstDomainName, destroyAstDomainName, packAstDomainName);
 
 plat_inline int compareForAstDomainName(void* this_stru, void* that_stru) {
-    int r = compareForAstVariable(this_stru, that_stru);
-    if (r) return r;
     AstDomainName domainName1 = toAstDomainName(this_stru);
     AstDomainName domainName2 = toAstDomainName(that_stru);
+    int r = compare_parent(domainName1, domainName2);
+    if (r) return r;
     AstVariable variable1 = toAstVariable(domainName1);
     AstVariable variable2 = toAstVariable(domainName2);
     return compare_mmobjs(domainName1->name, domainName2->name);
@@ -158,10 +158,10 @@ plat_inline void packAstVariableLa(AstALa obj, Packer pkr) {
 MMSubObject(AstALa, AstVariable, initAstVariableLa, destroyAstVariableLa, packAstVariableLa);
 
 plat_inline int compareForAstALa(void* this_stru, void* that_stru) {
-    int r = compareForAstVariable(this_stru, that_stru);
-    if (r) return r;
     AstALa aLa1 = toAstALa(this_stru);
     AstALa aLa2 = toAstALa(that_stru);
+    int r = compare_parent(aLa1, aLa2);
+    if (r) return r;
     AstVariable variable1 = toAstVariable(aLa1);
     AstVariable variable2 = toAstVariable(aLa2);
     return FIRST_Of_3RESULTS(compare_mmobjs(aLa1->input, aLa2->input),
