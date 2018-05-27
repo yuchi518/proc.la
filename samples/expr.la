@@ -31,6 +31,9 @@ declare main:la
     each ([1,2,3]) {
     }
     //{aaa}
+    [1, 2, 3] =-> add --> v:int;
+    {"1":1, "2":2, "3":3} --> (in:var) {
+    } --> v:int;
 } (var);
 
 // no input/output la
