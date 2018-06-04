@@ -3,7 +3,7 @@ project(proc_la)
 
 set(CMAKE_C_STANDARD 99)
 
-include_directories(. platform dybuf mmo ast_obj)
+include_directories(. clibs/platform clibs/dybuf clibs/mmo ast_obj)
 
 set(AUTO_GEN_DIR ${CMAKE_SOURCE_DIR}/autogen)
 
@@ -24,7 +24,7 @@ add_custom_command(OUTPUT ${AUTO_GEN_DIR}/proc.la.l.c
 add_custom_target(RunGenerator DEPENDS ${AUTO_GEN_DIR}/proc.la.l.c ${AUTO_GEN_DIR}/proc.la.y.c
         COMMENT "flex & bison")
 
-set(SOURCE_FILES main.c platform ast_obj ast_obj/ast_optimization.c ast.c mmo/mmo_pack.c mmo/mmo_unittest.c)
+set(SOURCE_FILES main.c ast_obj ast_obj/ast_optimization.c ast.c clibs/mmo/mmo_pack.c clibs/mmo/mmo_unittest.c)
 
 add_executable(proc_la ${SOURCE_FILES})
 add_dependencies(proc_la RunGenerator)

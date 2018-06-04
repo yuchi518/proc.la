@@ -5,9 +5,9 @@
 #ifndef PROC_LA_AST_NODE_H
 #define PROC_LA_AST_NODE_H
 
-#include "mmo/mmo.h"
-#include "mmo/mmo_ext.h"
-#include "mmo/mmo_pack.h"
+#include "mmo.h"
+#include "mmo_ext.h"
+#include "mmo_pack.h"
 
 /*enum {
     AST_NODE     = 0,

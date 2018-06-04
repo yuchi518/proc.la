@@ -1,0 +1,3 @@
+[submodule "clibs"]
+	path = clibs
+	url = ../LC-clibs.git
