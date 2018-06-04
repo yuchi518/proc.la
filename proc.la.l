@@ -11,6 +11,7 @@ LETTER                  [a-zA-Z_]
 ASCII                   [a-zA-Z_0-9]
 ESCAPE                  (\\(['"\?\\abfnrtv]))
 WS                      [ \t\v\n\f]
+WS_WO_N                 [ \t\v\f]
 
 %{
 
@@ -38,7 +39,7 @@ struct src_stack
 };
 
 /* handle locations */
-int yycolumn = 0;
+int yycolumn = 1;
 
 #define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno; \
     yylloc.first_column = yycolumn; yylloc.last_column = yycolumn+yyleng-1; \
@@ -154,7 +155,7 @@ int yycolumn = 0;
 "|"					                                    { return '|'; }
 "?"					                                    { return '?'; }
 
-{WS}+					                                { /* whitespace separates tokens */ }
+{WS_WO_N}+					                            { /* whitespace separates tokens */ }
 \n                                                      { yycolumn = 1; }
 .					                                    { fprintf(stderr, "Bad character: %c\n", *yytext); /* discard bad characters */ }
 

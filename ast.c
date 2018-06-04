@@ -24,7 +24,8 @@ int create_ast(mgn_memory_pool* pool, char* content, uint content_size, AstNode*
     _ast = ast;
     _content = content;
     _content_size = content_size;
-    yycolumn = 0;
+    yycolumn = 1;
+    yylineno = 1;
     //yylloc.first_column = 0; yylloc.last_column = 0;
     /*bs->src_buffer = plat_mem_allocate(size);
     if(!bs->src_buffer)

@@ -1,5 +1,5 @@
 #include "ast.h"
-#include "mmo_unittest.h"
+#include "mmo/mmo_unittest.h"
 
 bool print_ast(AstNode obj, uint level, scope_action action, AstScope scope)
 {
