@@ -245,7 +245,6 @@ typedef struct AstNode {
     // == runtime ==
 }*AstNode;
 
-plat_inline int compareForAstNode(void*, void*);
 plat_inline AstNode initAstNode(AstNode obj, Unpacker unpkr);
 plat_inline void destroyAstNode(AstNode obj);
 plat_inline void packAstNode(AstNode obj, Packer pkr);
