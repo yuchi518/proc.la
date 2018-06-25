@@ -93,7 +93,6 @@ primary_expression
     : constant
     | string
     | IDENTIFIER
-    | var_declaration
     ;
 
 list_expression
@@ -161,7 +160,13 @@ tuple_item_list
     : expression {
         $$ = ast_create_container($1, null, ast_container_type_tuple);
     }
+    | var_declaration {
+        $$ = ast_create_container($1, null, ast_container_type_tuple);
+    }
     | tuple_item_list ',' expression {
+         $$ = ast_create_container($1, $3, ast_container_type_tuple);
+    }
+    | tuple_item_list ',' var_declaration {
          $$ = ast_create_container($1, $3, ast_container_type_tuple);
     }
     ;
@@ -328,12 +333,14 @@ conditional_expression
 	}
 	;
 
+
 assignment_expression
-	: conditional_expression
+    : primary_expression
+    | var_declaration
     ;
 
 expression
-    : assignment_expression
+    : conditional_expression
     | expression APPLY_TO assignment_expression {
         $$ = ast_create_binary_op_expr($1, $3, ast_binary_op_apply_to);
     }
@@ -346,8 +353,7 @@ expression
     ;
 
 expression_statement
-	: ';'
-	| expression ';' {
+	: expression ';' {
 	    $$ = $1;
 	}
     | expression APPLY_TO OUT ';' {
@@ -390,7 +396,10 @@ pipe_op
 // ==== statement flow =====
 
 statement
-	: labeled_statement
+    : ';' {
+        $$ = ast_create_empty();
+    }
+    | labeled_statement
 	| block_statement
 	| expression_statement
 	| selection_statement
@@ -413,6 +422,12 @@ labeled_statement
 case_statement
     : CASE expression ':' statement {
         $$ = ast_create_block(ast_create_case($2), $4);
+    }
+    | CASE expression ':' case_statement {
+        $$ = ast_create_block(ast_create_case($2), $4);
+    }
+    | DEFAULT ':' case_statement {
+        $$ = ast_create_block(ast_create_case(null), $3);
     }
     | DEFAULT ':' statement {
         $$ = ast_create_block(ast_create_case(null), $3);
@@ -574,6 +589,6 @@ a_proc_la
 
 void yyerror(const char *s)
 {
-	fflush(stdout);
 	fprintf(stderr, "LN:%04d %s\n", yylineno, s);
+	fflush(stdout);
 }

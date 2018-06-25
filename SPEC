@@ -112,5 +112,10 @@ declare main:la
         // key is always string or var type
     }
 
+    switch(x) {
+        case 1:
+
+    }
+
 } (var);
 

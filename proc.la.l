@@ -88,8 +88,6 @@ int yycolumn = 1;
 ({LETTER}{ASCII}*)("."{LETTER}{ASCII}*)+                { yylval = ast_create_domain(yytext); return DOMAIN_NAME; }
 (@{LETTER}{ASCII}*)("."{LETTER}{ASCII}*)*               { yylval = ast_create_package(yytext+1); return PACKAGE_NAME; }
 
-{LETTER}{ASCII}*					                    { yylval = ast_create_identifier(yytext); return IDENTIFIER/*check_type()*/; }
-
 ([bB]\()({WS}*{BIN}{BIN}{BIN}{BIN}{BIN}{BIN}{BIN}{BIN}{WS}*)+\)   { yylval = ast_create_const_i(yytext); return I_CONSTANT; }
 ([oO]\()({WS}*{OCT_1st}{OCT}{OCT}{WS}*)+\)                        { yylval = ast_create_const_i(yytext); return I_CONSTANT; }
 ([hH]\()({WS}*{HEX}{HEX}{WS}*)+\)                                 { yylval = ast_create_const_i(yytext); return I_CONSTANT; }
@@ -102,6 +100,8 @@ int yycolumn = 1;
 {DIG}+"."{EXP_D}?			                            { yylval = ast_create_const_f(yytext); return F_CONSTANT; }
 
 (\"([^"\\\n]|{ESCAPE})*\"{WS}*)+	                    { yylval = ast_create_const_s(yytext); return STRING_LITERAL; }
+
+{LETTER}{ASCII}*					                    { yylval = ast_create_identifier(yytext); return IDENTIFIER/*check_type()*/; }
 
 ">>="					                                { return RIGHT_ASSIGN; }
 "<<="					                                { return LEFT_ASSIGN; }

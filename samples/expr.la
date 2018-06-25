@@ -34,6 +34,12 @@ declare main:la
     [1, 2, 3] =-> add --> v:int;
     {"1":1, "2":2, "3":3} --> (in:var) {
     } --> v:int;
+
+    switch (j) {
+        case 1:
+        case "2":
+        case kq: ;
+    }
 } (var);
 
 // no input/output la

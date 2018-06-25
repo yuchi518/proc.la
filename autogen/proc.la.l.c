@@ -383,31 +383,31 @@ struct yy_trans_info
 static const flex_int16_t yy_accept[237] =
     {   0,
         0,    0,  100,   98,   96,   97,   84,   98,   90,   83,
-       98,   77,   78,   88,   87,   69,   86,   82,   89,   39,
-       38,   70,   65,   91,   76,   92,   95,   98,   34,   34,
-       34,   34,   80,   81,   93,   34,   34,   34,   34,   34,
-       34,   34,   34,   34,   34,   34,   34,   34,   34,   34,
-       34,   67,   94,   68,   85,   96,   64,    0,   44,    0,
+       98,   77,   78,   88,   87,   69,   86,   82,   89,   38,
+       37,   70,   65,   91,   76,   92,   95,   98,   44,   44,
+       44,   44,   80,   81,   93,   44,   44,   44,   44,   44,
+       44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
+       44,   67,   94,   68,   85,   96,   64,    0,   43,    0,
        51,   59,   52,    0,    0,    0,   49,   57,   47,    0,
-       58,   48,   71,   42,    1,    2,   50,   43,    0,    0,
-       38,   81,   80,   56,   61,    0,   63,   62,   55,   33,
-        0,   34,    0,    0,    0,   79,   53,   34,   34,   34,
+       58,   48,   71,   41,    1,    2,   50,   42,    0,    0,
+       37,   81,   80,   56,   61,    0,   63,   62,   55,   33,
+        0,   44,    0,    0,    0,   79,   53,   44,   44,   44,
 
-       34,   34,    8,   34,   34,   34,   34,   34,   12,   34,
-       29,   26,   34,   34,   34,   34,   34,   34,   34,   34,
-       34,   34,   34,   66,   54,   60,   44,    0,   40,   75,
-       74,   72,    0,    2,    0,    0,   41,   46,   73,   45,
-        0,   33,   32,    0,    0,    0,    0,    0,    0,   34,
-       34,   34,   34,   34,   34,   34,   34,   34,   34,   10,
-       34,   17,   34,   34,   34,   21,   28,   34,   23,   34,
-       34,   34,   24,   34,    0,   42,    0,   43,   33,   32,
-        0,    0,    0,    3,   34,    5,   34,   34,   34,   34,
-       16,    9,   34,   11,   18,   15,   27,   25,   34,   34,
+       44,   44,    8,   44,   44,   44,   44,   44,   12,   44,
+       29,   26,   44,   44,   44,   44,   44,   44,   44,   44,
+       44,   44,   44,   66,   54,   60,   43,    0,   39,   75,
+       74,   72,    0,    2,    0,    0,   40,   46,   73,   45,
+        0,   33,   32,    0,    0,    0,    0,    0,    0,   44,
+       44,   44,   44,   44,   44,   44,   44,   44,   44,   10,
+       44,   17,   44,   44,   44,   21,   28,   44,   23,   44,
+       44,   44,   24,   44,    0,   41,    0,   42,   33,   32,
+        0,    0,    0,    3,   44,    5,   44,   44,   44,   44,
+       16,    9,   44,   11,   18,   15,   27,   25,   44,   44,
 
-       31,   34,   33,    0,    0,   37,    0,    4,   34,   34,
-       34,   34,   19,   34,   34,   14,    0,    0,   36,   34,
-       34,   34,   20,   22,   13,    0,   34,   30,    7,    0,
-        6,    0,    0,    0,   35,    0
+       31,   44,   33,    0,    0,   36,    0,    4,   44,   44,
+       44,   44,   19,   44,   44,   14,    0,    0,   35,   44,
+       44,   44,   20,   22,   13,    0,   44,   30,    7,    0,
+        6,    0,    0,    0,   34,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -669,8 +669,8 @@ static const flex_int16_t yy_chk[647] =
 static const flex_int32_t yy_rule_can_match_eol[100] =
     {   0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 
-    0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 
+    0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 
         };
@@ -1176,63 +1176,63 @@ YY_RULE_SETUP
 { yylval = ast_create_package(yytext+1); return PACKAGE_NAME; }
 	YY_BREAK
 case 34:
+/* rule 34 can match eol */
 YY_RULE_SETUP
 #line 91 "proc.la.l"
-{ yylval = ast_create_identifier(yytext); return IDENTIFIER/*check_type()*/; }
+{ yylval = ast_create_const_i(yytext); return I_CONSTANT; }
 	YY_BREAK
 case 35:
 /* rule 35 can match eol */
 YY_RULE_SETUP
-#line 93 "proc.la.l"
+#line 92 "proc.la.l"
 { yylval = ast_create_const_i(yytext); return I_CONSTANT; }
 	YY_BREAK
 case 36:
 /* rule 36 can match eol */
 YY_RULE_SETUP
-#line 94 "proc.la.l"
+#line 93 "proc.la.l"
 { yylval = ast_create_const_i(yytext); return I_CONSTANT; }
 	YY_BREAK
 case 37:
-/* rule 37 can match eol */
 YY_RULE_SETUP
-#line 95 "proc.la.l"
+#line 94 "proc.la.l"
 { yylval = ast_create_const_i(yytext); return I_CONSTANT; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 96 "proc.la.l"
+#line 95 "proc.la.l"
 { yylval = ast_create_const_i(yytext); return I_CONSTANT; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 97 "proc.la.l"
+#line 96 "proc.la.l"
 { yylval = ast_create_const_i(yytext); return I_CONSTANT; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
 #line 98 "proc.la.l"
-{ yylval = ast_create_const_i(yytext); return I_CONSTANT; }
+{ yylval = ast_create_const_f(yytext); return F_CONSTANT; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 100 "proc.la.l"
+#line 99 "proc.la.l"
 { yylval = ast_create_const_f(yytext); return F_CONSTANT; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 101 "proc.la.l"
+#line 100 "proc.la.l"
 { yylval = ast_create_const_f(yytext); return F_CONSTANT; }
 	YY_BREAK
 case 43:
+/* rule 43 can match eol */
 YY_RULE_SETUP
 #line 102 "proc.la.l"
-{ yylval = ast_create_const_f(yytext); return F_CONSTANT; }
+{ yylval = ast_create_const_s(yytext); return STRING_LITERAL; }
 	YY_BREAK
 case 44:
-/* rule 44 can match eol */
 YY_RULE_SETUP
 #line 104 "proc.la.l"
-{ yylval = ast_create_const_s(yytext); return STRING_LITERAL; }
+{ yylval = ast_create_identifier(yytext); return IDENTIFIER/*check_type()*/; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP

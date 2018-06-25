@@ -275,7 +275,7 @@ plat_inline void destroyAstSwitchStmt(AstSwitchStmt obj) {
 plat_inline void packAstSwitchStmt(AstSwitchStmt obj, Packer pkr) {
     if (is_packer_v1(pkr)) {
         pack_mmobj(0, obj->eval, pkr);
-        pack_mmobj(1, obj->eval, pkr);
+        pack_mmobj(1, obj->stmt, pkr);
     }
 }
 

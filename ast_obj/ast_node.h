@@ -372,6 +372,28 @@ plat_inline void packAstExpression(AstExpression obj, Packer pkr) {
 
 MMSubObject(AstExpression, AstStatement, initAstExpression, destroyAstExpression, packAstExpression);
 
+/// ===== Empty =====
+
+typedef struct AstEmpty {
+
+}*AstEmpty;
+
+plat_inline AstEmpty initAstEmpty(AstEmpty obj, Unpacker unpkr) {
+    (void) unpkr;
+    set_single_instance_comparison_for_mmobj(obj);
+    return obj;
+}
+
+/*plat_inline void destroyAstEmpty(AstNone obj) {
+
+}*/
+
+plat_inline void packAstEmpty(AstEmpty obj, Packer pkr) {
+
+}
+
+MMSubObject(AstEmpty, AstStatement , initAstEmpty, null/*destroyAstEmpty*/, packAstEmpty);
+
 
 /// ===== NONE =====
 

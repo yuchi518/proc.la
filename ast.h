@@ -28,6 +28,7 @@ plat_inline void register_all_ast_to_unpacker(Unpacker unpkr) {
     registerAstIsExprToUnpacker(unpkr);
     registerAstJumpStmtToUnpacker(unpkr);
     registerAstLoopStmtToUnpacker(unpkr);
+    registerAstEmptyToUnpacker(unpkr);
     registerAstNoneToUnpacker(unpkr);
     registerAstOutToUnpacker(unpkr);
     registerAstPackageToUnpacker(unpkr);
@@ -47,6 +48,7 @@ plat_inline void register_all_ast_to_unpacker(Unpacker unpkr) {
     registerAstVarInstanceToUnpacker(unpkr);
 }
 
+AstNode ast_create_empty(void);
 AstNode ast_create_none(void);
 AstNode ast_create_out(void);
 AstNode ast_create_type(ast_type type);

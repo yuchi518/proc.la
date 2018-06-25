@@ -55,6 +55,10 @@ int create_ast(mgn_memory_pool* pool, char* content, uint content_size, AstNode*
     return 0;
 }
 
+AstNode ast_create_empty(void) {
+    return toAstNode(autorelease_mmobj(allocAstEmpty(_pool)));
+}
+
 AstNode ast_create_none(void) {
     return toAstNode(autorelease_mmobj(allocAstNone(_pool)));
 }
@@ -226,6 +230,7 @@ AstNode ast_create_domain(char* value)
 
 AstNode ast_create_identifier(char* value)
 {
+    //plat_io_printf_err("iden: %s\n", value);
     return toAstNode(autorelease_mmobj(allocAstIdentifierWithCStringName(_pool, value)));
 }
 
@@ -695,6 +700,8 @@ AstNode ast_create_case(AstNode check)
         return null;
     }
 
+    plat_io_printf_err("%s\n", name_of_last_mmobj(check));
+
     return toAstNode(autorelease_mmobj(allocAstCaseStmtWithCheck(_pool, expression)));
 }
 
@@ -1038,6 +1045,27 @@ void iterate_ast(AstNode obj, ast_iterator iterator)
             // put all items
             AstBlockStmt laBody = toAstBlockStmt(obj);
             pushAllToAstStack(stack, laBody->stmts, true);
+
+            sa = scope_action_created;
+        }
+        else if (oid == oid_of_AstSwitchStmt())
+        {
+            scope = ast_impl_create_scope(obj, scope/*last scope*/);
+            pushToAstStack(stack, toAstNode(scope));
+
+            AstSwitchStmt switchStmt = toAstSwitchStmt(obj);
+            pushToAstStack(stack, toAstNode(switchStmt->stmt));
+            pushToAstStack(stack, toAstNode(switchStmt->eval));
+
+            sa = scope_action_created;
+        }
+        else if (oid == oid_of_AstCaseStmt())
+        {
+            scope = ast_impl_create_scope(obj, scope/*last scope*/);
+            pushToAstStack(stack, toAstNode(scope));
+
+            AstCaseStmt caseStmt = toAstCaseStmt(obj);
+            pushToAstStack(stack, toAstNode(caseStmt->check));
 
             sa = scope_action_created;
         }
