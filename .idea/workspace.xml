@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true" buildAllGenerated="true">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
       <config projectName="proc_la" targetName="proc_la" />
       <config projectName="proc_la" targetName="RunGenerator" />
@@ -13,127 +13,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ed24e029-8e0c-475c-992c-b71aae6fdff9" name="Default" comment="More AST implementations">
+      <change afterPath="$PROJECT_DIR$/proc.la.y.bak" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SPEC" beforeDir="false" afterPath="$PROJECT_DIR$/SPEC" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ast.c" beforeDir="false" afterPath="$PROJECT_DIR$/ast.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ast.h" beforeDir="false" afterPath="$PROJECT_DIR$/ast.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ast_obj/ast_node.h" beforeDir="false" afterPath="$PROJECT_DIR$/ast_obj/ast_node.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ast_obj/ast_stmt.h" beforeDir="false" afterPath="$PROJECT_DIR$/ast_obj/ast_stmt.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/autogen/proc.la.l.c" beforeDir="false" afterPath="$PROJECT_DIR$/autogen/proc.la.l.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/autogen/proc.la.y.c" beforeDir="false" afterPath="$PROJECT_DIR$/autogen/proc.la.y.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/proc.la.l" beforeDir="false" afterPath="$PROJECT_DIR$/proc.la.l" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SPEC" beforeDir="false" afterPath="$PROJECT_DIR$/samples/SPEC.la" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/autogen/proc.la.y.c" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/proc.la.y" beforeDir="false" afterPath="$PROJECT_DIR$/proc.la.y" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/samples/expr.la" beforeDir="false" afterPath="$PROJECT_DIR$/samples/expr.la" afterDir="false" />
     </list>
-    <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
-    <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
-  <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="main.c" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/main.c">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="585">
-              <caret line="39" column="109" selection-start-line="39" selection-start-column="89" selection-end-line="39" selection-end-column="112" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ast_ctrl.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ast_obj/ast_ctrl.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
-              <caret line="23" column="1" selection-start-line="23" selection-start-column="1" selection-end-line="23" selection-end-column="1" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ast_expr.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ast_obj/ast_expr.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4860">
-              <caret line="324" column="24" selection-start-line="324" selection-start-column="20" selection-end-line="324" selection-end-column="29" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="proc.la.y" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/proc.la.y">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="411">
-              <caret line="449" column="32" lean-forward="true" selection-start-line="449" selection-start-column="32" selection-end-line="449" selection-end-column="32" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SPEC" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/SPEC">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="593">
-              <caret line="115" column="15" selection-start-line="115" selection-start-column="15" selection-end-line="115" selection-end-column="15" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="proc.la.l" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/proc.la.l">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1545">
-              <caret line="103" column="88" selection-start-line="103" selection-start-column="67" selection-end-line="103" selection-end-column="88" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ast.c" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ast.c">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="556">
-              <caret line="254" selection-start-line="254" selection-end-line="254" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ast_runtime.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ast_obj/ast_runtime.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1800">
-              <caret line="120" column="17" selection-start-line="120" selection-start-column="17" selection-end-line="120" selection-end-column="17" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ast_la.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ast_obj/ast_la.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="649">
-              <caret line="83" column="44" selection-start-line="83" selection-start-column="31" selection-end-line="83" selection-end-column="44" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="expr.la" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/samples/expr.la">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="600">
-              <caret line="40" column="15" lean-forward="true" selection-start-line="40" selection-start-column="15" selection-end-line="40" selection-end-column="15" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
   </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>AstStat</find>
-      <find>print_ast</find>
-      <find>iteration_statement</find>
       <find>ast_create_</find>
       <find>ast_create_none</find>
       <find>LIST</find>
@@ -143,24 +41,27 @@
       <find>statement</find>
       <find>block_statement</find>
       <find>cases_block_statement</find>
-      <find>constant</find>
       <find>expression_statement</find>
       <find>ast_create_identifier</find>
       <find>ast_create_case</find>
       <find>LN</find>
-      <find>expression</find>
-      <find>IDENTIFIER</find>
       <find>case</find>
       <find>APPLY_TO</find>
       <find>pipe_op</find>
-      <find>assignment_expression</find>
-      <find>primary_expression</find>
       <find>tuple</find>
       <find>tuple_item_list</find>
       <find>var_declaration</find>
       <find>iden:</find>
       <find>selection_statement</find>
       <find>proc.la.y:427</find>
+      <find>expression</find>
+      <find>string</find>
+      <find>primary_expression</find>
+      <find>constant</find>
+      <find>container_expression</find>
+      <find>container_access_expression</find>
+      <find>assignment_expression</find>
+      <find>IDENTIFIER</find>
     </findStrings>
     <replaceStrings>
       <replace>AstPairExpr</replace>
@@ -198,65 +99,6 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="IdeDocumentHistory">
-    <option name="CHANGED_PATHS">
-      <list>
-        <option value="$PROJECT_DIR$/ast_variable.c" />
-        <option value="$PROJECT_DIR$/ast_ctrl.h" />
-        <option value="$PROJECT_DIR$/ast_obj.h" />
-        <option value="$PROJECT_DIR$/cmake-build-debug/ast_type.h" />
-        <option value="$PROJECT_DIR$/ast_type.h" />
-        <option value="$PROJECT_DIR$/ast_obj/ast_variable.c" />
-        <option value="$PROJECT_DIR$/ast_obj/ast_stmt.c" />
-        <option value="$PROJECT_DIR$/ast_obj/ast_obj.h" />
-        <option value="$PROJECT_DIR$/ast_obj/ast_obj.c" />
-        <option value="$PROJECT_DIR$/platform/mmObj_unittest.h" />
-        <option value="$PROJECT_DIR$/platform/mmObj_unittest.c" />
-        <option value="$PROJECT_DIR$/sample.c.y" />
-        <option value="$PROJECT_DIR$/proc.la.y.output" />
-        <option value="$PROJECT_DIR$/ast_obj/ast_ctrl.h" />
-        <option value="$PROJECT_DIR$/LICENSE" />
-        <option value="$PROJECT_DIR$/platform/mmObj_lib.h" />
-        <option value="$PROJECT_DIR$/platform/mmObj.h" />
-        <option value="$PROJECT_DIR$/platform/mmo_unittest.h" />
-        <option value="$PROJECT_DIR$/platform/plat_mgn_mem.h" />
-        <option value="$PROJECT_DIR$/platform/mmo_pack.h" />
-        <option value="$PROJECT_DIR$/platform/plat_mem.h" />
-        <option value="$PROJECT_DIR$/platform/mmo_unittest.c" />
-        <option value="$PROJECT_DIR$/ast_executor.h" />
-        <option value="$PROJECT_DIR$/ast_executor.c" />
-        <option value="$PROJECT_DIR$/platform/mmo_pack.c" />
-        <option value="$PROJECT_DIR$/autogen/proc.la.y.c" />
-        <option value="$PROJECT_DIR$/platform/plat_io.h" />
-        <option value="$PROJECT_DIR$/README.MD" />
-        <option value="$PROJECT_DIR$/ast_obj/ast_runtime.c" />
-        <option value="$PROJECT_DIR$/platform/plat_string.h" />
-        <option value="$PROJECT_DIR$/ast_obj/ast_container.h" />
-        <option value="$PROJECT_DIR$/ast_obj/ast_runtime.h" />
-        <option value="$PROJECT_DIR$/ast_obj/ast_variable.h" />
-        <option value="$PROJECT_DIR$/ast_obj/ast_expr.h" />
-        <option value="$PROJECT_DIR$/ast_obj/ast_type.h" />
-        <option value="$PROJECT_DIR$/ast_obj/ast_la.h" />
-        <option value="$PROJECT_DIR$/platform/mmo.h" />
-        <option value="$PROJECT_DIR$/platform/mmo_ext.h" />
-        <option value="$PROJECT_DIR$/samples/first.la" />
-        <option value="$PROJECT_DIR$/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/clibs/mmo/mmo.h" />
-        <option value="$PROJECT_DIR$/ast_obj/ast_optimization.c" />
-        <option value="$PROJECT_DIR$/ast_obj/ast_stmt.h" />
-        <option value="$PROJECT_DIR$/main.c" />
-        <option value="$PROJECT_DIR$/ast_obj/ast_node.h" />
-        <option value="$PROJECT_DIR$/ast.h" />
-        <option value="$PROJECT_DIR$/proc.la.l" />
-        <option value="$PROJECT_DIR$/SPEC" />
-        <option value="$PROJECT_DIR$/samples/expr.la" />
-        <option value="$PROJECT_DIR$/ast.c" />
-        <option value="$PROJECT_DIR$/proc.la.y" />
-      </list>
-    </option>
-  </component>
-  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
   <component name="JsFlowSettings">
     <service-enabled>true</service-enabled>
     <exe-path />
@@ -264,19 +106,13 @@
     <other-services-enabled>true</other-services-enabled>
     <auto-save>true</auto-save>
   </component>
-  <component name="JsGulpfileManager">
-    <detection-done>true</detection-done>
-    <sorting>DEFINITION_ORDER</sorting>
-  </component>
-  <component name="NodePackageJsonFileManager">
-    <packageJsonPaths />
-  </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectFrameBounds" fullScreen="true">
     <option name="y" value="23" />
     <option name="width" value="1920" />
     <option name="height" value="1097" />
   </component>
+  <component name="ProjectId" id="1d6cLK2lYtMkKVQPZHA58kKS2bD" />
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
       <profile-state>
@@ -300,91 +136,50 @@
     </entry>
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
-  <component name="ProjectView">
-    <navigator proportions="" version="1">
-      <autoscrollToSource ProjectPane="true" />
-      <sortByType ProjectPane="false" />
-      <foldersAlwaysOnTop value="true" />
-    </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="proc_la" type="b2602c69:ProjectViewProjectNode" />
-              <item name="proc.la" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="proc_la" type="b2602c69:ProjectViewProjectNode" />
-              <item name="proc.la" type="462c0819:PsiDirectoryNode" />
-              <item name="ast_obj" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="proc_la" type="b2602c69:ProjectViewProjectNode" />
-              <item name="proc.la" type="462c0819:PsiDirectoryNode" />
-              <item name="samples" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-        <option name="show-excluded-files" value="false" />
-      </pane>
-      <pane id="Scope" />
-    </panes>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="cf.first.check.clang-format" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs.protractor.protractor_package" value="" />
     <property name="nodejs_interpreter_path" value="node" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="editing.templates" />
+    <property name="settings.editor.selected.configurable" value="preferences.fileTypes" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/samples" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/samples" />
       <recent name="$PROJECT_DIR$/mmo" />
       <recent name="$PROJECT_DIR$/autogen" />
       <recent name="$PROJECT_DIR$/platform" />
       <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/ast_obj" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/samples" />
     </key>
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-  </component>
-  <component name="RunManager" selected="Application.Build All">
-    <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" WORKING_DIR="file://$PROJECT_DIR$/samples" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="proc_la" RUN_TARGET_NAME="proc_la" EXPLICIT_BUILD_TARGET_NAME="all">
-      <method>
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="false" />
+  <component name="RunManager" selected="CMake Application.Build All">
+    <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" WORKING_DIR="file://$PROJECT_DIR$/samples" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="proc_la" RUN_TARGET_NAME="proc_la" EXPLICIT_BUILD_TARGET_NAME="all">
+      <method v="2" />
+    </configuration>
+    <configuration name="RunGenerator" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proc_la" TARGET_NAME="RunGenerator" CONFIG_NAME="Debug">
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" WORKING_DIR="file://${CMAKE_SOURCE_DIR}/samples" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="RunGenerator" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proc_la" TARGET_NAME="RunGenerator" CONFIG_NAME="Debug">
-      <method>
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="false" />
-      </method>
-    </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" WORKING_DIR="file://${CMAKE_SOURCE_DIR}/samples" PASS_PARENT_ENVS_2="true" />
-    <configuration name="proc_la" type="CMakeRunConfiguration" factoryName="Application" WORKING_DIR="file://$PROJECT_DIR$/samples" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proc_la" TARGET_NAME="proc_la" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="proc_la" RUN_TARGET_NAME="proc_la">
-      <method>
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="false" />
-      </method>
+    <configuration name="proc_la" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" WORKING_DIR="file://$PROJECT_DIR$/samples" PASS_PARENT_ENVS_2="true" PROJECT_NAME="proc_la" TARGET_NAME="proc_la" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="proc_la" RUN_TARGET_NAME="proc_la">
+      <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Application.Build All" />
-      <item itemvalue="Application.proc_la" />
-      <item itemvalue="Application.RunGenerator" />
+      <item itemvalue="CMake Application.Build All" />
+      <item itemvalue="CMake Application.RunGenerator" />
+      <item itemvalue="CMake Application.proc_la" />
     </list>
   </component>
   <component name="SvnConfiguration">
@@ -558,6 +353,13 @@
       <workItem from="1529633746750" duration="2150000" />
       <workItem from="1529649200179" duration="15000" />
       <workItem from="1529888054330" duration="3240000" />
+      <workItem from="1529973745976" duration="5790000" />
+      <workItem from="1530061691111" duration="6781000" />
+      <workItem from="1530146317094" duration="1480000" />
+      <workItem from="1531187292582" duration="460000" />
+      <workItem from="1531271572811" duration="2901000" />
+      <workItem from="1531378586002" duration="350000" />
+      <workItem from="1591748930088" duration="131000" />
     </task>
     <task id="LOCAL-00001" summary="More implementations">
       <created>1507348208948</created>
@@ -569,9 +371,6 @@
     <option name="localTasksCounter" value="2" />
     <servers />
   </component>
-  <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="678827000" />
-  </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
       <is-autoscroll-to-source value="true" />
@@ -581,332 +380,24 @@
       <is-autoscroll-to-source value="true" />
     </todo-panel>
   </component>
-  <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1920" height="1200" extended-state="0" />
-    <editor active="true" />
-    <layout>
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.32956523" />
-      <window_info anchor="bottom" id="Tool Output" order="7" />
-      <window_info anchor="bottom" id="Messages" order="13" sideWeight="0.6703125" weight="0.39285713" />
-      <window_info anchor="bottom" id="CMake" order="8" weight="0.32746822" />
-      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50078124" side_tool="true" weight="0.24724409" />
-      <window_info anchor="bottom" id="Version Control" order="10" weight="0.54608697" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49921876" weight="0.24651568" />
-      <window_info anchor="bottom" id="Terminal" order="11" weight="0.32850242" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13072917" />
-      <window_info anchor="right" id="LuaJ" order="3" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.3262548" />
-      <window_info anchor="bottom" id="ANTLR Preview" order="12" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.36759582" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" id="Data View" order="4" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-    </layout>
-  </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+    <option name="version" value="2" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="RECENTLY_FILTERED_USER_GROUPS">
-                <collection />
-              </option>
-              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
-                <collection />
-              </option>
-              <option name="COLUMN_ORDER">
-                <list>
-                  <option value="0" />
-                  <option value="1" />
-                  <option value="2" />
-                  <option value="3" />
-                </list>
-              </option>
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
-  </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <option name="LOCAL_CHANGES_DETAILS_PREVIEW_SHOWN" value="true" />
     <MESSAGE value="More implementations" />
     <option name="LAST_COMMIT_MESSAGE" value="More implementations" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints-dialog>
-        <breakpoints-dialog />
-      </breakpoints-dialog>
-      <option name="time" value="43" />
-    </breakpoint-manager>
-  </component>
-  <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/platform/plat_mem.h" />
-    <entry file="file://$PROJECT_DIR$/mmo/mmo_unittest.c" />
-    <entry file="file://$PROJECT_DIR$/mmo/mmo_unittest.h" />
-    <entry file="file://$PROJECT_DIR$/ast_executor.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="53" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ast_executor.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" selection-start-line="21" selection-end-line="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/proc.la.y.output" />
-    <entry file="file://$PROJECT_DIR$/autogen/proc.la.y.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="681">
-          <caret line="1747" selection-start-line="1747" selection-end-line="1747" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/platform/plat_io.h" />
-    <entry file="file://$PROJECT_DIR$/ast_obj/ast_runtime.c" />
-    <entry file="file://$PROJECT_DIR$/platform/plat_string.h" />
-    <entry file="file://$PROJECT_DIR$/sample.c.l">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="54" column="40" lean-forward="true" selection-start-line="54" selection-start-column="40" selection-end-line="54" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sample.c.y">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="24" column="20" selection-start-line="24" selection-start-column="10" selection-end-line="24" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/platform/plat_mgn_mem.h" />
-    <entry file="file://$PROJECT_DIR$/autogen/proc.la.l.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="248">
-          <caret line="1744" selection-start-line="1744" selection-end-line="1744" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/platform/uthash.h" />
-    <entry file="file://$PROJECT_DIR$/dybuf/dypkt.h" />
-    <entry file="file://$PROJECT_DIR$/mmo/mmo_pack.c" />
-    <entry file="file://$PROJECT_DIR$/mmo/mmo_pack.h" />
-    <entry file="file://$PROJECT_DIR$/samples/first.la">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" column="2" selection-start-line="21" selection-start-column="2" selection-end-line="21" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dybuf/dybuf.h" />
-    <entry file="file://$PROJECT_DIR$/mmo/mmo_ext.h" />
-    <entry file="file://$PROJECT_DIR$/mmo/mmo.h" />
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="26" column="148" selection-start-line="26" selection-start-column="148" selection-end-line="26" selection-end-column="148" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/clibs/platform/plat_type.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="705">
-          <caret line="47" column="35" lean-forward="true" selection-start-line="47" selection-start-column="35" selection-end-line="47" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/clibs/mmo/mmo_pack.h">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/clibs/mmo/mmo_ext.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="615">
-          <caret line="60" column="25" selection-start-line="60" selection-start-column="25" selection-end-line="60" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/clibs/platform/plat_io.h">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/clibs/platform/plat_mgn_mem.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1071">
-          <caret line="77" column="56" selection-start-line="77" selection-start-column="52" selection-end-line="77" selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/clibs/mmo/mmo_unittest.h">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/clibs/mmo/mmo.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="489">
-          <caret line="443" column="8" selection-start-line="443" selection-start-column="8" selection-end-line="443" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/clibs/mmo/mmo_unittest.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="208">
-          <caret line="40" column="12" lean-forward="true" selection-start-line="40" selection-start-column="12" selection-end-line="40" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/EBNF">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.MD">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="600">
-            <caret line="40" selection-start-line="39" selection-end-line="40" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-      <provider editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ast_obj/ast_stmt.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-5096">
-          <caret line="210" column="26" selection-start-line="210" selection-start-column="15" selection-end-line="210" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ast_obj/ast_variable.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-250">
-          <caret line="129" selection-start-line="129" selection-end-line="129" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ast_obj/ast_optimization.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-56">
-          <caret line="27" column="46" selection-start-line="27" selection-start-column="22" selection-end-line="27" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ast_obj/ast_type.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="615">
-          <caret line="41" column="80" selection-start-line="41" selection-start-column="80" selection-end-line="41" selection-end-column="80" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ast_obj/ast_container.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2205">
-          <caret line="147" column="26" selection-start-line="147" selection-start-column="16" selection-end-line="147" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ast_obj/ast_node.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5925">
-          <caret line="395" selection-start-line="395" selection-end-line="395" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ast.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="28" column="30" selection-start-line="28" selection-start-column="30" selection-end-line="28" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ast_obj/ast_ctrl.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="23" column="1" selection-start-line="23" selection-start-column="1" selection-end-line="23" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ast_obj/ast_expr.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4860">
-          <caret line="324" column="24" selection-start-line="324" selection-start-column="20" selection-end-line="324" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="585">
-          <caret line="39" column="109" selection-start-line="39" selection-start-column="89" selection-end-line="39" selection-end-column="112" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ast_obj/ast_runtime.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1800">
-          <caret line="120" column="17" selection-start-line="120" selection-start-column="17" selection-end-line="120" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SPEC">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="593">
-          <caret line="115" column="15" selection-start-line="115" selection-start-column="15" selection-end-line="115" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ast_obj/ast_la.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="649">
-          <caret line="83" column="44" selection-start-line="83" selection-start-column="31" selection-end-line="83" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/proc.la.l">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1545">
-          <caret line="103" column="88" selection-start-line="103" selection-start-column="67" selection-end-line="103" selection-end-column="88" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/samples/expr.la">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="600">
-          <caret line="40" column="15" lean-forward="true" selection-start-line="40" selection-start-column="15" selection-end-line="40" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ast.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="556">
-          <caret line="254" selection-start-line="254" selection-end-line="254" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/proc.la.y">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="411">
-          <caret line="449" column="32" lean-forward="true" selection-start-line="449" selection-start-column="32" selection-end-line="449" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
   </component>
 </project>

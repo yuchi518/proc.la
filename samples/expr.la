@@ -35,10 +35,14 @@ declare main:la
     {"1":1, "2":2, "3":3} --> (in:var) {
     } --> v:int;
 
-    switch (j) {
+    switch j {
         case 1:
         case "2":
         case kq: ;
+    }
+
+    if j > 10 {
+
     }
 } (var);
 

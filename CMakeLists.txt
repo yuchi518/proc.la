@@ -9,7 +9,7 @@ set(AUTO_GEN_DIR ${CMAKE_SOURCE_DIR}/autogen)
 
 add_custom_command(OUTPUT ${AUTO_GEN_DIR}/proc.la.y.c
         PRE_BUILD
-        COMMAND bison #[[-r all -g]] -o ${AUTO_GEN_DIR}/proc.la.y.c proc.la.y
+        COMMAND bison #[[-r all -g]] -v -o ${AUTO_GEN_DIR}/proc.la.y.c proc.la.y
         DEPENDS proc.la.y
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         COMMENT "bison generate proc.la.y.c" )
